@@ -1,0 +1,65 @@
+﻿@{
+    ViewData["Title"] = "Nuovo Cliente";
+}
+<h2>Nuovo Cliente</h2>
+<div class="content_page margin_bottom">
+    <form id="newClientForm" asp-action="New" method="post" asp-antiforgery="true" autocomplete="off">
+        <label for="name" class="title">Nome:</label>
+        <input type="text" name="name" style="width: 259px;" />
+        <br />
+        <label for="vat" class="title">Partita I.V.A:</label>
+        <input type="text" name="vat" style="width: 259px;" />
+        <br />
+        <label for="fiscalCode" class="title">Codice Fiscale:</label>
+        <input type="text" name="fiscalCode" style="width: 259px;" />
+        <br />
+        <label for="state" class="title">Stato:</label>
+        <select name="state" style="width: 174px">
+            <option value="">--</option>
+            @await Html.PartialAsync("StatesOptions", "Italia")
+        </select>
+        <br />
+        <label for="province" class="title">Provincia:</label>
+        <select name="province" style="width: 75px;">
+            <option value="">--</option>
+            @await Html.PartialAsync("ProvinceOptions")
+        </select>
+        <br />
+        <label for="town" class="title">Comune:</label>
+        <input type="text" name="town" />
+        <br />
+        <label for="addressStreetMode" class="title">Indirizzo:</label>
+        <select name="addressStreetMode" style="width: 75px !important;">
+            <option value="Via" selected>Via</option>
+            <option value="Piazza">Piazza</option>
+            <option value="Viale">Viale</option>
+        </select>
+        <input type="text" style="width:180px;" name="address" />
+        <br />
+        <label for="addressNumber" class="title">N°:</label>
+        <input type="text" name="addressNumber" style="width: 75px;" />
+        <br />
+        <label for="phone" class="title">Telefono:</label>
+        <input type="text" name="phone" />
+        <br />
+        <label for="email" class="title">E-Mail:</label>
+        <input type="text" name="email" style="text-transform: lowercase;width: 259px;" />
+        <br />
+        <label for="pec" class="title">PEC:</label>
+        <input type="text" name="pec" style="text-transform: lowercase;width: 259px;" />
+        <br />
+        <br />
+        <input type="submit" value="Aggiungi" />
+    </form>
+</div>
+
+@section Scripts{
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script type="text/javascript">
+
+        var validation = $('#newClientForm').validate();
+        validation.settings.rules = validateNewClientRules;
+        validation.settings.messages = validateNewClientMessages;
+
+    </script>
+}

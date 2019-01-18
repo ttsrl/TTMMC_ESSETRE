@@ -1,0 +1,64 @@
+﻿@model MachineDetailsModel
+@{
+    ViewData["Title"] = "Details";
+}
+<h2>Dettagli per @Model.Machine.Description</h2>
+<div class="content_page">
+    @await Html.PartialAsync("MachineType/" + (int)(Model.Machine.Type), Model)
+    <br />
+    <div style="font-size: 11px;font-weight:normal;">
+        <a href="#" onclick="return SendPing();">Ping</a>
+        &nbsp;-&nbsp;
+        <label><b>TimerUpdate:</b></label>
+        <label id="timerUp" style="font-weight: normal;display: inline-block;width: 60px;"></label>
+        <label>RequestTime:</label>
+        <label id="reqTime" style="font-weight: normal;"></label>
+    </div>
+</div>
+
+@section Scripts{
+    <script type="text/javascript">
+
+        var machineId = @Model.Machine.Id;
+        var unload = false;
+        var timer;
+        var TimerVal = 2000;
+        var loadingHidePing = false;
+        $(document).ready(function () {
+            loadingDialogShow();
+            timer = setInterval(ReadRealtimeDatas, TimerVal);
+            $("#timerUp").html(TimerVal + " ms");
+        });
+
+        $(window).on('beforeunload', function () {
+            unload = true;
+        });
+
+        function SendPing() {
+            loadingHidePing = true;
+            loadingDialogShow();
+            $.getJSON("/Api/PingMachine", { id: @Model.Machine.Id }).done(function (data) {
+                if (data.result) {
+                    infoDialog("Ping", "Ping eseguito in " + data.time + " ms");
+                } else {
+                    alertDialog("Ping", "Inidirizzo non raggiungibile o intervento timeout");
+                }
+            }).fail(function () {
+                alertDialog("Errore", "Errore Imprevisto, richiesta ping fallita. Contattare L'assistenza.");
+            }).always(function () {
+                loadingHidePing = false;
+                loadingDialogHide();
+            });
+            return false;
+        }
+
+        function StopReadRealtimeDatas() {
+            clearInterval(timer);
+        }
+
+        function NoImageFound(obj) {
+            $(obj).attr("src", "/images/machinesDetails/default.jpg");
+        }
+
+    </script>
+}

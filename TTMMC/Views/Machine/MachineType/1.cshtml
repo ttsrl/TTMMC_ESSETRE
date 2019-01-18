@@ -1,0 +1,58 @@
+﻿@model MachineDetailsModel
+<img class="imgMachineDetails" src="~/images/machinesDetails/@(Model.Machine.GetImageUrl())" onerror="NoImageFound(this);" />
+<br />
+<h3>Dati in Realtime</h3>
+<br />
+<table class="table">
+    <tr>
+        <td style="width:250px; font-weight:bold;">Parametro</td>
+        <td style="width:350px; font-weight:bold;">Descrizione</td>
+        <td style="width:200px; font-weight:bold;">Valore</td>
+    </tr>
+    @foreach (var it in Model.Machine.GetParametersRead())
+    {
+        <tr>
+            <td style="padding-left:20px;"><b>@it.Key</b></td>
+            <td>@it.Value[0].Description</td>
+            <td class="parameters_" id="p_@it.Key"></td>
+        </tr>
+    }
+    <tr asp-if="Model.Machine.GetParametersRead().Count == 0">
+        <td colspan="2" style="text-align:center;">Non &egrave; stato definito alcun parametro da poter leggere!</td>
+    </tr>
+</table>
+
+<script type="text/javascript">
+
+    function ReadRealtimeDatas() {
+        var start_time = new Date().getTime();
+        $.getJSON("/Api/RealtimeMachineDatasRead", { id: @Model.Machine.Id }).done(function (data) {
+            if (data.status == 1) {
+                $.each(data.parameters, function (k, it) {
+                    var strAgg = "";
+                    for (var key in it) {
+                        var val = it[key];
+                        strAgg += val + ", ";
+                    }
+                    strAgg = strAgg.substring(0, strAgg.length - 2);
+                    $("#p_" + k).html(strAgg);
+                    $("#p_" + k).css("color", "green");
+                });
+            } else {
+                $(".parameters_").html("Offline");
+                $(".parameters_").css("color", "red");
+            }
+        }).fail(function () {
+            StopReadRealtimeDatas();
+            if (window.unload) return;
+            $(".parameters_").html("Offline");
+            $(".parameters_").css("color", "red");
+            alertDialog("Errore", "Errore Imprevisto, richiesta fallita o non corretta. Contattare L'assistenza.");
+        }).always(function () {
+            if (!loadingHidePing) loadingDialogHide();
+            var request_time = new Date().getTime() - start_time;
+            $("#reqTime").html(request_time + " ms");
+        });
+    }
+
+</script>

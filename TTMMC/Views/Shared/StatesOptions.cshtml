@@ -1,0 +1,13 @@
+﻿@model string
+@{
+    var model = Model;
+    var p = new[] { "Albania", "Andorra", "Austria", "Belgio", "Bielorussia", "Bosnia Herzegovina", "Bulgaria", "Città del Vaticano", "Croazia", "Danimarca", "Estonia", "Faroer", "Finlandia", "Francia",
+        "Germania", "Gibilterra", "Gran Bretagna", "Grecia", "Irlanda", "Islanda", "Italia", "Lettonia", "Liechtenstein", "Lituania", "Lussemburgo", "Macedonia", "Malta", "Moldavia", "Montecarlo",
+        "Montenegro", "Norvegia", "Olanda", "Polonia", "Portogallo", "Repubblica Ceca", "Romania", "Russia", "San Marino", "Serbia", "Slovacchia", "Slovenia", "Spagna", "Svalbard", "Svezia", "Svizzera",
+        "Ucraina", "Ungheria" };
+}
+
+@foreach (var pt in p)
+{
+    <option asp-selected="@(pt == Model)" value="@((pt == "--") ? "" : pt)">@pt</option>
+}

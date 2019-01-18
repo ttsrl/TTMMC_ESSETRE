@@ -1,0 +1,61 @@
+﻿@model HomeModel
+@{
+    ViewData["Title"] = "Lista Macchine";
+}
+
+<h2>Macchine</h2>
+<div class="content_page margin_bottom">
+    @foreach (var m in Model.Machines)
+    {
+        <a asp-action="Details" asp-controller="Machine" asp-route-id="@m.Id" class="machine" id="@(m.ReferenceName)">
+            <img class="machine_icon @(m.GetStatus().ToString())" />
+            <div class="machine_details">
+                <label class="machine_title">@m.Description</label>
+                <br />
+                <label class="machine_det_title">Name:</label><label class="machine_data">@m.ReferenceName</label>
+                <label class="machine_det_title">Ip:</label><label class="machine_data">@m.Address</label>
+                <label class="machine_det_title">Port:</label><label class="machine_data">@m.Port</label>
+                <label class="machine_det_title">Status: </label><label id="@(m.ReferenceName)_statusLbl" class="machine_data machine_statusLbl" style="color: @(m.GetStatus() == MachineStatus.Online ? "green" : "red")">@(m.GetStatus().ToString())</label>
+            </div>
+        </a>
+    }
+</div>
+@section Scripts{
+    <script type="text/javascript">
+
+        var checkStatusTimer;
+
+        $(document).ready(function () {
+            checkStatusTimer = setInterval(GetMachinesStatus, 2000);
+        });
+
+        function GetMachinesStatus() {
+            $.getJSON("/Api/GetMachinesStatus").done(function (data) {
+                $.each(data, function (i, it) {
+                    var key = it.key;
+                    var val = it.value;
+                    SetMachineGUIStatus(key, val);
+                });
+            }).fail(function (data) {
+                
+            });
+        }
+
+        function SetMachineGUIStatus(key, status) {
+            var intOnline = @((int)(MachineStatus.Online));
+            var intOffline = @((int)(MachineStatus.Offline));
+            if (status == intOnline) {
+                $("#" + key + "_statusLbl").text("@(MachineStatus.Online.ToString())")
+                $("#" + key + "_statusLbl").css("color", "green");
+                $("#" + key + " .machine_icon").addClass("Online");
+                $("#" + key + " .machine_icon").removeClass("Offline");
+            } else if (status == intOffline) {
+                $("#" + key + "_statusLbl").text("@(MachineStatus.Offline.ToString())")
+                $("#" + key + "_statusLbl").css("color", "red");
+                $("#" + key + " .machine_icon").addClass("Offline");
+                $("#" + key + " .machine_icon").removeClass("Online");
+            }
+        }
+
+    </script>
+}

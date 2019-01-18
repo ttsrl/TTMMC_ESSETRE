@@ -1,0 +1,49 @@
+﻿@{
+    ViewData["Title"] = "Nuovo Stampo";
+}
+<h2>Nuovo Stampo</h2>
+<div class="content_page margin_bottom">
+    <form id="newMouldForm" asp-action="New" asp-controller="Mould" method="post" asp-antiforgery="true" enctype="multipart/form-data" autocomplete="off">
+        <label for="code" class="title">Codice:</label>
+        <input type="text" style="width:100px;" name="code" />
+        <br />
+        <label for="v" class="title">Descrizione:</label>
+        <input type="text" style="width:280px;" name="description" />
+        <br />
+        <label class="title">Locazione:</label>
+        <input type="text" style="width:81px;" name="location" />
+        <br />
+        <label for="master" class="title">Master:</label>
+        <input type="text" style="width:280px;" name="master" />
+        <br />
+        <label for="image" class="title">Immagine:</label>
+        <div style="display: inline-block; margin-bottom: 8px;">
+            <input type="file" style="width:280px;" name="image" id="imageInput" accept=".jpg, .png, .jpeg|images/*" />
+            <br />
+            <a href="#" onclick="return emptyImage();" style="margin-left:1px;top: -3px; position: relative;">Rimuovi</a>
+        </div>
+        <br />
+        <label for="notes" class="title">Note:</label>
+        <textarea style="width:280px; min-height:70px;" name="notes"></textarea>
+        <br />
+        <br />
+        <input type="submit" value="Aggiungi" />
+    </form>
+</div>
+
+<style>
+    #imageInput-error {
+        margin-left: 297px;
+    }
+</style>
+
+@section Scripts{
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script type="text/javascript">
+
+        var validation = $('#newMouldForm').validate();
+        validation.settings.rules = validateNewMouldRules;
+        validation.settings.messages = validateNewMouldMessages;
+
+    </script>
+}
