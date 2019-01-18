@@ -62,7 +62,7 @@ namespace TTMMC.Controllers
                 }
                 return RedirectToAction("Index");
             }
-            return RedirectToAction("Index", "Results", new { id = 2 });
+            return RedirectToAction("Index", "Error", new { id = 1 });
         }
 
         [HttpGet]
@@ -100,7 +100,7 @@ namespace TTMMC.Controllers
                 await _dB.SaveChangesAsync();
                 return RedirectToAction("Index");
             }
-            return RedirectToAction("Index", "Results", new { id = 3 });
+            return RedirectToAction("Index", "Error", new { id = 2 });
         }
 
         [HttpGet]

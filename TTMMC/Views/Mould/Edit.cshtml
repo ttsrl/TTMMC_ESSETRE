@@ -1,0 +1,62 @@
+﻿@model EditMouldViewModel
+@{
+    ViewData["Title"] = "Edit";
+}
+<h2>Modifica Stampo</h2>
+<div class="content_page margin_bottom">
+    <form id="editMouldForm" asp-action="Edit" asp-controller="Mould" method="post" asp-route-id="@Model.Mould.Id" enctype="multipart/form-data" asp-antiforgery="true" autocomplete="off">
+        <label for="code" class="title">Foto caricata:</label>
+        <div style="display: inline-block;  margin-bottom: 8px;">
+            <img src="/@(Model.Mould.Image)" style="width: 300px; height:auto; margin-top: 4px; margin-bottom:4px; border: 1px dashed rgba(0,0,0,0.15);" onerror="this.src ='/images/machinesDetails/default.jpg'" />
+            <br />
+            <a asp-action="DeleteImage" asp-controller="Mould" asp-route-id="@Model.Mould.Id" style="margin-left:1px;top: -3px; position: relative;">Rimuovi</a>
+        </div>
+        <br />
+        <label for="code" class="title">Codice:</label>
+        <input type="text" name="code" style="width:150px;" value="@Model.Mould.Code" />
+        <br />
+        <label for="client" class="title">Cliente Default:</label>
+        <select style="width:300px;" name="client" value="@Model.Mould.Client.Id">
+            <option value="">--</option>
+            @foreach (var c in Model.Clients)
+            {
+                <option asp-selected="@(Model.Mould.Client?.Id == c.Id)" value="@c.Id">@c.Name</option>
+            }
+        </select>
+        <br />
+        <label for="description" class="title">Descrizione:</label>
+        <input type="text" name="description" style="width:300px;" value="@Model.Mould.Description" />
+        <br />
+        <label for="location" class="title">Locazione:</label>
+        <input type="text" name="location" style="width:150px;" value="@Model.Mould.Location" />
+        <br />
+        <label for="image" class="title">Immagine:</label>
+        <div style="display: inline-block; margin-bottom: 8px;">
+            <input type="file" style="width:300px;" name="image" id="imageInput" accept=".jpg, .png, .jpeg|images/*" />
+            <br />
+            <a href="#" onclick="return emptyImage();" style="margin-left:1px;top: -3px; position: relative;">Rimuovi</a>
+        </div>
+        <br />
+        <label for="notes" class="title">Note:</label>
+        <textarea name="notes" style="width:300px; min-height:70px;">@Model.Mould.Notes</textarea>
+        <br />
+        <br />
+        <input type="submit" value="Modifica" />
+    </form>
+</div>
+
+@section Scripts{
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script type="text/javascript">
+
+        var validation = $('#editMouldForm').validate();
+        validation.settings.rules = validateNewMouldRules;
+        validation.settings.messages = validateNewMouldMessages;
+
+        function emptyImage() {
+            $("#imageInput").val(null);
+            return false;
+        }
+
+    </script>
+}

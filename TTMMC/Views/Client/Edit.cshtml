@@ -5,7 +5,7 @@
 }
 <h2>Modifica Cliente</h2>
 <div class="content_page margin_bottom">
-    <form id="editClientForm" asp-action="Edit" method="post" asp-route-id="@Model.Id" asp-antiforgery="true" autocomplete="off">
+    <form id="editClientForm" asp-action="Edit" asp-controller="Client" method="post" asp-route-id="@Model.Id" asp-antiforgery="true" autocomplete="off">
         <label asp-for="Name" class="title">Nome:</label>
         <input asp-for="Name" style="width: 259px;" />
         <br />

@@ -1,0 +1,37 @@
+﻿@model IndexMouldModel
+@{
+    ViewData["Title"] = "Stampi";
+}
+<h2>Stampi</h2>
+<div class="content_page margin_bottom">
+    <div style="margin-bottom: 15px; text-align: right;">
+        <label for="searchBar" style="width: 60px;">Cerca:</label>
+        <input type="text" id="txtSearch" value="" style="margin: 0 !important; width: 200px;" placeholder="Codice, Descriz, Posizione" onkeyup="filterSearch(event)" autocomplete="off" />
+    </div>
+    <table class="table">
+        <tr>
+            <td style="font-weight:bold; width:120px;">Codice</td>
+            <td style="font-weight:bold; width:250px;">Descrizione</td>
+            <td style="font-weight:bold; width:150px;">Posizione</td>
+            <td style="font-weight:bold; width:300px;">Note</td>
+            <td style="font-weight:bold; width:200px;">Azioni</td>
+        </tr>
+        @foreach (var it in Model.Moulds)
+        {
+            <tr>
+                <td style="font-weight:bold; padding-left:20px;">@it.Code</td>
+                <td>@it.Description</td>
+                <td style="font-size:12px;">@it.Location</td>
+                <td style="font-size:12px;">@((string.IsNullOrWhiteSpace(it.Notes) || string.IsNullOrEmpty(it.Notes)) ? "Nessuna nota" : it.Notes)</td>
+                <td>
+                    <a asp-action="Edit" asp-controller="Mould" asp-route-id="@it.Id">Modifica</a>
+                    &nbsp;-&nbsp;
+                    <a asp-action="Delete" asp-controller="Mould" asp-route-id="@it.Id" class="confirmDialog" data-msg="Sei sicuro di vuoler rimuovere questo stampo?" data-title="Conferma Eliminazione">Rimuovi</a>
+                </td>
+            </tr>
+        }
+        <tr asp-if="Model.Moulds.Count == 0">
+            <td colspan="3" style="text-align:center">Nessuno stampo prensente</td>
+        </tr>
+    </table>
+</div>

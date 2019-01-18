@@ -39,6 +39,7 @@
 
 var validateNewMouldRules = {
     'code': { required: true },
+    'client': { required: true },
     'description': { required: true },
     'location': { required: true },
     'master': { required: true },
@@ -46,8 +47,9 @@ var validateNewMouldRules = {
 };
 var validateNewMouldMessages = {
     'code': { required: "Inserisci un codice" },
+    'client': { required: "Inserisci un cliente" },
     'description': { required: "Inserisci una descrizione" },
-    'location': { required: "Inserisci il posto il cui si trova lo stampo" },
+    'location': { required: "Inserisci la posizione dello stampo" },
     'master': { required: "Definisci un master" },
     'image': { extension:"Estensione file non supportata", filesize: "Dimensione file superiore a 2MB" }
 };
