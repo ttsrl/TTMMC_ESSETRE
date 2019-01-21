@@ -69,7 +69,7 @@ namespace TTMMC.Controllers
                     }
                     var mould = new Mould
                     {
-                        Client = client,
+                        DefaultClient = client,
                         Image = (model.Image != null && model.Image.Length > 0) ? "mouldImages/" + newFileName : "",
                         Code = model.Code,
                         Description = model.Description,
@@ -86,7 +86,7 @@ namespace TTMMC.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var mould = await _dB.Moulds.Include(mm => mm.Client).FirstOrDefaultAsync(mm => mm.Id == id);
+            var mould = await _dB.Moulds.Include(mm => mm.DefaultClient).FirstOrDefaultAsync(mm => mm.Id == id);
             var clients = await _dB.Clients.ToListAsync();
             if (mould is Mould)
             {
@@ -127,7 +127,7 @@ namespace TTMMC.Controllers
                             fs.Flush();
                         }
                     }
-                    mould.Client = existClient;
+                    mould.DefaultClient = existClient;
                     mould.Code = code;
                     mould.Description = description;
                     mould.Image = (newFileName != "") ? "mouldImages/" + newFileName : mould.Image;

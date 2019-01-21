@@ -16,11 +16,11 @@
         <input type="text" name="code" style="width:150px;" value="@Model.Mould.Code" />
         <br />
         <label for="client" class="title">Cliente Default:</label>
-        <select style="width:300px;" name="client" value="@Model.Mould.Client.Id">
+        <select style="width:300px;" name="client" value="@Model.Mould.DefaultClient.Id">
             <option value="">--</option>
             @foreach (var c in Model.Clients)
             {
-                <option asp-selected="@(Model.Mould.Client?.Id == c.Id)" value="@c.Id">@c.Name</option>
+                <option asp-selected="@(Model.Mould.DefaultClient?.Id == c.Id)" value="@c.Id">@c.Name</option>
             }
         </select>
         <br />

@@ -1,0 +1,14 @@
+﻿@model NewLayoutViewModel
+@{
+    ViewData["Title"] = "Nuova Disposizione";
+}
+
+<h2>Nuova Disposizione</h2>
+<div class="content_page margin_bottom">
+    <form id="newLayoutForm" asp-action="New" asp-controller="Layout" asp-antiforgery="true" method="post" autocomplete="off">
+        <label for="" class="title"></label>
+        <input type="text" name="" />
+
+        <input type="submit" value="Aggiungi" /> 
+    </form>
+</div>

@@ -11,7 +11,8 @@ namespace TTMMC.Models.DBModels
 
         public int Id { get; set; }
         public string Code { get; set; }
-        public Client Client { get; set; }
+        public Client DefaultClient { get; set; }
+        public List<MixtureItem> DefaultMixture { get; set; }
         public string Description { get => _description; set => _description = value?.ToFirstCharUpper(); }
         public string Location { get => _location; set => _location = value?.ToUpper(); }
         public string Image { get; set; }
