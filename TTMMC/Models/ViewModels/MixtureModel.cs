@@ -8,6 +8,7 @@ namespace TTMMC.Models.ViewModels
 {
     public class IndexMixtureModel
     {
+        public List<Material> Materials { get; set; }
         public List<Mixture> Mixtures { get; set; }
     }
 }

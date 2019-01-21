@@ -21,11 +21,11 @@ body{
     }*/
 
 a, a:link, a:visited {
-    color: #4a85d8;
+    color: #4a85d8 !important;
     font-weight: bold;
-    text-decoration: none;
+    text-decoration: none !important;
     cursor: pointer;
-    outline: 0;
+    outline: 0 !important;
     font-size:12px;
 }
 

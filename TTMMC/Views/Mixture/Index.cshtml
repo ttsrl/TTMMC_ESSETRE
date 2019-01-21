@@ -1,0 +1,116 @@
+﻿@model IndexMixtureModel
+@{
+    ViewData["Title"] = "Miscele";
+}
+<h2>Miscele</h2>
+<div class="content_page margin_bottom">
+    <table class="table">
+        <tr>
+            <td style="font-weight:bold;">Nome</td>
+            <td style="font-weight:bold;">Componenti</td>
+            <td style="font-weight:bold;">Note</td>
+            <td style="font-weight:bold;">Azioni</td>
+        </tr>
+        @foreach (var it in Model.Mixtures)
+        {
+            <tr>
+                <td>@it.Name</td>
+                <td>
+                    @foreach (var m in it.Items)
+                    {
+                        <div>
+                            <label>@m.Quantity</label>
+                            <label>@m.Material.Name</label>
+                        </div>
+                    }
+                </td>
+                <td>@it.Notes</td>
+                <td>
+                    <a asp-action="Delete" asp-controller="Mixture" asp-route-id="@it.Id" class="confirmDialog" data-msg="Sei Sicuro di voler rimovere questo materiale?">Rimuovi</a>
+                </td>
+            </tr>
+        }
+    </table>
+    <br />
+    <div style="text-align: right;">
+        <input type="button" value="Aggiungi" onclick="return openAddMixtureDialog();" />
+    </div>
+</div>
+
+<div class="box" style="display:none;">
+    <form id="newMixtureForm" asp-action="New" asp-antiforgery="true" method="post" autocomplete="off">
+        <label style="width: 95px;display: inline-block;text-align: right;">Nome:</label>
+        <input type="text" name="name" style="width:220px" />
+        <br />
+        <label style="width: 95px;display: inline-block;text-align: right;">Componenti:</label>
+        <select id="listBoxMaterials" size="4" style="width:300px"></select>
+        <div id="listItems" style="display:none;"></div>
+        <div style="margin-left: 99px;">
+            <select id="addQuantity">
+                <option value="1" selected>1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+            </select>
+            <select id="addMaterial" style="width:238px">
+                <option value="" selected>--</option>
+                @foreach (var m in Model.Materials)
+                {
+                    <option value="@m.Id">@m.Name</option>
+                }
+            </select>
+            <a asp-action="" asp-controller="" onclick="return addMaterial();" style="font-size:16px;">+</a>
+        </div>
+        <input type="submit" style="display:none;" />
+    </form>
+</div>
+
+@section Scripts{
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script type="text/javascript">
+
+        //var countAddedMaterial = 0;
+
+        function openAddMixtureDialog() {
+            $('#listItems').empty();
+            $('#newMixtureForm').trigger("reset");
+            $("#newMixtureForm").dialog("open");
+            return false;
+        }
+
+        $("#newMixtureForm").dialog({
+            autoOpen: false,
+            title: "Aggiungi Miscela",
+            resizable: false,
+            draggable: false,
+            height: "auto",
+            width: 480,
+            modal: true,
+            create: function (event) {
+                $(event.target).parent().css({ 'position': 'fixed' });
+            },
+            buttons: {
+                "Conferma": function () {
+                    $("#newMixtureForm").submit();
+                },
+                "Annulla": function () {
+                    $(this).dialog("close");
+                }
+            }
+        });
+
+        function addMaterial() {
+            //var material = parseInt($("#addMaterial").val()) || 0;
+            //var matName = $("#addMaterial option:selected").html();
+            //var quantity = parseInt($("#addQuantity").val()) || 0;
+            //var app = "<input type='hidden' name='quantity[i_" + countAddedMaterial + "]' value='" + quantity + "' />";
+            //app += "<input type='hidden' name='materials[i_" + countAddedMaterial + "]' value='" + material + "' />";
+            //$("#listItems").append(app);
+            //$("#listBoxMaterials").append("<option value=''>" + quantity + " x " + matName + "</option>");
+            //countAddedMaterial++;
+            return false;
+        }
+
+    </script>
+}
