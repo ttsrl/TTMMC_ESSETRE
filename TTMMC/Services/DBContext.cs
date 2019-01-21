@@ -15,6 +15,7 @@ namespace TTMMC.Services
         public DbSet<Layout> Layouts { get; set; }
         public DbSet<MixtureItem> MixtureItems { get; set; }
         public DbSet<Master> Masters { get; set; }
+        public DbSet<Mixture> Mixtures { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

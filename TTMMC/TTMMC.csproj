@@ -29,6 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Views\Mixture\" />
     <Folder Include="wwwroot\mouldImages\" />
   </ItemGroup>
 
