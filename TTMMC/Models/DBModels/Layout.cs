@@ -23,7 +23,7 @@ namespace TTMMC.Models.DBModels
         public Client Client { get; set; }
         public Mould Mould { get; set; }
         public int Machine { get; set; }
-        public List<MixtureItem> Mixture { get; set; }
+        public Mixture Mixture { get; set; }
         public Master Master { get; set; }
         public int Quantity { get; set; }
         public string Minced { get; set; }

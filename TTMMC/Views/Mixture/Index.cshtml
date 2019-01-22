@@ -1,6 +1,8 @@
 ﻿@model IndexMixtureModel
 @{
     ViewData["Title"] = "Miscele";
+
+    var addMixtureHref = Url.Action("New", "Mixture");
 }
 <h2>Miscele</h2>
 <div class="content_page margin_bottom">
@@ -26,7 +28,7 @@
                 </td>
                 <td>@it.Notes</td>
                 <td>
-                    <a asp-action="" asp-controller="" >Modifica</a>
+                    <a asp-action="Edit" asp-controller="Mixture" asp-route-id="@it.Id" data-name="@it.Name" data-items="@JsonConvert.SerializeObject(it.Items)" data-notes="@it.Notes"  onclick="return openEditMixtureDialog(this);" >Modifica</a>
                     &nbsp;-&nbsp;
                     <a asp-action="Delete" asp-controller="Mixture" asp-route-id="@it.Id" class="confirmDialog" data-msg="Sei Sicuro di voler rimovere questo materiale?">Rimuovi</a>
                 </td>
@@ -35,14 +37,14 @@
     </table>
     <br />
     <div style="text-align: right;">
-        <input type="button" value="Aggiungi" onclick="return openAddMixtureDialog();" />
+        <input type="button" value="Aggiungi" onclick="return openAddMixtureDialog('@addMixtureHref');" />
     </div>
 </div>
 
 <div class="box" style="display:none;">
-    <form id="newMixtureForm" asp-action="New" asp-antiforgery="true" method="post" autocomplete="off">
+    <form id="mixtureForm" asp-antiforgery="true" method="post" autocomplete="off">
         <label style="width: 95px;display: inline-block;text-align: right;">Nome:</label>
-        <input type="text" name="name" style="width:220px" />
+        <input id="name" type="text" name="name" style="width:220px" />
         <br />
         <label style="width: 95px;display: inline-block;text-align: right;">Componenti:</label>
         <select name="components" id="listBoxMaterials" size="4" style="width:286px; height:70px; margin-bottom: 0px !important;"></select>
@@ -66,7 +68,7 @@
             <a asp-action="" asp-controller="" onclick="return addMaterial();" class="add" style="position:relative; top:5px;"></a>
         </div>
         <label style="width: 95px;display: inline-block;text-align: right;">Note:</label>
-        <textarea name="notes" style="width:286px; height:40px;"></textarea>
+        <textarea id="notes" name="notes" style="width:286px; height:40px;"></textarea>
         <input type="submit" style="display:none;" />
     </form>
 </div>
@@ -77,18 +79,47 @@
 
         var countAddedMaterial = 0;
         var matAdded = [];
-        var validation = $('#newMixtureForm').validate();
+
+        var validation = $('#mixtureForm').validate();
         validation.settings.rules = validateNewMixtureRules;
         validation.settings.messages = { 'name': { required: "", maxlength: "" }, 'components': { populated: "" } };
 
-        function openAddMixtureDialog() {
+        function openAddMixtureDialog(href) {
+            matAdded = [];
+            countAddedMaterial = 0;
+            $("#listBoxMaterials").empty();
             $('#listItems').empty();
-            $('#newMixtureForm').trigger("reset");
-            $("#newMixtureForm").dialog("open");
+            $('#mixtureForm').trigger("reset");
+            $("#mixtureForm").attr("action", href);
+            $("#mixtureForm").dialog("open");
             return false;
         }
 
-        $("#newMixtureForm").dialog({
+        function openEditMixtureDialog(obj) {
+            //dialog reset
+            matAdded = [];
+            countAddedMaterial = 0;
+            $("#listBoxMaterials").empty();
+            $('#listItems').empty();
+            $('#mixtureForm').trigger("reset");
+            //dialog get data
+            var nm = $(obj).attr("data-name") || "";
+            var items = $(obj).attr("data-items") || "";
+            items = JSON.parse(items);
+            var href = $(obj).attr("href");
+            var notes = $(obj).attr("data-notes") || "";
+            //dialog set data
+            $.each(items, function (k, obj) {
+                addItemMaterial(obj.Quantity, obj.Material.Id, obj.Material.Name);
+            });
+            $("#name").val(nm);
+            $("#notes").val(notes);
+            $("#mixtureForm").attr("action", href);
+            $("#mixtureForm").dialog("open");
+            return false;
+        }
+
+        $("#mixtureForm").dialog({
             autoOpen: false,
             title: "Aggiungi Miscela",
             resizable: false,
@@ -101,7 +132,7 @@
             },
             buttons: {
                 "Conferma": function () {
-                    $("#newMixtureForm").submit();
+                    $("#mixtureForm").submit();
                 },
                 "Annulla": function () {
                     $(this).dialog("close");
@@ -110,26 +141,37 @@
         });
 
         function addMaterial() {
-            
             var material = parseInt($("#addMaterial").val()) || 0;
             var matName = $("#addMaterial option:selected").html() || "";
             var quantity = parseInt($("#addQuantity").val()) || 0;
-            if (!matAdded.contains(matName)) {
-                var app = "<input type='hidden' class='it_" + countAddedMaterial + "' name='quantitys[it_" + countAddedMaterial + "]' value='" + quantity + "' />";
-                app += "<input type='hidden' class='it_" + countAddedMaterial + "' name='materials[it_" + countAddedMaterial + "]' value='" + material + "' />";
-                $("#listItems").append(app);
-                $("#listBoxMaterials").append("<option class='it_" + countAddedMaterial + "' value='it_" + countAddedMaterial + "'>" + quantity + " x " + matName + "</option>");
-                matAdded.push(matName);
-                countAddedMaterial++;
+            if (material != 0 && matName != "" && quantity != 0) {
+                if (!matAdded.contains(matName)) {
+                    $("#addMaterial").val("");
+                    addItemMaterial(quantity, material, matName);
+                } else {
+                    errorDialog("Errore", "Materiale già presente nella miscela");
+                }
             } else {
-                errorDialog("Errore", "Materiale già presente nella miscela");
+                alertDialog("Errore", "Inserire tutti i dati per poter aggiungere l'elemento");
             }
             return false;
         }
 
+        function addItemMaterial(quantity, materialId, matName) {
+            var app = "<input type='hidden' class='it_" + countAddedMaterial + "' name='quantitys[it_" + countAddedMaterial + "]' value='" + quantity + "' />";
+            app += "<input type='hidden' class='it_" + countAddedMaterial + "' name='materials[it_" + countAddedMaterial + "]' value='" + materialId + "' />";
+            $("#listItems").append(app);
+            $("#listBoxMaterials").append("<option class='it_" + countAddedMaterial + "' value='it_" + countAddedMaterial + "'>" + quantity + " x " + matName + "</option>");
+            matAdded.push(matName);
+            countAddedMaterial++;
+        }
+
         function removeMaterial() {
             var mat = $("#listBoxMaterials option:selected").val() || "";
+            var nm = $("#listBoxMaterials option:selected").html().toString() || "";
+            nm = nm.substr(nm.indexOf("x") + 2);
             if (mat != "") {
+                matAdded.remove(nm);
                 $("." + mat).remove();
             }
             return false;

@@ -22,13 +22,11 @@ namespace TTMMC.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            //var mix = await _dB.Mixtures
-            //    .Include(mx => mx.Items)
-            //        .ThenInclude(i => i.Material)
-            //    .ToListAsync();
+            var mix = await _dB.Mixtures
+                .Include(mx => mx.Items)
+                    .ThenInclude(i => i.Material)
+                .ToListAsync();
             var ms = await _dB.Materials.ToListAsync();
-            var mix = new List<Mixture>();
-            mix.Add(new Mixture { Name = "prova", Notes = "prova prova prova prova prova prova prova", Items = new List<MixtureItem> { new MixtureItem { Material = ms.Where(m => m.Id == 1).FirstOrDefault(), Quantity = 1 }, new MixtureItem { Material = ms.Where(m => m.Id == 2).FirstOrDefault(), Quantity = 2 } } });
             var model = new IndexMixtureModel
             {
                 Materials = ms,
@@ -74,6 +72,69 @@ namespace TTMMC.Controllers
         [HttpGet]
         public async Task<IActionResult> Delete(int id)
         {
+            if(id != 0)
+            {
+                var mixt = await _dB.Mixtures
+                           .Include(m => m.Items)
+                               .ThenInclude(it => it.Material)
+                           .Where(m => m.Id == id)
+                           .FirstOrDefaultAsync();
+                if(mixt is Mixture)
+                {
+                    _dB.MixtureItems.RemoveRange(mixt.Items);
+                    _dB.Mixtures.Remove(mixt);
+                    await _dB.SaveChangesAsync();
+                }
+            }
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, string name, Dictionary<string, int> quantitys, Dictionary<string, int> materials, string notes)
+        {
+            if (id != 0 && !string.IsNullOrEmpty(name) && quantitys.Count > 0 && materials.Count > 0 && quantitys.Count == materials.Count)
+            {
+                var mixt = await _dB.Mixtures
+                            .Include(m => m.Items)
+                                .ThenInclude(it => it.Material)
+                            .Where(m => m.Id == id)
+                            .FirstOrDefaultAsync();
+                var mats = await _dB.Materials.ToListAsync();
+                if (mixt is Mixture && mats != null && mats.Count > 0)
+                {
+                    var items = new List<MixtureItem>();
+                    foreach (var q in quantitys)
+                    {
+                        var mat = mats.Where(m => m.Id == materials[q.Key]).FirstOrDefault();
+                        var contains = mixt.Items.Select(i => new { i.Material, i.Quantity }).Where(i => i.Material == mat && i.Quantity == q.Value).Count() > 0 ? true : false;
+                        if (contains)
+                        {
+                            items.Add(mixt.Items.Find(i => i.Quantity == q.Value && i.Material == mat));
+                        }
+                        else
+                        {
+                            var it = new MixtureItem
+                            {
+                                Quantity = q.Value,
+                                Material = mat
+                            };
+                            items.Add(it);
+                        }
+                    }
+                    foreach (var it in mixt.Items)
+                    {
+                        if (!items.Contains(it))
+                        {
+                            _dB.MixtureItems.Remove(it);
+                        }
+                    }
+                    mixt.Name = name;
+                    mixt.Items = items;
+                    mixt.Notes = notes;
+                    await _dB.SaveChangesAsync();
+                }
+            }
             return RedirectToAction("Index");
         }
     }
