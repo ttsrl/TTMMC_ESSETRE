@@ -6,26 +6,28 @@
 <div class="content_page margin_bottom">
     <table class="table">
         <tr>
-            <td style="font-weight:bold;">Nome</td>
-            <td style="font-weight:bold;">Componenti</td>
-            <td style="font-weight:bold;">Note</td>
-            <td style="font-weight:bold;">Azioni</td>
+            <td style="font-weight:bold; width:150px">Nome</td>
+            <td style="font-weight:bold; width:300px">Componenti</td>
+            <td style="font-weight:bold; width:315px">Note</td>
+            <td style="font-weight:bold; width:135px">Azioni</td>
         </tr>
         @foreach (var it in Model.Mixtures)
         {
             <tr>
-                <td>@it.Name</td>
+                <td><b>@it.Name</b></td>
                 <td>
                     @foreach (var m in it.Items)
                     {
                         <div>
-                            <label>@m.Quantity</label>
-                            <label>@m.Material.Name</label>
+                            <label style="font-weight: normal;">@m.Quantity</label>&nbsp;
+                            <label style="display: inline-block; max-width: 250px; text-overflow: ellipsis; font-weight: normal;">@m.Material.Name</label>
                         </div>
                     }
                 </td>
                 <td>@it.Notes</td>
                 <td>
+                    <a asp-action="" asp-controller="" >Modifica</a>
+                    &nbsp;-&nbsp;
                     <a asp-action="Delete" asp-controller="Mixture" asp-route-id="@it.Id" class="confirmDialog" data-msg="Sei Sicuro di voler rimovere questo materiale?">Rimuovi</a>
                 </td>
             </tr>
@@ -43,25 +45,28 @@
         <input type="text" name="name" style="width:220px" />
         <br />
         <label style="width: 95px;display: inline-block;text-align: right;">Componenti:</label>
-        <select id="listBoxMaterials" size="4" style="width:300px"></select>
+        <select name="components" id="listBoxMaterials" size="4" style="width:286px; height:70px; margin-bottom: 0px !important;"></select>
+        <a asp-action="" asp-controller="" onclick="return removeMaterial();" class="remove" style="vertical-align: top; top: 5px; position: relative;"></a>
         <div id="listItems" style="display:none;"></div>
-        <div style="margin-left: 99px;">
-            <select id="addQuantity">
+        <div style="margin-left: 99px; height:39px;">
+            <select id="addQuantity" style="margin-top: 0px !important;">
                 <option value="1" selected>1</option>
                 <option value="2">2</option>
                 <option value="3">3</option>
                 <option value="4">4</option>
                 <option value="5">5</option>
             </select>
-            <select id="addMaterial" style="width:238px">
+            <select id="addMaterial" style="width:238px; margin-top: 0px !important;">
                 <option value="" selected>--</option>
                 @foreach (var m in Model.Materials)
                 {
                     <option value="@m.Id">@m.Name</option>
                 }
             </select>
-            <a asp-action="" asp-controller="" onclick="return addMaterial();" style="font-size:16px;">+</a>
+            <a asp-action="" asp-controller="" onclick="return addMaterial();" class="add" style="position:relative; top:5px;"></a>
         </div>
+        <label style="width: 95px;display: inline-block;text-align: right;">Note:</label>
+        <textarea name="notes" style="width:286px; height:40px;"></textarea>
         <input type="submit" style="display:none;" />
     </form>
 </div>
@@ -70,7 +75,11 @@
     @await Html.PartialAsync("_ValidationScriptsPartial")
     <script type="text/javascript">
 
-        //var countAddedMaterial = 0;
+        var countAddedMaterial = 0;
+        var matAdded = [];
+        var validation = $('#newMixtureForm').validate();
+        validation.settings.rules = validateNewMixtureRules;
+        validation.settings.messages = { 'name': { required: "", maxlength: "" }, 'components': { populated: "" } };
 
         function openAddMixtureDialog() {
             $('#listItems').empty();
@@ -101,14 +110,28 @@
         });
 
         function addMaterial() {
-            //var material = parseInt($("#addMaterial").val()) || 0;
-            //var matName = $("#addMaterial option:selected").html();
-            //var quantity = parseInt($("#addQuantity").val()) || 0;
-            //var app = "<input type='hidden' name='quantity[i_" + countAddedMaterial + "]' value='" + quantity + "' />";
-            //app += "<input type='hidden' name='materials[i_" + countAddedMaterial + "]' value='" + material + "' />";
-            //$("#listItems").append(app);
-            //$("#listBoxMaterials").append("<option value=''>" + quantity + " x " + matName + "</option>");
-            //countAddedMaterial++;
+            
+            var material = parseInt($("#addMaterial").val()) || 0;
+            var matName = $("#addMaterial option:selected").html() || "";
+            var quantity = parseInt($("#addQuantity").val()) || 0;
+            if (!matAdded.contains(matName)) {
+                var app = "<input type='hidden' class='it_" + countAddedMaterial + "' name='quantitys[it_" + countAddedMaterial + "]' value='" + quantity + "' />";
+                app += "<input type='hidden' class='it_" + countAddedMaterial + "' name='materials[it_" + countAddedMaterial + "]' value='" + material + "' />";
+                $("#listItems").append(app);
+                $("#listBoxMaterials").append("<option class='it_" + countAddedMaterial + "' value='it_" + countAddedMaterial + "'>" + quantity + " x " + matName + "</option>");
+                matAdded.push(matName);
+                countAddedMaterial++;
+            } else {
+                errorDialog("Errore", "Materiale già presente nella miscela");
+            }
+            return false;
+        }
+
+        function removeMaterial() {
+            var mat = $("#listBoxMaterials option:selected").val() || "";
+            if (mat != "") {
+                $("." + mat).remove();
+            }
             return false;
         }
 

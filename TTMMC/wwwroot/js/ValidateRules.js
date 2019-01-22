@@ -121,3 +121,8 @@ var validateMaterialRules = {
 var validateMaterialMessages = {
     'name': { required: "" }
 };
+
+var validateNewMixtureRules = {
+    'name': { required: true, maxlength: 22 },
+    'components': { populated: true }
+};

@@ -83,6 +83,26 @@ function infoDialog(title, msg) {
     });
 }
 
+function errorDialog(title, msg) {
+    var dialog = $("<div id='errorDialog'><div class='errorMsgDialog'><img class='errorIconDialog' src='/images/errorIcon.png' /><span>" + msg + "</span></div></div>");
+    $(dialog).dialog({
+        title: title,
+        resizable: false,
+        draggable: false,
+        height: "auto",
+        width: 360,
+        modal: true,
+        create: function (event) {
+            $(event.target).parent().css({ 'position': "fixed" });
+        },
+        buttons: {
+            "OK": function () {
+                $(this).dialog("close");
+            }
+        }
+    });
+}
+
 $(document).ready(function () {
 
     $("script.inject-json").each(function (i, e) {
