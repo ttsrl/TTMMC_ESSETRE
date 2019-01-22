@@ -40,6 +40,7 @@
 var validateNewMouldRules = {
     'code': { required: true },
     'client': { required: true },
+    'mixture': { required: true },
     'description': { required: true },
     'location': { required: true },
     'master': { required: true },
@@ -47,7 +48,8 @@ var validateNewMouldRules = {
 };
 var validateNewMouldMessages = {
     'code': { required: "Inserisci un codice" },
-    'client': { required: "Inserisci un cliente" },
+    'client': { required: "Inserisci un cliente di default" },
+    'mixture': { required: "Inserisci una miscela di default" },
     'description': { required: "Inserisci una descrizione" },
     'location': { required: "Inserisci la posizione dello stampo" },
     'master': { required: "Definisci un master" },

@@ -18,9 +18,15 @@
         </select>
         <br />
         <label for="mixture" class="title">Miscela Default:</label>
-        <select name="" style="width: 280px;">
-
+        <select name="mixture" style="width: 280px;" onchange="viewMixtureDetails(this);">
+            <option value="">--</option>
+            @foreach (var m in Model.Mixtures)
+            {
+                var c = m.Items.Select(it => it.Quantity.ToString() + " " + it.Material.Name).Aggregate<string>((i, j) => i + " + " + j);
+                <option value="@m.Id" title="@c">@m.Name</option>
+            }
         </select>
+        <div id="mixtureDetails" style="width: 500px; margin-left: 125px; font-size: 12px; font-weight: normal;"></div>
         <br />
         <label for="description" class="title">Descrizione:</label>
         <input type="text" style="width:280px;" name="description" />
@@ -60,6 +66,15 @@
         function emptyImage() {
             $("#imageInput").val(null);
             return false;
+        }
+
+        function viewMixtureDetails(obj) {
+            $("#mixtureDetails").empty();
+            var val = $(obj).find("option:selected").attr("title") || "";
+            if (val == "") {
+            } else {
+                $("#mixtureDetails").append("<label style='margin: 0px !important;'>" + val + "</label>");
+            }
         }
 
     </script>

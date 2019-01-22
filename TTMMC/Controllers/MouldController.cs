@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Net.Http.Headers;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
@@ -29,7 +31,10 @@ namespace TTMMC.Controllers
         [HttpGet]
         public async Task<IActionResult> Index()
         {
-            var moulds = await _dB.Moulds.ToListAsync();
+            var moulds = await _dB.Moulds
+                .Include(m => m.DefaultClient)
+                .Include(m => m.DefaultMixture)
+                .ToListAsync();
             var model = new IndexMouldModel { Moulds = moulds };
             return View(model);
         }
@@ -38,8 +43,13 @@ namespace TTMMC.Controllers
         public async Task<IActionResult> New()
         {
             var clients = await _dB.Clients.ToListAsync();
+            var mixtures = await _dB.Mixtures
+                .Include(mm => mm.Items)
+                    .ThenInclude(it => it.Material)
+                .ToListAsync();
             var m = new NewMouldViewModel
             {
+                Mixtures = mixtures,
                 Clients = clients
             };
             return View(m);
@@ -53,7 +63,8 @@ namespace TTMMC.Controllers
             {
                 var existMould = await _dB.Moulds.FirstOrDefaultAsync(m => m.Code == model.Code);
                 var client = await _dB.Clients.FindAsync(model.Client);
-                if (client is Client && existMould == null)
+                var mixture = await _dB.Mixtures.FindAsync(model.Mixture);
+                if (mixture is Mixture && client is Client && existMould == null)
                 {
                     var newFileName = "";
                     if (model.Image != null && model.Image.Length > 0) //se è presente un'immagine
@@ -70,6 +81,7 @@ namespace TTMMC.Controllers
                     var mould = new Mould
                     {
                         DefaultClient = client,
+                        DefaultMixture = mixture,
                         Image = (model.Image != null && model.Image.Length > 0) ? "mouldImages/" + newFileName : "",
                         Code = model.Code,
                         Description = model.Description,
@@ -86,12 +98,20 @@ namespace TTMMC.Controllers
         [HttpGet]
         public async Task<IActionResult> Edit(int id)
         {
-            var mould = await _dB.Moulds.Include(mm => mm.DefaultClient).FirstOrDefaultAsync(mm => mm.Id == id);
+            var mould = await _dB.Moulds
+                .Include(mm => mm.DefaultClient)
+                .Include(mm => mm.DefaultMixture)
+                .FirstOrDefaultAsync(mm => mm.Id == id);
             var clients = await _dB.Clients.ToListAsync();
+            var mixtures = await _dB.Mixtures
+                .Include(mm => mm.Items)
+                    .ThenInclude(it => it.Material)
+                .ToListAsync();
             if (mould is Mould)
             {
                 var m = new EditMouldViewModel
                 {
+                    Mixtures = mixtures,
                     Clients = clients,
                     Mould = mould
                 };
@@ -102,13 +122,14 @@ namespace TTMMC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, string code, int client, string description, string location, IFormFile image, string notes)
+        public async Task<IActionResult> Edit(int id, string code, int client, int mixture, string description, string location, IFormFile image, string notes)
         {
             if (ModelState.IsValid)
             {
                 var mould = await _dB.Moulds.FirstOrDefaultAsync(m => m.Id == id);
-                var existClient = await _dB.Clients.FirstOrDefaultAsync(c => c.Id == id);
-                if (mould is Mould && existClient is Client)
+                var existClient = await _dB.Clients.FirstOrDefaultAsync(c => c.Id == client);
+                var mix = await _dB.Mixtures.FirstOrDefaultAsync(m => m.Id == mixture);
+                if (mix is Mixture && mould is Mould && existClient is Client)
                 {
                     var urlImg = (mould.Image == "" || mould.Image == null) ? "" : Path.Combine(_environment.WebRootPath, "mouldImages") + $@"\{mould.Image.Replace("mouldImages/", "")}";
                     var newFileName = "";
@@ -127,6 +148,7 @@ namespace TTMMC.Controllers
                             fs.Flush();
                         }
                     }
+                    mould.DefaultMixture = mix;
                     mould.DefaultClient = existClient;
                     mould.Code = code;
                     mould.Description = description;
