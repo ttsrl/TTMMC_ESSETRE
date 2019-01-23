@@ -8,6 +8,16 @@ namespace TTMMC.Utils
 {
     public static class Extensions
     {
+        public static string ToTrim(this string input)
+        {
+            switch (input)
+            {
+                case null: return "";
+                case "": return "";
+                default: return input.Trim(new char[] { ' ' });
+            }
+        }
+
         public static int ToInt(this char c)
         {
             return c - '0';

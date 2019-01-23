@@ -23,6 +23,9 @@
                 </td>
             </tr>
         }
+        <tr asp-if="Model.Materials.Count == 0">
+            <td colspan="4" style="text-align:center">Nessuno stampo prensente</td>
+        </tr>
     </table>
     <br />
     <div style="text-align: right;">

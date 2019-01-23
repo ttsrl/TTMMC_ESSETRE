@@ -1,7 +1,9 @@
 ﻿@model Client
 @{
     ViewData["Title"] = "Modifica Cliente";
-    var optionAdress = Model.Address.Split(new char[] { ' ' });
+    var optionAddress = Model.Address.Substring(0, Model.Address.IndexOf(" "));
+    var numberAddress = Model.Address.Substring(Model.Address.IndexOf(",") + 2);
+    var streetAddress = Model.Address.Substring(Model.Address.IndexOf(" ") + 1, Model.Address.IndexOf(",") - Model.Address.IndexOf(" ") - 1);
 }
 <h2>Modifica Cliente</h2>
 <div class="content_page margin_bottom">
@@ -32,14 +34,14 @@
         <br />
         <label asp-for="Address" class="title">Indirizzo:</label>
         <select id="addressStreetMode" name="addressStreetMode" style="width: 75px !important;" onchange="writeAddress()">
-            <option asp-selected="@(optionAdress[0] == "Via")" value="Via">Via</option>
-            <option asp-selected="@(optionAdress[0] == "Piazza")" value="Piazza">Piazza</option>
-            <option asp-selected="@(optionAdress[0] == "Viale")" value="Viale">Viale</option>
+            <option asp-selected="@(optionAddress == "Via")" value="Via">Via</option>
+            <option asp-selected="@(optionAddress == "Piazza")" value="Piazza">Piazza</option>
+            <option asp-selected="@(optionAddress == "Viale")" value="Viale">Viale</option>
         </select>
-        <input type="text" style="width:180px;" id="addressStreet" name="addressStreet" value="@(optionAdress[1].Substring(0, optionAdress[1].Length - 1))" oninput="writeAddress()" />
+        <input type="text" style="width:180px;" id="addressStreet" name="addressStreet" value="@streetAddress" oninput="writeAddress()" />
         <br />
         <label asp-for="Address" class="title">N°:</label>
-        <input type="text" id="addressNumber" name="addressNumber" style="width: 75px;" value="@(optionAdress[2])" oninput="writeAddress()" />
+        <input type="text" id="addressNumber" name="addressNumber" style="width: 75px;" value="@numberAddress" oninput="writeAddress()" />
         <input asp-for="Address" type="hidden" style="display:none;" />
         <br />
         <label asp-for="Phone" class="title">Telefono:</label>
@@ -52,7 +54,7 @@
         <input asp-for="PEC" style="text-transform: lowercase;width: 259px;" />
         <br />
         <br />
-        <input type="submit" value="Aggiungi" />
+        <input type="submit" value="Salva" />
     </form>
 </div>
 

@@ -28,12 +28,15 @@
                 </td>
                 <td>@it.Notes</td>
                 <td>
-                    <a asp-action="Edit" asp-controller="Mixture" asp-route-id="@it.Id" data-name="@it.Name" data-items="@JsonConvert.SerializeObject(it.Items)" data-notes="@it.Notes"  onclick="return openEditMixtureDialog(this);" >Modifica</a>
+                    <a asp-action="Edit" asp-controller="Mixture" asp-route-id="@it.Id" data-name="@it.Name" data-items="@JsonConvert.SerializeObject(it.Items)" data-notes="@it.Notes" onclick="return openEditMixtureDialog(this);">Modifica</a>
                     &nbsp;-&nbsp;
                     <a asp-action="Delete" asp-controller="Mixture" asp-route-id="@it.Id" class="confirmDialog" data-msg="Sei Sicuro di voler rimovere questo materiale?">Rimuovi</a>
                 </td>
             </tr>
         }
+        <tr asp-if="Model.Mixtures.Count == 0">
+            <td colspan="4" style="text-align:center">Nessuno stampo prensente</td>
+        </tr>
     </table>
     <br />
     <div style="text-align: right;">

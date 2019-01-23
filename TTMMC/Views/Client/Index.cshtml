@@ -11,10 +11,11 @@
     </div>
     <table class="table">
         <tr>
-            <td style="font-weight:bold; width:200px;">Codice</td>
-            <td style="font-weight:bold; width:370px;">Nome</td>
-            <td style="font-weight:bold; width:195px;">Partita I.V.A</td>
-            <td style="font-weight:bold; width:135px;">Azioni</td>
+            <td style="font-weight:bold; width:130px;">Codice</td>
+            <td style="font-weight:bold; width:390px;">Nome</td>
+            <td style="font-weight:bold; width:120px;">Partita I.V.A</td>
+            <td style="font-weight:bold; width:120px;">Telefono</td>
+            <td style="font-weight:bold; width:140px;">Azioni</td>
         </tr>
         @foreach (var c in Model.Clients)
         {
@@ -22,6 +23,7 @@
                 <td style="padding-left:20px;"><b>@c.Code</b></td>
                 <td>@c.Name</td>
                 <td>@c.VAT</td>
+                <td>@c.Phone</td>
                 <td>
                     <a asp-action="Edit" asp-controller="Client" asp-route-id="@c.Id">Modifica</a>
                     &nbsp;-&nbsp;
@@ -30,7 +32,7 @@
             </tr>
         }
         <tr asp-if="Model.Clients.Count == 0">
-            <td colspan="3" style="text-align:center">Nessun cliente presente.</td>
+            <td colspan="5" style="text-align:center">Nessun cliente presente.</td>
         </tr>
     </table>
 </div>

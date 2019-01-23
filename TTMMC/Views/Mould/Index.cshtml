@@ -18,7 +18,7 @@
         </tr>
         @foreach (var it in Model.Moulds)
         {
-            <tr>
+            <tr id="@it.Code">
                 <td style="font-weight:bold; padding-left:20px;">@it.Code</td>
                 <td>@it.Description</td>
                 <td style="font-size:12px;">@it.Location</td>
@@ -31,7 +31,44 @@
             </tr>
         }
         <tr asp-if="Model.Moulds.Count == 0">
-            <td colspan="3" style="text-align:center">Nessuno stampo prensente</td>
+            <td colspan="5" style="text-align:center">Nessuno stampo prensente</td>
         </tr>
     </table>
 </div>
+
+@section Scripts{
+    <script class="inject-json" data-name="moulds" type="application/json">
+        @Html.Raw(JsonConvert.SerializeObject(Model.Moulds))
+    </script>
+    <script type="text/javascript">
+
+        function filterSearch(e) {
+            var val = e.currentTarget.value;
+            var words = val.split(' ');
+            for (var i = 0; i < words.length; i++) {
+                var word = words[i].toLowerCase();
+                $(moulds).each(function (index, item) {
+                    var bc = item.Code.toLowerCase();
+                    var name = item.Description.toLowerCase();
+                    var vat = item.Location.toLowerCase();
+                    if (i == 0) {
+                        if ((bc.indexOf(word) >= 0) || (name.indexOf(word) >= 0) || (vat.indexOf(word) >= 0)) {
+                            $("#" + bc).css("display", "");
+                        } else {
+                            $("#" + bc).css("display", "none");
+                        }
+                    } else {
+                        if ($("#" + bc).css("display") != "none") {
+                            if ((bc.indexOf(word) >= 0) || (name.indexOf(word) >= 0) || (vat.indexOf(word) >= 0)) {
+                                $("#" + bc).css("display", "");
+                            } else {
+                                $("#" + bc).css("display", "none");
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+    </script>
+}
