@@ -199,6 +199,46 @@ a.add:hover, a.remove:hover {
         padding-bottom: 50px !important;
     }
 
+    /* -------------------- error page ------------------*/
+
+#errorPage {
+    width: 560px;
+    margin: 90px auto;
+    overflow: auto;
+}
+
+    #errorPage img {
+        width: 170px;
+        float: left;
+    }
+
+    #errorPage h2 {
+        width: 350px;
+        text-decoration: none;
+        float: left;
+        margin-left: 20px;
+        margin-top: 25px;
+        font-size: 35px;
+    }
+
+    #errorPage label {
+        float: left;
+        width: 350px;
+        margin-left: 20px;
+        margin-top: 10px;
+        font-size: 14px;
+        color: #757575;
+        position: relative;
+    }
+
+    #errorPage ul {
+        float: left;
+        margin: 2px 0px 0px 20px;
+        font-size: 14px;
+        color: #757575;
+        position: relative;
+    }
+
 /*--------------------------- MENU -------------------------*/
 #menuBar {
     display: inline-block;

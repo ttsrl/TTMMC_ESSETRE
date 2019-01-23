@@ -1,22 +1,22 @@
 ﻿@model ErrorViewModel
 @{
-    ViewData["Title"] = "Error";
+    Layout = "_Layout";
+    ViewData["Title"] = "Error " + Model.Code;
 }
 
-<h1 class="text-danger">Error.</h1>
-<h2 class="text-danger">An error occurred while processing your request.</h2>
-
-@if (Model.ShowRequestId)
-{
-    <p>
-        <strong>Request ID:</strong> <code>@Model.RequestId</code>
-    </p>
-}
-
-<h3>Development Mode</h3>
-<p>
-    Swapping to <strong>Development</strong> environment will display more detailed information about the error that occurred.
-</p>
-<p>
-    <strong>Development environment should not be enabled in deployed applications</strong>, as it can result in sensitive information from exceptions being displayed to end users. For local debugging, development environment can be enabled by setting the <strong>ASPNETCORE_ENVIRONMENT</strong> environment variable to <strong>Development</strong>, and restarting the application.
-</p>
+<div class="contentPage" style="width:auto !important;">
+    <div id="errorPage">
+        <img src="~/images/webError.png" />
+        <h2 class="text-danger">Errore @Model.Code</h2>
+        <label style="font-size:17px; font-weight:bold; color:rgb(80,80,80); margin-top:0px;">Questa pagina è inaccessibile oppure non esiste.</label>
+        <br />
+        <label style="margin-top:20px;">Si prega di:</label>
+        <ul>
+            <li>Ritentare più tardi</li>
+            <li>Controllare che l'indirizzo sia corretto</li>
+            <li>Controllare che si sia correttamente loggati </li>
+        </ul>
+        <br />
+        <label>Se l'errore persiste di prega di contattare l'assistenza</label>
+    </div>
+</div>

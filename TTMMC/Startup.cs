@@ -33,11 +33,14 @@ namespace TTMMC
             {
                 app.UseBrowserLink();
                 app.UseDeveloperExceptionPage();
+                app.UseDatabaseErrorPage();
             }
             else
             {
                 app.UseExceptionHandler("/Home/Error");
             }
+
+            app.UseStatusCodePagesWithReExecute("/Home/Error/{0}");
 
             app.UseStaticFiles();
 
