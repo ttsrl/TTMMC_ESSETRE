@@ -94,31 +94,32 @@
             $('#listItems').empty();
             $('#mixtureForm').trigger("reset");
             $("#mixtureForm").attr("action", href);
-            $("#mixtureForm").dialog("open");
+            $("#mixtureForm").dialog({ title: "Aggiungi Miscela" }).dialog("open");
             return false;
         }
 
         function openEditMixtureDialog(obj) {
-            //dialog reset
+            //reset
             matAdded = [];
             countAddedMaterial = 0;
             $("#listBoxMaterials").empty();
             $('#listItems').empty();
             $('#mixtureForm').trigger("reset");
-            //dialog get data
+            //get data
             var nm = $(obj).attr("data-name") || "";
             var items = $(obj).attr("data-items") || "";
             items = JSON.parse(items);
             var href = $(obj).attr("href");
             var notes = $(obj).attr("data-notes") || "";
-            //dialog set data
+            //set data
             $.each(items, function (k, obj) {
                 addItemMaterial(obj.Quantity, obj.Material.Id, obj.Material.Name);
             });
             $("#name").val(nm);
             $("#notes").val(notes);
             $("#mixtureForm").attr("action", href);
-            $("#mixtureForm").dialog("open");
+            //open
+            $("#mixtureForm").dialog({title: "Modifica Miscela"}).dialog("open");
             return false;
         }
 

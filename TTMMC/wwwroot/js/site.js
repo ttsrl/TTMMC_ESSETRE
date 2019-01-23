@@ -103,6 +103,24 @@ function errorDialog(title, msg) {
     });
 }
 
+function componentToHex(c) {
+    var hex = c.toString(16);
+    return hex.length === 1 ? "0" + hex : hex;
+}
+
+function rgbToHex(r, g, b) {
+    return "#" + componentToHex(r) + componentToHex(g) + componentToHex(b);
+}
+
+function hexToRgb(hex) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : null;
+}
+
 $(document).ready(function () {
 
     $("script.inject-json").each(function (i, e) {
@@ -147,6 +165,34 @@ $(document).ready(function () {
                 },
                 "Annulla": function () {
                     $(this).dialog("close");
+                }
+            }
+        });
+    });
+
+    $(".colorWindow").each(function () {
+        $(this).minicolors({
+            control: $(this).attr("data-control") || "hue",
+            defaultValue: $(this).attr("data-defaultvalue") || "",
+            format: $(this).attr("data-format") || "hex",
+            keywords: $(this).attr("data-keywords") || "",
+            inline: $(this).attr("data-inline") === "true",
+            letterCase: $(this).attr("data-lettercase") || "lowercase",
+            opacity: $(this).attr("data-opacity"),
+            position: $(this).attr("data-position") || "bottom left",
+            swatches: $(this).attr("data-swatches") ? $(this).attr("data-swatches").split("|") : [],
+            change: function (value, opacity) {
+
+                var val1 = $(this).attr("data-rewritergb") || "true";
+                var val2 = $(this).attr("data-rewritehex") || "true";
+                var rewritergb = val1.toLowerCase() === "true" ? true : false;
+                var rewritehex = val2.toLowerCase() === "true" ? true : false;
+
+                if (rewritergb) {
+                    $(".colorRGB").val(hexToRgb(value).r + "," + hexToRgb(value).g + "," + hexToRgb(value).b);
+                }
+                if (rewritehex) {
+                    $(".colorHEX").val(value);
                 }
             }
         });

@@ -47,26 +47,34 @@ namespace TTMMC.Controllers
                     };
                     await _dB.Materials.AddAsync(material);
                     await _dB.SaveChangesAsync();
+                    return RedirectToAction("Index");
                 }
+                return RedirectToAction("Index", "Error", new { id = 7 });
             }
-            return RedirectToAction("Index", "Material");
+            return RedirectToAction("Index");
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, string name, string description)
         {
-            var material = await _dB.Materials.FindAsync(id);
-            if (material is Material)
+            if (id != 0 && !string.IsNullOrEmpty(name))
             {
-                if (!string.IsNullOrEmpty(name))
+                var material = await _dB.Materials.FindAsync(id);
+                if (material is Material)
                 {
-                    material.Name = name;
-                    material.Description = description;
-                    await _dB.SaveChangesAsync();
+                    var mC = await _dB.Materials.Where(m => m.Name == name.ToFirstCharUpper() && m.Id != id).CountAsync();
+                    if (mC == 0)
+                    {
+                        material.Name = name;
+                        material.Description = description;
+                        await _dB.SaveChangesAsync();
+                        return RedirectToAction("Index");
+                    }
                 }
+                return RedirectToAction("Index", "Error", new { id = 8 });
             }
-            return RedirectToAction("Index", "Material");
+            return RedirectToAction("Index");
         }
 
         [HttpGet]
@@ -78,7 +86,7 @@ namespace TTMMC.Controllers
                 _dB.Materials.Remove(material);
                 await _dB.SaveChangesAsync();
             }
-            return RedirectToAction("Index", "Material");
+            return RedirectToAction("Index");
         }
 
 

@@ -8,7 +8,7 @@ namespace TTMMC.Models.DBModels
         private string _description = "";
 
         public int Id { get; set; }
-        public string Name { get => _name; set => _name = value?.ToFirstCharUpper(); }
-        public string Description { get => _description; set => _description = value?.ToFirstCharUpper(); }
+        public string Name { get => _name; set => _name = value?.ToTrim().ToFirstCharUpper(); }
+        public string Description { get => _description; set => _description = value?.ToTrim().ToFirstCharUpper(); }
     }
 }

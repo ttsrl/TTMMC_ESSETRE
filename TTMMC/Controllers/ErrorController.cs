@@ -24,6 +24,30 @@ namespace TTMMC.Controllers
             {
                 txt = "Errore imprevisto. Impossibile modificare lo stampo";
             }
+            else if (id == 5)
+            {
+                txt = "Errore imprevisto. Impossibile aggiungere il master";
+            }
+            else if (id == 6)
+            {
+                txt = "Errore imprevisto. Impossibile modificare il master";
+            }
+            else if (id == 7)
+            {
+                txt = "Errore imprevisto. Impossibile aggiungere il materiale";
+            }
+            else if (id == 8)
+            {
+                txt = "Errore imprevisto. Impossibile modificare il materiale";
+            }
+            else if (id == 9)
+            {
+                txt = "Errore imprevisto. Impossibile aggiungere la miscela";
+            }
+            else if (id == 10)
+            {
+                txt = "Errore imprevisto. Impossibile modificare la miscela";
+            }
             return View(new ResultsModel { Text = txt });
         }
     }

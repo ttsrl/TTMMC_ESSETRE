@@ -1,0 +1,171 @@
+﻿@model IndexMasterModel
+@{
+    ViewData["Title"] = "Masters";
+
+    var newActionUrl = Url.Action("New", "Master");
+}
+
+<h2>Lista Masters</h2>
+<div class="content_page margin_bottom">
+    <table class="table">
+        <tr>
+            <td style="font-weight:bold; width:150px;">Codice</td>
+            <td style="font-weight:bold; width:250px;">Nome</td>
+            <td style="font-weight:bold; width:360px;">Colore</td>
+            <td style="font-weight:bold; width:140px;">Azioni</td>
+        </tr>
+        @foreach (var it in Model.Masters)
+        {
+            <tr class="obj">
+                <td style="padding-left:20px; font-weight:bold;">@it.Code</td>
+                <td>@it.Name</td>
+                <td>
+                    <div class="colorShow" style="background-color: @it.Color.ToHex();"></div>
+                    ( <b>RGB:</b> @it.Color.R,@it.Color.G,@it.Color.B  -  <b>HEX:</b> @it.Color.ToHex() )
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-controller="Master" asp-route-id="@it.Id" data-code="@it.Code" data-name="@it.Name" data-color="@it.Color.ToHex()" onclick="return openEditMasterDialog(this);">Modifica</a>
+                    &nbsp;-&nbsp;
+                    <a asp-action="Delete" asp-controller="Master" asp-route-id="@it.Id" class="confirmDialog" data-msg="Sei sicuro di voler cancellare questo Master?" data-title="Conferma Eliminazione">Rimuovi</a>
+                </td>
+            </tr>
+        }
+        <tr asp-if="Model.Masters.Count == 0">
+            <td colspan="4" style="text-align:center">Nessun Master presente.</td>
+        </tr>
+    </table>
+    <br />
+    <div style="text-align: right;">
+        <input type="button" value="Aggiungi" onclick="return openAddMasterDialog();" />
+    </div>
+</div>
+
+<style>
+    .table .obj td {
+        line-height: 29px !important;
+    }
+</style>
+
+<div style="display:none;">
+    <form id="masterForm" asp-antiforgery="true" method="post" autocomplete="off">
+        <label style="width: 95px;display: inline-block;text-align: right;">Codice:</label>
+        <input type="text" id="code" name="code" style="width:130px" />
+        <br />
+        <label style="width: 95px;display: inline-block;text-align: right;">Nome:</label>
+        <input type="text" id="name" name="name" style="width:220px" />
+        <label style="width: 95px;display: inline-block;text-align: right;">Colore:</label>
+        <input type="text" id="colorLoaded" class="colorWindow" data-inline="true" name="hexColor" style="margin-top: 15px !important;" onchange="removeBlock();" />
+        <br />
+        <label style="font-size: 12px;margin-left: 99px;width: 30px;">HEX:</label>
+        <input type="text" onkeyup="changeColorHex(this);" class="colorHEX" style="text-transform:uppercase; width: 90px; margin: 0px !important;font-size: 12px;" value="#000000" />
+        <br />
+        <label style="font-size: 12px;margin-left: 99px;width: 30px;">RGB:</label>
+        <input type="text" onkeyup="changeColorRgb(this);" onkeypress='return validate(event);' class="colorRGB" style="width: 90px; margin: 0px !important;font-size: 12px;" value="0,0,0" />
+        <input type="submit" style="display:none" />
+    </form>
+</div>
+
+@section Scripts{
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script type="text/javascript">
+
+        var validation = $('#masterForm').validate();
+        validation.settings.rules = validateNewMasterRules;
+        validation.settings.messages = { 'name': { required: "" }, 'code': { required: "" }, 'hexColor': { required: "" } };
+
+        function openAddMasterDialog() {
+            $('#colorLoaded').minicolors('value', "#000000");
+            $('#masterForm').trigger("reset");
+            $("#masterForm").attr("action", "@newActionUrl");
+            $("#masterForm").dialog({ title: "Aggiungi Master" }).dialog("open");
+            return false;
+        }
+
+        function openEditMasterDialog(obj) {
+            //reset
+            $('#masterForm').trigger("reset");
+            //get value
+            var href = $(obj).attr("href") || "";
+            var code = $(obj).attr("data-code") || "";
+            var name = $(obj).attr("data-name") || "";
+            var color = $(obj).attr("data-color") || "#000000";
+            //set value
+            $("#code").val(code);
+            $("#name").val(name);
+            $('#colorLoaded').minicolors('value', color);
+            $("#masterForm").attr("action", href);
+            //open
+            $("#masterForm").dialog({ title: "Modifica Master" }).dialog("open");
+            return false;
+        }
+
+        $("#masterForm").dialog({
+            autoOpen: false,
+            title: "Aggiungi Master",
+            resizable: false,
+            draggable: false,
+            height: "auto",
+            width: 400,
+            modal: true,
+            create: function (event) {
+                $(event.target).parent().css({ 'position': 'fixed' });
+            },
+            buttons: {
+                "Conferma": function () {
+                    $("#masterForm").submit();
+                },
+                "Annulla": function () {
+                    $(this).dialog("close");
+                }
+            }
+        });
+
+        function changeColorHex(obj) {
+            $("#colorLoaded").removeAttr("data-rewritergb");
+            var val = $(obj).val() || "";
+            val = val.replace(" ", "");
+            var isHex = (val.substr(0, 1) == "#") ? true : false;
+            var isComplete = (val.length == 7) ? true : false;
+            if (isHex && isComplete) {
+                $('#colorLoaded').minicolors('value', val);
+            }
+            if (val == "") {
+                $('#colorLoaded').minicolors('value', "#000000");
+            }
+        }
+
+        function changeColorRgb(obj) {
+            $("#colorLoaded").attr("data-rewritergb", "false");
+            var val = $(obj).val() || "";
+            val = val.replace(" ", "");
+            var rgb = val.split(",");
+            var isRgb = (rgb.length == 3 && rgb[2].length > 0) ? true : false;
+            if (isRgb) {
+                var r = parseInt(rgb[0]) || 0;
+                var g = parseInt(rgb[1]) || 0;
+                var b = parseInt(rgb[2]) || 0;
+                var hex = rgbToHex(r, g, b);
+                $('#colorLoaded').minicolors('value', hex);
+            }
+            if (val == "") {
+                $('#colorLoaded').minicolors('value', "#000000");
+            }
+        }
+
+        function validate(event) {
+            var key = window.event ? event.keyCode : event.which;
+            if (event.keyCode === 8 || event.keyCode === 46 || event.charCode === 44 || event.keyCode === 37 || event.keyCode === 39) { //backspace, canc, comma, frecce
+                return true;
+            } else if (key < 48 || key > 57) {
+                return false;
+            } else {
+                return true;
+            }
+        }
+
+        function removeBlock() {
+            $("#colorLoaded").removeAttr("data-rewritergb");
+        }
+
+    </script>
+}

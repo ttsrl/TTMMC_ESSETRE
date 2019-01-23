@@ -8,7 +8,7 @@ namespace TTMMC.Models.DBModels
         private string _name = "";
 
         public int Id { get; set; }
-        public string Name { get => _name; set => _name = value?.ToFirstCharUpper(); }
+        public string Name { get => _name; set => _name = value?.ToTrim().ToFirstCharUpper(); }
         public List<MixtureItem> Items { get; set; }
         public string Notes { get; set; }
     }

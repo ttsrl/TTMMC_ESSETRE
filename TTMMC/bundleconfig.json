@@ -20,5 +20,11 @@
     "inputFiles": [
       "wwwroot/js/ValidateRules.js"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/lib/jquery-minicolor/jquery.minicolors.min.js",
+    "inputFiles": [
+      "wwwroot/lib/jquery-minicolor/jquery.minicolors.js"
+    ]
   }
 ]

@@ -128,3 +128,9 @@ var validateNewMixtureRules = {
     'name': { required: true, maxlength: 22 },
     'components': { populated: true }
 };
+
+var validateNewMasterRules = {
+    'code': { required: true },
+    'name': { required: true },
+    'hexColor': { required: true }
+};
