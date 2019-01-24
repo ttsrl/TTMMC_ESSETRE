@@ -7,7 +7,7 @@ namespace TTMMC.Models.ViewModels
 {
     public class IndexLayoutModel
     {
-
+        public long Value { get; set; }
     }
 
     public class NewLayoutViewModel

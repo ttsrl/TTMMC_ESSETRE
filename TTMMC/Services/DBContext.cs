@@ -1,12 +1,17 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using TTMMC.Models.DBModels;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace TTMMC.Services
 {
     public class DBContext : DbContext
     {
+        public static DbContextOptions<DBContext> Options;
+
         public DBContext(DbContextOptions<DBContext> options) : base(options)
         {
+            Options = options;
         }
 
         public DbSet<Material> Materials { get; set; }
@@ -16,6 +21,20 @@ namespace TTMMC.Services
         public DbSet<MixtureItem> MixtureItems { get; set; }
         public DbSet<Master> Masters { get; set; }
         public DbSet<Mixture> Mixtures { get; set; }
+
+        private static DBContext _instance;
+        public static DBContext Instance
+        {
+            get
+            {
+                if (_instance == null)
+                {
+                    _instance = new DBContext(Options);
+                }
+
+                return _instance;
+            }
+        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

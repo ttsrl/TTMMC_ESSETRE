@@ -9,6 +9,7 @@
     {
         <a asp-action="Details" asp-controller="Machine" asp-route-id="@m.Id" class="machine" id="@(m.ReferenceName)">
             <img class="machine_icon @(m.GetStatus().ToString())" />
+            <span asp-if="@m.Recording" class="recordIcon"></span>
             <div class="machine_details">
                 <label class="machine_title">@m.Description</label>
                 <br />
@@ -37,7 +38,7 @@
                     SetMachineGUIStatus(key, val);
                 });
             }).fail(function (data) {
-                
+
             });
         }
 

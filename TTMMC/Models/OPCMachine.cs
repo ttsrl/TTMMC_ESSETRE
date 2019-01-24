@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using TTMMC.Services;
 using TTMMC.ConfigurationModels;
 using Hylasoft.Opc.Common;
+using Microsoft.AspNetCore.Mvc;
 
 namespace TTMMC.Models
 {
@@ -23,6 +24,7 @@ namespace TTMMC.Models
         public MachineType Type { get; }
         public ConnectionProtocol ConnectionProtocol { get; }
         public bool HaveImage { get; }
+        public bool Recording { get; set; }
 
         public OPCMachine(Machine machine)
         {
@@ -219,6 +221,8 @@ namespace TTMMC.Models
         {
             return datasAddressToRead;
         }
+
+
 
     }
 }

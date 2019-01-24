@@ -20,9 +20,10 @@ namespace TTMMC
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddDbContext<DBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddRouting(options => options.LowercaseUrls = true);
             services.AddSingleton<Utilities>();
             services.AddSingleton<MachinesService>();
+            services.AddSingleton<LayoutListener>();
+            services.AddRouting(options => options.LowercaseUrls = true);
             services.AddMvc();
         }
 

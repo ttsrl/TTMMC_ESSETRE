@@ -7,7 +7,7 @@ using TTMMC.ConfigurationModels;
 
 namespace TTMMC.Models
 {
-    public interface IMachine
+    public interface IMachine 
     {
         int Id { get; }
         string Description { get; }
@@ -17,6 +17,7 @@ namespace TTMMC.Models
         MachineType Type { get; }
         ConnectionProtocol ConnectionProtocol { get; }
         bool HaveImage { get; }
+        bool Recording { get; set; }
 
         void Connect();
         MachineStatus GetStatus();
@@ -27,5 +28,7 @@ namespace TTMMC.Models
         string Read(string key, Type type);
         Type GetDataItemType(DataItem data);
         Dictionary<string, List<DataItem>> GetParametersRead();
+
     }
+
 }

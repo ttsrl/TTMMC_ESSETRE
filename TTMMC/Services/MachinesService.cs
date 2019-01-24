@@ -34,7 +34,7 @@ namespace TTMMC.Services
         private List<IMachine> machines = new List<IMachine>();
         public int Count { get => machines.Count(); }
         private readonly Utilities _utils;
-
+        
         public MachinesService([FromServices] Utilities utils)
         {
             _utils = utils;

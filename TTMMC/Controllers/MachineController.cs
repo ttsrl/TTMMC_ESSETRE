@@ -41,7 +41,7 @@ namespace TTMMC.Controllers
                 }
 
             }
-            return RedirectToAction("Index", "Machine");
+            return RedirectToAction("Index");
         }
 
     }
