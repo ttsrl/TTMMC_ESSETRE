@@ -50,47 +50,17 @@ namespace TTMMC.Services
             listenItems.Add(it);
         }
 
-        public void Start(Layout layout)
+        public bool Contains(Layout layout)
         {
             var it = getLayoutListenItemById(layout.Id);
             if (it is LayoutListenItem)
             {
-                if (!it.IsBusy)
-                    it.Start();
-            }
-        }
-
-        public bool IsBusy(Layout layout)
-        {
-            var it = getLayoutListenItemById(layout.Id);
-            if (it is LayoutListenItem)
-            {
-                return it.IsBusy;
+                return true;
             }
             return false;
         }
 
-        public void Stop(Layout layout)
-        {
-            var it = getLayoutListenItemById(layout.Id);
-            if (it is LayoutListenItem)
-            {
-                if (it.IsBusy)
-                    it.Stop();
-            }
-        }
-
-        public long GetWorkCount(Layout layout)
-        {
-            var it = getLayoutListenItemById(layout.Id);
-            if (it is LayoutListenItem)
-            {
-                return it.WorkCount;
-            }
-            return 0;
-        }
-
-        public void Dispose(Layout layout)
+        public void Remove(Layout layout)
         {
             var it = getLayoutListenItemById(layout.Id);
             if (it is LayoutListenItem)
@@ -101,6 +71,18 @@ namespace TTMMC.Services
                 it.Dispose();
                 listenItems.Remove(it);
             }
+        }
+
+        public LayoutListenItem GetLayoutListenItem(Layout layout)
+        {
+            foreach (var it in listenItems)
+            {
+                if (it.Layout.Id == layout.Id)
+                {
+                    return it;
+                }
+            }
+            return null;
         }
 
         private LayoutListenItem getLayoutListenItemById(int id)

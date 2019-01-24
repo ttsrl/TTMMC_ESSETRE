@@ -11,11 +11,11 @@ namespace TTMMC.Controllers
 {
     public class LayoutController : Controller
     {
-        private readonly LayoutListener _layoutListener;
+        private readonly LayoutListener _lListener;
 
         public LayoutController([FromServices] LayoutListener layoutListener)
         {
-            _layoutListener = layoutListener ?? throw new ArgumentNullException(nameof(layoutListener));
+            _lListener = layoutListener ?? throw new ArgumentNullException(nameof(layoutListener));
         }
 
         public IActionResult Index()
@@ -25,7 +25,7 @@ namespace TTMMC.Controllers
                 Id = 1,
                 Machine = 1
             };
-            var m = new IndexLayoutModel { Value = _layoutListener.GetWorkCount(layout) };
+            var m = new IndexLayoutModel { Value = _lListener.GetLayoutListenItem(layout).WorkCount };
             return View(m);
         }
 
@@ -50,8 +50,12 @@ namespace TTMMC.Controllers
                 Id = 1,
                 Machine = 1
             };
-            _layoutListener.Add(layout);
-            _layoutListener.Start(layout);
+            if (!_lListener.Contains(layout))
+            {
+                _lListener.Add(layout);
+            }
+            var ll = _lListener.GetLayoutListenItem(layout);
+            ll.Start();
             return  RedirectToAction("Index");
         }
 
@@ -63,7 +67,8 @@ namespace TTMMC.Controllers
                 Id = 1,
                 Machine = 1
             };
-            _layoutListener.Stop(layout);
+            var ll = _lListener.GetLayoutListenItem(layout);
+            ll.Stop();
             return RedirectToAction("Index");
         }
     }
