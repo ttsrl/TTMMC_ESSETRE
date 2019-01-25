@@ -42,7 +42,7 @@ namespace TTMMC.Controllers
                 if (!(cC is Client)) //if not exist
                 {
                     var codes = await _dB.Clients.Select(c => c.Code).ToListAsync();
-                    var barcode = _utils.CreateNewEan13(codes);
+                    var barcode = _utils.CreateNewEan8(codes);
                     var newc = new Client
                     {
                         Code = barcode,

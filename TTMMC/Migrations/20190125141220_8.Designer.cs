@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TTMMC.Services;
 
 namespace TTMMC.Migrations
 {
     [DbContext(typeof(DBContext))]
-    partial class DBContextModelSnapshot : ModelSnapshot
+    [Migration("20190125141220_8")]
+    partial class _8
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -62,6 +64,8 @@ namespace TTMMC.Migrations
 
                     b.Property<int?>("ClientId");
 
+                    b.Property<string>("Description");
+
                     b.Property<int>("Machine");
 
                     b.Property<int?>("MasterId");
@@ -71,8 +75,6 @@ namespace TTMMC.Migrations
                     b.Property<int?>("MixtureId");
 
                     b.Property<int?>("MouldId");
-
-                    b.Property<string>("Notes");
 
                     b.Property<int>("Packaging");
 

@@ -63,7 +63,7 @@ namespace TTMMC.Controllers
             {
                 var existMould = await _dB.Moulds.FirstOrDefaultAsync(m => m.Code == model.Code);
                 var client = await _dB.Clients.FindAsync(model.Client);
-                var mixture = await _dB.Mixtures.FindAsync(model.Mixture);
+                var mixture = await _dB.Mixtures.FirstOrDefaultAsync(m => m.Id == model.Mixture);
                 if (mixture is Mixture && client is Client && existMould == null)
                 {
                     var newFileName = "";

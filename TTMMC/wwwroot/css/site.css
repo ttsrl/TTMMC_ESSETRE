@@ -155,12 +155,12 @@ a.add:hover, a.remove:hover {
     #footer .footer_page {
         width: auto;
         display: inline-block;
-        margin: 45px;
+        margin: 40px;
         text-align: left;
     }
 
         #footer .footer_page #tt_logo {
-            width: 60px;
+            width: 70px;
         }
 
         #footer .footer_page #copy_footer {
@@ -314,7 +314,7 @@ a.add:hover, a.remove:hover {
     height: 28px;
 }
 
-input[type="text"], input[type="password"], select, .select, input[type="number"], textarea {
+input[type="text"], input[type="password"], select, .select, input[type="number"], textarea, input[type="date"] {
     background-color: #f0f0f0;
     border: 1px solid #ddd;
     border-radius: 2px;
@@ -529,7 +529,7 @@ label.error {
 form label.title {
     vertical-align: top;
     display: inline-block;
-    width: 120px;
+    width: 150px;
     font-weight:bold;
     margin-bottom:0px;
 }

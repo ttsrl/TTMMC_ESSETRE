@@ -56,6 +56,21 @@ namespace TTMMC.Services
             return barcode;
         }
 
+        public string CreateNewEan8(List<string> exclude = null)
+        {
+            exclude = exclude ?? new List<string>();
+            var rnd = new Random();
+            string barcode;
+            while (true)
+            {
+                barcode = "";
+                for (var i = 0; i < 7; i++) barcode += rnd.Next(10).ToString();
+                barcode += EanValidate(barcode);
+                if (!exclude.Contains(barcode)) break;
+            }
+            return barcode;
+        }
+
         private static string EanValidate(string barcode)
         {
             var sum = 0;

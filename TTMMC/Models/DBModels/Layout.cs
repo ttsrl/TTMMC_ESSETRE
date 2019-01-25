@@ -1,4 +1,5 @@
 ﻿using System;
+using TTMMC.Services;
 
 namespace TTMMC.Models.DBModels
 {
@@ -14,11 +15,19 @@ namespace TTMMC.Models.DBModels
         Cesta
     }
 
+    public enum Status
+    {
+        Waiting,
+        Started,
+        Stopped,
+        Finished
+    }
+
     public class Layout
     {
         public int Id { get; set; }
+        public Status Status { get; set; }
         public string Barcode { get; set; }
-        public string Description { get; set; }
         public Client Client { get; set; }
         public Mould Mould { get; set; }
         public int Machine { get; set; }
@@ -26,9 +35,10 @@ namespace TTMMC.Models.DBModels
         public Master Master { get; set; }
         public int Quantity { get; set; }
         public string Minced { get; set; }
-        public TimeSpan Umidification { get; set; }
+        public TimeSpan Humidification { get; set; }
         public Package Packaging { get; set; }
         public int PackagingQuantity { get; set; }
         public DateTime Start { get; set; }
+        public string Notes { get; set; }
     }
 }
