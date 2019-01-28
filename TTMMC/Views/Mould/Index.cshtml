@@ -11,10 +11,10 @@
     <table class="table">
         <tr>
             <td style="font-weight:bold; width:120px;">Codice</td>
-            <td style="font-weight:bold; width:250px;">Descrizione</td>
-            <td style="font-weight:bold; width:150px;">Posizione</td>
-            <td style="font-weight:bold; width:300px;">Note</td>
-            <td style="font-weight:bold; width:200px;">Azioni</td>
+            <td style="font-weight:bold; width:240px;">Descrizione</td>
+            <td style="font-weight:bold; width:130px;">Posizione</td>
+            <td style="font-weight:bold; width:260px;">Note</td>
+            <td style="font-weight:bold; width:270px;">Azioni</td>
         </tr>
         @foreach (var it in Model.Moulds)
         {
@@ -24,6 +24,8 @@
                 <td style="font-size:12px;">@it.Location</td>
                 <td style="font-size:12px;">@((string.IsNullOrWhiteSpace(it.Notes) || string.IsNullOrEmpty(it.Notes)) ? "Nessuna nota" : it.Notes)</td>
                 <td>
+                    <a asp-action="NewLayout" asp-controller="Mould" asp-route-id="@it.Id">Lavorazione</a>
+                    &nbsp;-&nbsp;
                     <a asp-action="Edit" asp-controller="Mould" asp-route-id="@it.Id">Modifica</a>
                     &nbsp;-&nbsp;
                     <a asp-action="Delete" asp-controller="Mould" asp-route-id="@it.Id" class="confirmDialog" data-msg="Sei sicuro di vuoler rimuovere questo stampo?" data-title="Conferma Eliminazione">Rimuovi</a>

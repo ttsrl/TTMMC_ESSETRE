@@ -11,7 +11,7 @@ namespace TTMMC.Models
 {
     public class LayoutListenItem
     {
-        private readonly Layout _layout;
+        private Layout _layout;
         private long workCount = 0;
         private bool isBusy = false;
         private int timerTick = 5;
@@ -55,6 +55,7 @@ namespace TTMMC.Models
 
         public void Dispose()
         {
+            _layout = null;
             workCount = 0;
             _timer?.Dispose();
         }

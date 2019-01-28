@@ -18,7 +18,7 @@ namespace TTMMC.Models.DBModels
     public enum Status
     {
         Waiting,
-        Started,
+        Recording,
         Stopped,
         Finished
     }

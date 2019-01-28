@@ -11,16 +11,7 @@
             <option value="">--</option>
             @foreach (var c in Model.Clients)
             {
-                <option value="@c.Id">@c.Name</option>
-            }
-        </select>
-        <br />
-        <label for="machine" class="title">Macchina:</label>
-        <select style="width:210px;" name="machine">
-            <option value="">--</option>
-            @foreach (var m in Model.Machines)
-            {
-                <option value="@(m.Id)" title="@m.Description">@m.ReferenceName</option>
+                <option asp-selected="@(Model.DefaultClient?.Id == c.Id)" value="@c.Id">@c.Name</option>
             }
         </select>
         <br />
@@ -29,7 +20,7 @@
             <option value="">--</option>
             @foreach (var m in Model.Moulds)
             {
-                <option value="@m.Id" title="@m.Description">@m.Code</option>
+                <option asp-selected="@(Model.DefaultMould?.Id == m.Id)" value="@m.Id" title="@m.Description">@m.Code</option>
             }
         </select>
         <br />
@@ -45,23 +36,23 @@
         <label for="mixture" class="title">Miscela:</label>
         <select style="width:210px;" name="mixture">
             <option value="">--</option>
-            @foreach (var m in Model.Masters)
+            @foreach (var m in Model.Mixtures)
             {
-                <option value="@m.Id" title="@m.Name">@m.Code</option>
+                <option asp-selected="@(Model.DefaultMixture?.Id == m.Id)" value="@m.Id">@m.Name</option>
+            }
+        </select>
+        <br />
+        <label for="machine" class="title">Macchina:</label>
+        <select style="width:210px;" name="machine">
+            <option value="">--</option>
+            @foreach (var m in Model.Machines)
+            {
+                <option value="@(m.Id)" title="@m.Description">@m.ReferenceName</option>
             }
         </select>
         <br />
         <label for="quantity" class="title">Quantità:</label>
         <input type="number" step="1" name="quantity" min="1" value="1" style="width:60px;" />
-        <br />
-        <label for="mincedCheck" class="title">Macinato:</label>
-        <input type="radio" id="minced0" name="mincedCheck" value="0" onchange="mincedChange();" checked />
-        <label for="minced0">No</label>&nbsp;
-        <input type="radio" id="minced1" name="mincedCheck" value="1" onchange="mincedChange();" />
-        <label for="minced1">Si</label>
-        &nbsp;&nbsp;
-        <label for="humidified" style="width:50px;visibility:hidden;" class="minced">Quale:</label>
-        <input type="text" name="minced" style="width: 106px; visibility:hidden;" class="minced" />
         <br />
         <label for="humidified" class="title">Umidificazione:</label>
         <input type="radio" id="humidified0" name="humidifiedCheck" value="0" onchange="humidifiedChange();" checked />
@@ -69,8 +60,17 @@
         <input type="radio" id="humidified1" name="humidifiedCheck" value="1" onchange="humidifiedChange();" />
         <label for="humidified1">Si</label>
         &nbsp;&nbsp;
-        <label for="humidified" style="width:50px; visibility:hidden;" class="humidified">Tempo:</label>
-        <input type="text" name="humidified" style="width: 106px; visibility:hidden;" class="humidified" />
+        <label for="humidified" style="width:50px; visibility:hidden; text-align:right;" class="humidified">Minuti:</label>
+        <input type="number" step="1" name="humidified" min="0" value="1" style="width: 66px; visibility:hidden;" class="humidified" />
+        <br />
+        <label for="mincedCheck" class="title">Macinato:</label>
+        <input type="radio" id="minced0" name="mincedCheck" value="0" onchange="mincedChange();" checked />
+        <label for="minced0">No</label>&nbsp;
+        <input type="radio" id="minced1" name="mincedCheck" value="1" onchange="mincedChange();" />
+        <label for="minced1">Si</label>
+        &nbsp;&nbsp;
+        <label for="minced" style="width:50px; visibility:hidden; text-align:right;" class="minced">Quale:</label>
+        <input type="text" name="minced" style="width: 106px; visibility:hidden;" class="minced" />
         <br />
         <label for="packaging" class="title">Confezionamento:</label>
         <select name="packaging" id="packaging" style="width: 186px;" onchange="packagingChange();">
@@ -79,10 +79,10 @@
                 <option value="@p.Key">@p.Value</option>
             }
         </select>
-        <input class="packaging" type="number" step="1" name="packagingCount" min="0" value="0" style="width:60px; visibility:hidden;" />
+        <input class="packaging" type="number" step="1" name="packagingCount" min="0" value="0" style="width:60px;" disabled />
         <br />
         <label for="start" class="title">Data Inizio:</label>
-        <input type="date" name="start" defaultValue="" />
+        <input type="date" name="start" value="@(DateTime.Now.ToString("yyyy-MM-dd"))" />
         <br />
         <label for="client" class="title">Note:</label>
         <textarea name="notes" style="width:250px;height:60px;margin-top: 4px;"></textarea>
@@ -112,17 +112,21 @@
             } else {
                 $(".humidified").css("visibility", "hidden");
             }
-            $(".humidified").val("");
+            $(".humidified").val(1);
         }
 
         function packagingChange() {
             var v = $("#packaging").val();
             if (v != "0") {
-                $(".packaging").css("visibility", "visible");
+                $(".packaging").removeAttr("disabled");
+                $(".packaging").val(1);
             } else {
-                $(".packaging").css("visibility", "hidden");
+                $(".packaging").attr("disabled", "disabled");
+                $(".packaging").val(0);
             }
-            $(".packaging").val(0);
+            $(".packaging").focus();
+            
+            $("#packaging").focus();
         }
 
     </script>

@@ -11,6 +11,7 @@ namespace TTMMC.Models.ViewModels
     {
         public List<Layout> Layouts { get; set; }
         public List<IMachine> Machines { get; set; }
+        public Dictionary<string, int> LogsCount { get; set; }
     }
 
     public class NewLayoutViewModel
@@ -21,6 +22,9 @@ namespace TTMMC.Models.ViewModels
         public List<Master> Masters { get; set; }
         public List<Mixture> Mixtures { get; set; }
         public Dictionary<int, string> Packaging { get; set; }
+        public Client DefaultClient { get; set; }
+        public Mould DefaultMould { get; set; }
+        public Mixture DefaultMixture { get; set; }
     }
 
     public class NewLayoutModel
@@ -42,7 +46,7 @@ namespace TTMMC.Models.ViewModels
         public string Minced { get; set; }
         [Required]
         public int HumidifiedCheck { get; set; }
-        public string Humidified { get; set; }
+        public int Humidified { get; set; }
         [Required]
         public Package Packaging { get; set; }
         public int PackagingCount { get; set; }

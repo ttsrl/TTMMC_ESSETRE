@@ -80,6 +80,7 @@ namespace TTMMC.Controllers
                     }
                     var mould = new Mould
                     {
+                        Location = model.Location,
                         DefaultClient = client,
                         DefaultMixture = mixture,
                         Image = (model.Image != null && model.Image.Length > 0) ? "mouldImages/" + newFileName : "",
@@ -188,6 +189,20 @@ namespace TTMMC.Controllers
                 {
                     _dB.Moulds.Remove(mould);
                     await _dB.SaveChangesAsync();
+                }
+            }
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> NewLayout(int id)
+        {
+            if (id != 0)
+            {
+                var mould = await _dB.Moulds.FirstOrDefaultAsync(m => m.Id == id);
+                if (mould is Mould)
+                {
+                    return RedirectToAction("New", "Layout", new { mould = id });
                 }
             }
             return RedirectToAction("Index");

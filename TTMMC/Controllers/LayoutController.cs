@@ -30,9 +30,11 @@ namespace TTMMC.Controllers
                 .Include(ll => ll.Client)
                 .Include(ll => ll.Master)
                 .Include(ll => ll.Mixture)
+                    .ThenInclude(m => m.Items)
                 .Include(ll => ll.Mould)
                 .ToListAsync();
             var c = await _dB.Clients.ToListAsync();
+            var lc = new Dictionary<string, int>();
             var model = new IndexLayoutModel
             {
                 Layouts = l,
@@ -42,13 +44,20 @@ namespace TTMMC.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> New()
+        public async Task<IActionResult> New(int mould)
         {
             var clients = await _dB.Clients.ToListAsync();
-            var moulds = await _dB.Moulds.Include(m => m.DefaultClient).Include(m => m.DefaultMixture).ToListAsync();
             var masters = await _dB.Masters.ToListAsync();
-            var mixtures = await _dB.Mixtures.Include(m => m.Items).ThenInclude(m => m.Material).ToListAsync();
+            var moulds = await _dB.Moulds
+                .Include(m => m.DefaultClient)
+                .Include(m => m.DefaultMixture)
+                .ToListAsync();
+            var mixtures = await _dB.Mixtures
+                .Include(m => m.Items)
+                .ThenInclude(m => m.Material)
+                .ToListAsync();
             var packaging = Enum.GetValues(typeof(Package)).Cast<Package>().ToDictionary(t => (int)t, t => t.ToString());
+            var defM = moulds.FirstOrDefault(m => m.Id == mould);
             var model = new NewLayoutViewModel
             {
                 Machines = _machines.GetMachines().ToList(),
@@ -56,7 +65,10 @@ namespace TTMMC.Controllers
                 Moulds = moulds,
                 Masters = masters,
                 Mixtures = mixtures,
-                Packaging = packaging
+                Packaging = packaging,
+                DefaultClient = (defM is Mould) ? defM.DefaultClient : null,
+                DefaultMixture = (defM is Mould) ? defM.DefaultMixture : null,
+                DefaultMould = (defM is Mould) ? defM : null
             };
             return View(model);
         }
@@ -91,44 +103,72 @@ namespace TTMMC.Controllers
                             Packaging = model.Packaging,
                             PackagingQuantity = model.PackagingCount,
                             Status = Status.Waiting,
-                            Minced = (model.MincedCheck == 1) ? model.Minced : null
-                            //Humidification = (model.HumidifiedCheck == 1) ? TimeSpan.FromMinutes(model.Humidified) : TimeSpan.Zero
-                            
+                            Minced = (model.MincedCheck == 1) ? model.Minced : null,
+                            Humidification = (model.HumidifiedCheck == 1) ? TimeSpan.FromMinutes(model.Humidified) : TimeSpan.Zero,
+                            Start = model.Start
                         };
+                        _dB.Layouts.Add(layout);
+                        await _dB.SaveChangesAsync();
                         return RedirectToAction("Index");
                     }
                 }
             }
-            return RedirectToAction("Index", "Error", new { });
+            return RedirectToAction("Index", "Error", new { id = 11 });
         }
 
         [HttpGet]
-        public async Task<IActionResult> StartListen()
+        public async Task<IActionResult> Start(int id)
         {
-            var layout = new Layout
+            if(id != 0)
             {
-                Id = 1,
-                Machine = 1
-            };
-            if (!_lListener.Contains(layout))
-            {
-                _lListener.Add(layout);
+                var layout = await _dB.Layouts.Where(l => l.Status == Status.Waiting).FirstOrDefaultAsync(l => l.Id == id);
+                if(layout is Layout)
+                {
+                    if(!_lListener.Contains(layout))
+                        _lListener.Add(layout);
+                    var ll = _lListener.GetLayoutListenItem(layout);
+                    ll.Start();
+                    if (layout.Status == Status.Waiting)
+                    {
+                        layout.Status = Status.Recording;
+                        await _dB.SaveChangesAsync();
+                    }
+                }
             }
-            var ll = _lListener.GetLayoutListenItem(layout);
-            ll.Start();
             return RedirectToAction("Index");
         }
 
         [HttpGet]
-        public async Task<IActionResult> StopListen()
+        public async Task<IActionResult> Stop(int id)
         {
-            var layout = new Layout
+            if (id != 0)
             {
-                Id = 1,
-                Machine = 1
-            };
-            var ll = _lListener.GetLayoutListenItem(layout);
-            ll.Stop();
+                var layout = await _dB.Layouts.Where(l => l.Status == Status.Recording).FirstOrDefaultAsync(l => l.Id == id);
+                if (layout is Layout)
+                {
+                    var ll = _lListener.GetLayoutListenItem(layout);
+                    ll.Stop();
+                }
+                if (layout.Status == Status.Recording)
+                {
+                    layout.Status = Status.Stopped;
+                    await _dB.SaveChangesAsync();
+                }
+            }
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Report(int id)
+        {
+            if(id != 0)
+            {
+                var layout = await _dB.Layouts.Where(l => l.Status == Status.Finished).FirstOrDefaultAsync(l => l.Id == id);
+                if(layout is Layout)
+                {
+
+                }
+            }
             return RedirectToAction("Index");
         }
     }

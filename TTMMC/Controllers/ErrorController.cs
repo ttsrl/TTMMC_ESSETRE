@@ -48,6 +48,14 @@ namespace TTMMC.Controllers
             {
                 txt = "Errore imprevisto. Impossibile modificare la miscela";
             }
+            else if (id == 11)
+            {
+                txt = "Errore imprevisto. Impossibile creare la lavorazione";
+            }
+            else if (id == 12)
+            {
+                txt = "Errore imprevisto. Impossibile modificare la lavorazione";
+            }
             return View(new ResultsModel { Text = txt });
         }
     }

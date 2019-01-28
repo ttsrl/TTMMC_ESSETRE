@@ -85,6 +85,18 @@ namespace TTMMC.Services
             return null;
         }
 
+        public LayoutListenItem GetLayoutListenItemById(int id)
+        {
+            foreach (var it in listenItems)
+            {
+                if (it.Layout.Id == id)
+                {
+                    return it;
+                }
+            }
+            return null;
+        }
+
         private LayoutListenItem getLayoutListenItemById(int id)
         {
             foreach (var it in listenItems)
