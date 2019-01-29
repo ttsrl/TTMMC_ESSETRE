@@ -4,6 +4,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using TTMMC.Services;
+using Rotativa.AspNetCore;
 
 namespace TTMMC
 {
@@ -43,15 +44,15 @@ namespace TTMMC
             }
 
             app.UseStatusCodePagesWithReExecute("/Home/Error/{0}");
-
             app.UseStaticFiles();
-
             app.UseMvc(routes =>
             {
                 routes.MapRoute(
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+            RotativaConfiguration.Setup(env);
         }
     }
 }

@@ -207,5 +207,19 @@ namespace TTMMC.Controllers
             }
             return RedirectToAction("Index");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> ViewModule(int id)
+        {
+            if(id != 0)
+            {
+                var mould = await _dB.Moulds.FirstOrDefaultAsync(m => m.Id == id);
+                if (mould is Mould)
+                {
+                    return RedirectToAction("MouldModule", "Pdf", new { id });
+                }
+            }
+            return RedirectToAction("Index");
+        }
     }
 }
