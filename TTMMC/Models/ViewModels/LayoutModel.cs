@@ -11,7 +11,6 @@ namespace TTMMC.Models.ViewModels
     {
         public List<Layout> Layouts { get; set; }
         public List<IMachine> Machines { get; set; }
-        public Dictionary<string, int> LogsCount { get; set; }
     }
 
     public class NewLayoutViewModel

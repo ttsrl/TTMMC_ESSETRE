@@ -23,6 +23,7 @@ namespace TTMMC
             services.AddSingleton<Utilities>();
             services.AddSingleton<MachinesService>();
             services.AddSingleton<LayoutListener>();
+            services.AddSingleton<Barcode>();
             services.AddRouting(options => options.LowercaseUrls = true);
             services.AddMvc();
         }

@@ -33,7 +33,7 @@ namespace TTMMC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> New([FromServices] Utilities _utils, NewClientModel model)
+        public async Task<IActionResult> New([FromServices] Barcode barcode, [FromServices] Utilities _utils, NewClientModel model)
         {
             if (ModelState.IsValid)
             {
@@ -42,10 +42,9 @@ namespace TTMMC.Controllers
                 if (!(cC is Client)) //if not exist
                 {
                     var codes = await _dB.Clients.Select(c => c.Code).ToListAsync();
-                    var barcode = _utils.CreateNewEan8(codes);
                     var newc = new Client
                     {
-                        Code = barcode,
+                        Code = barcode.CreateNewEan8(codes),
                         Name = model.Name,
                         FiscalCode = model.FiscalCode,
                         VAT = model.VAT,

@@ -29,17 +29,17 @@
                 <td style="vertical-align: middle;">@l.Start.ToString("dd/MM/yyyy")</td>
                 <td style="vertical-align: middle;">@l.Client.Name</td>
                 <td style="vertical-align: middle;">@l.Mould.Code</td>
-                <td style="vertical-align: middle;"><a asp-if="Model.Machines.Select(m => m.Id).Contains(l.Machine)" asp-action="Details" asp-controller="Machine" asp-route-id="@l.Machine" style="font-size:11px">@Model.Machines.FirstOrDefault(m => m.Id == l.Machine).ReferenceName.ToString()</a><label asp-if="@(!Model.Machines.Select(m => m.Id).Contains(l.Machine))" style="font-size:11px">Macchina non trovata</label></td>
+                <td style="vertical-align: middle;"><a asp-if="Model.Machines.Select(m => m.Id).Contains(l.Machine)" asp-action="Details" asp-controller="Machine" asp-route-id="@l.Machine">@Model.Machines.FirstOrDefault(m => m.Id == l.Machine).ReferenceName.ToString()</a><label asp-if="@(!Model.Machines.Select(m => m.Id).Contains(l.Machine))" style="font-size:11px">Macchina non trovata</label></td>
                 <td style="vertical-align: middle; text-align:center; font-weight:bold;">
-                    <span id="c_@l.Barcode">0</span>
+                    <span id="c_@l.Barcode">@l.LayoutRecords.Count.ToString()</span>
                 </td>
-                <td style="vertical-align: middle; text-align: right;">
-                    <a asp-if="@(l.Status == Status.Waiting)" asp-action="Start" asp-controller="Layout" asp-route-id="@l.Id" style="font-size:11px">AVVIA</a>
-                    <a asp-if="@(l.Status == Status.Recording)" asp-action="Stop" asp-controller="Layout" asp-route-id="@l.Id" style="font-size:11px">FERMA</a>
+                <td style="vertical-align: bottom; text-align: right;">
+                    <a asp-if="@(l.Status == Status.Waiting)" asp-action="Start" asp-controller="Layout" asp-route-id="@l.Id" class="confirmDialog" data-msg="Confermi di voler avviare la disposizione N. @l.Barcode ?" data-title="Conferma Avvio">AVVIA</a>
+                    <a asp-if="@(l.Status == Status.Recording)" asp-action="Stop" asp-controller="Layout" asp-route-id="@l.Id" class="confirmDialog" data-msg="Confermi di voler interrompere la disposizione N. @l.Barcode ?" data-title="Conferma Arresto">FERMA</a>
                     <label asp-if="@(l.Status == Status.Waiting)">&nbsp;|&nbsp;</label>
-                    <a asp-if="@(l.Status == Status.Waiting)" asp-action="Edit" asp-controller="Layout" asp-route-id="@l.Id" style="font-size:11px">Modifica</a>
+                    <a asp-if="@(l.Status == Status.Waiting)" asp-action="Edit" asp-controller="Layout" asp-route-id="@l.Id">Modifica</a>
                     <label asp-if="@(l.Status == Status.Waiting)"> &nbsp;-&nbsp;</label>
-                    <a asp-if="@(l.Status == Status.Waiting || l.Status == Status.Stopped)" asp-action="Delete" asp-controller="Layout" asp-route-id="@l.Id" style="font-size:11px" class="confirmDialog" data-msg="Sei sicuro di voler rimuovere questa lavorazione?" data-title="Conferma Eliminazione">Rimuovi</a>
+                    <a asp-if="@(l.Status == Status.Waiting || l.Status == Status.Stopped)" asp-action="Delete" asp-controller="Layout" asp-route-id="@l.Id" class="confirmDialog" data-msg="Sei sicuro di voler rimuovere questa lavorazione?" data-title="Conferma Eliminazione">Rimuovi</a>
                 </td>
             </tr>
         }

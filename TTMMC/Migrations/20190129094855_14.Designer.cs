@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TTMMC.Services;
 
 namespace TTMMC.Migrations
 {
     [DbContext(typeof(DBContext))]
-    partial class DBContextModelSnapshot : ModelSnapshot
+    [Migration("20190129094855_14")]
+    partial class _14
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -97,23 +99,6 @@ namespace TTMMC.Migrations
                     b.HasIndex("MouldId");
 
                     b.ToTable("Layouts");
-                });
-
-            modelBuilder.Entity("TTMMC.Models.DBModels.LayoutRecord", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("LayoutId");
-
-                    b.Property<string>("Value");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("LayoutId");
-
-                    b.ToTable("LayoutsRecords");
                 });
 
             modelBuilder.Entity("TTMMC.Models.DBModels.Master", b =>
@@ -230,13 +215,6 @@ namespace TTMMC.Migrations
                     b.HasOne("TTMMC.Models.DBModels.Mould", "Mould")
                         .WithMany()
                         .HasForeignKey("MouldId");
-                });
-
-            modelBuilder.Entity("TTMMC.Models.DBModels.LayoutRecord", b =>
-                {
-                    b.HasOne("TTMMC.Models.DBModels.Layout")
-                        .WithMany("LayoutRecords")
-                        .HasForeignKey("LayoutId");
                 });
 
             modelBuilder.Entity("TTMMC.Models.DBModels.MixtureItem", b =>

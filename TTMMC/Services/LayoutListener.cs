@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Threading.Tasks;
 using TTMMC.Models;
 using TTMMC.Models.DBModels;
 
@@ -52,7 +53,7 @@ namespace TTMMC.Services
 
         public bool Contains(Layout layout)
         {
-            var it = getLayoutListenItemById(layout.Id);
+            var it = GetLayoutListenItemById(layout.Id);
             if (it is LayoutListenItem)
             {
                 return true;
@@ -60,13 +61,13 @@ namespace TTMMC.Services
             return false;
         }
 
-        public void Remove(Layout layout)
+        public async Task Remove(Layout layout)
         {
-            var it = getLayoutListenItemById(layout.Id);
+            var it = GetLayoutListenItemById(layout.Id);
             if (it is LayoutListenItem)
             {
                 if (it.IsBusy)
-                    it.Stop();
+                   await it.Stop();
 
                 it.Dispose();
                 listenItems.Remove(it);
@@ -86,18 +87,6 @@ namespace TTMMC.Services
         }
 
         public LayoutListenItem GetLayoutListenItemById(int id)
-        {
-            foreach (var it in listenItems)
-            {
-                if (it.Layout.Id == id)
-                {
-                    return it;
-                }
-            }
-            return null;
-        }
-
-        private LayoutListenItem getLayoutListenItemById(int id)
         {
             foreach (var it in listenItems)
             {

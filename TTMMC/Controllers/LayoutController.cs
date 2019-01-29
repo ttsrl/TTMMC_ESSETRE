@@ -32,9 +32,9 @@ namespace TTMMC.Controllers
                 .Include(ll => ll.Mixture)
                     .ThenInclude(m => m.Items)
                 .Include(ll => ll.Mould)
+                .Include(ll => ll.LayoutRecords)
                 .ToListAsync();
             var c = await _dB.Clients.ToListAsync();
-            var lc = new Dictionary<string, int>();
             var model = new IndexLayoutModel
             {
                 Layouts = l,
@@ -75,7 +75,7 @@ namespace TTMMC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> New([FromServices] Utilities _utils, NewLayoutModel model)
+        public async Task<IActionResult> New([FromServices] Barcode barcode, [FromServices] Utilities _utils, NewLayoutModel model)
         {
             if (ModelState.IsValid)
             {
@@ -89,10 +89,9 @@ namespace TTMMC.Controllers
                     if (client is Client && mould is Mould && master is Master && mixture is Mixture && machine is IMachine)
                     {
                         var codes = await _dB.Layouts.Select(c => c.Barcode).ToListAsync();
-                        var barcode = _utils.CreateNewEan13(codes);
                         var layout = new Layout
                         {
-                            Barcode = barcode,
+                            Barcode = barcode.CreateNewEan13(codes),
                             Client = client,
                             Mould = mould,
                             Master = master,
@@ -127,12 +126,7 @@ namespace TTMMC.Controllers
                     if(!_lListener.Contains(layout))
                         _lListener.Add(layout);
                     var ll = _lListener.GetLayoutListenItem(layout);
-                    ll.Start();
-                    if (layout.Status == Status.Waiting)
-                    {
-                        layout.Status = Status.Recording;
-                        await _dB.SaveChangesAsync();
-                    }
+                    await ll.Start();
                 }
             }
             return RedirectToAction("Index");
@@ -146,13 +140,7 @@ namespace TTMMC.Controllers
                 var layout = await _dB.Layouts.Where(l => l.Status == Status.Recording).FirstOrDefaultAsync(l => l.Id == id);
                 if (layout is Layout)
                 {
-                    var ll = _lListener.GetLayoutListenItem(layout);
-                    ll.Stop();
-                }
-                if (layout.Status == Status.Recording)
-                {
-                    layout.Status = Status.Stopped;
-                    await _dB.SaveChangesAsync();
+                    await _lListener.Remove(layout);
                 }
             }
             return RedirectToAction("Index");
@@ -167,6 +155,24 @@ namespace TTMMC.Controllers
                 if(layout is Layout)
                 {
 
+                }
+            }
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Delete(int id)
+        {
+            if(id != 0)
+            {
+                var layout = await _dB.Layouts
+                    .Include(l => l.LayoutRecords)
+                    .FirstOrDefaultAsync(l => l.Id == id);
+                if (layout is Layout)
+                {
+                    _dB.LayoutsRecords.RemoveRange(layout.LayoutRecords);
+                    _dB.Layouts.Remove(layout);
+                    await _dB.SaveChangesAsync();
                 }
             }
             return RedirectToAction("Index");

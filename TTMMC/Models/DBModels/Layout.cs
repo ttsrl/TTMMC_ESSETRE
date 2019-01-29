@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using TTMMC.Services;
+using TTMMC.Utils;
 
 namespace TTMMC.Models.DBModels
 {
@@ -25,7 +27,10 @@ namespace TTMMC.Models.DBModels
 
     public class Layout
     {
+        private string _minced = "";
+
         public int Id { get; set; }
+        public List<LayoutRecord> LayoutRecords { get; set; }
         public Status Status { get; set; }
         public string Barcode { get; set; }
         public Client Client { get; set; }
@@ -34,7 +39,7 @@ namespace TTMMC.Models.DBModels
         public Mixture Mixture { get; set; }
         public Master Master { get; set; }
         public int Quantity { get; set; }
-        public string Minced { get; set; }
+        public string Minced { get => _minced; set => _minced = value?.ToTrim().ToTitleCase(); }
         public TimeSpan Humidification { get; set; }
         public Package Packaging { get; set; }
         public int PackagingQuantity { get; set; }

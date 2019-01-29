@@ -13,31 +13,25 @@ namespace TTMMC.Controllers.Api
     [Route("api/GetLayoutLogsCount")]
     public class GetLayoutLogsCountController : ControllerBase
     {
-        private readonly LayoutListener _lListener;
         private readonly DBContext _dB;
 
-        public GetLayoutLogsCountController(DBContext dB, LayoutListener lListener)
+        public GetLayoutLogsCountController(DBContext dB)
         {
             _dB = dB ?? throw new ArgumentNullException(nameof(dB));
-            _lListener = lListener ?? throw new ArgumentNullException(nameof(lListener));
         }
 
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var ls = await _dB.Layouts.Where(l => l.Status == Models.DBModels.Status.Recording).Select(l => new { l.Id, l.Barcode }).ToListAsync();
+            var ls = await _dB.Layouts.Include(l => l.LayoutRecords).Where(l => l.Status == Models.DBModels.Status.Recording).ToListAsync();
             if (ls != null && ls.Count > 0)
             {
-                var out_ = new Dictionary<string, long>();
+                var out_ = new Dictionary<string, int>();
                 foreach (var l in ls)
                 {
-                    var ll = _lListener.GetLayoutListenItemById(l.Id);
-                    if(ll is LayoutListenItem)
-                    {
-                        out_.Add(l.Barcode, ll.WorkCount);
-                    }
+                    out_.Add(l.Barcode, l.LayoutRecords.Count());
                 }
-                return Ok( out_ );
+                return Ok(out_);
             }
             return NotFound(new { });
         }

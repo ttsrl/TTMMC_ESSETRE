@@ -28,7 +28,19 @@
 
         $(document).ready(function () {
             checkStatusTimer = setInterval(GetMachinesStatus, 2000);
+            recBlink();
         });
+
+        function recBlink() {
+            setTimeout(function () {
+                var op = $(".recordIcon").css("opacity");
+                if (op == "0")
+                    $(".recordIcon").css("opacity", "1");
+                else
+                    $(".recordIcon").css("opacity", "0");
+                recBlink();
+            }, 1000);
+        }
 
         function GetMachinesStatus() {
             $.getJSON("/Api/GetMachinesStatus").done(function (data) {
