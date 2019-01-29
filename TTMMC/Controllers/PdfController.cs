@@ -40,9 +40,10 @@ namespace TTMMC.Controllers
                 PageMargins = new Margins(0, 0, 0, 0),
                 Model = new PDFMouldModuleModel { Mould = mould },
                 IsLowQuality = false,
-                CustomSwitches = "--disable-smart-shrinking"
+                CustomSwitches = "--disable-smart-shrinking",
+                FileName = "mouldModule_" + mould.Code + ".pdf",
+                ContentDisposition = ContentDisposition.Inline
             };
-            //ControllerContext.HttpContext.Response.Headers.Add("Content-Disposition", "inline");
             return pdf;
         }
     }

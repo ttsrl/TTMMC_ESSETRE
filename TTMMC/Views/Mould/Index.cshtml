@@ -25,8 +25,8 @@
                 <td style="font-size:12px;">@((string.IsNullOrWhiteSpace(it.Notes) || string.IsNullOrEmpty(it.Notes)) ? "Nessuna nota" : it.Notes)</td>
                 <td>
                     @*<a asp-action="NewLayout" asp-controller="Mould" asp-route-id="@it.Id">Lavorazione</a>*@
-                    @*<a asp-action="ViewModule" asp-controller="Mould" asp-route-id="@it.Id">Scheda</a>*@
-                    @*&nbsp;-&nbsp;*@
+                    <a asp-action="ViewModule" asp-controller="Mould" asp-route-id="@it.Id" target="_blank">Scheda</a>
+                    &nbsp;-&nbsp;
                     <a asp-action="Edit" asp-controller="Mould" asp-route-id="@it.Id">Modifica</a>
                     &nbsp;-&nbsp;
                     <a asp-action="Delete" asp-controller="Mould" asp-route-id="@it.Id" class="confirmDialog" data-msg="Sei sicuro di vuoler rimuovere questo stampo?" data-title="Conferma Eliminazione">Rimuovi</a>
