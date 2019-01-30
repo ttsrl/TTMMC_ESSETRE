@@ -76,6 +76,8 @@
         function openAddMasterDialog() {
             $('#colorLoaded').minicolors('value', "#000000");
             $('#masterForm').trigger("reset");
+            $('#masterForm input, #masterForm select, #masterForm label').removeClass("error");
+            window.validation.resetForm();
             $("#masterForm").attr("action", "@newActionUrl");
             $("#masterForm").dialog({ title: "Aggiungi Master" }).dialog("open");
             return false;
@@ -84,6 +86,8 @@
         function openEditMasterDialog(obj) {
             //reset
             $('#masterForm').trigger("reset");
+            $('#masterForm input, #masterForm select, #masterForm label').removeClass("error");
+            window.validation.resetForm();
             //get value
             var href = $(obj).attr("href") || "";
             var code = $(obj).attr("data-code") || "";

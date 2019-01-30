@@ -1,0 +1,86 @@
+﻿@model PDFLayoutModuleModel
+@{
+    ViewData["Title"] = "LayoutModule";
+    Layout = "_Layout";
+
+    var minced = (string.IsNullOrEmpty(Model.Layout.Minced)) ? "NO" : Model.Layout.Minced;
+    var hum = (Model.Layout.Humidification == TimeSpan.Zero) ? "NO" : Model.Layout.Humidification.TotalMinutes.ToString();
+}
+<div class="pdfPage">
+    @(await Html.PartialAsync("Header"))
+    <h2>Scheda lavorazione @Model.Layout.Barcode</h2>
+    <div class="pdfContentPage" style="font-size:17px;">
+        <label class="layoutModuleTitle">INIZIO LAVORAZIONE:</label>
+        <label class="layoutModuleValue">@Model.Layout.Start.ToString("dd/MM/yyyy")</label>
+        <span style="display:block; width:100%; height:1px; border-bottom:1px solid rgb(50, 50, 50); margin:0px 0px 5px;"></span>
+        <label class="layoutModuleTitle">BARCODE:</label>
+        <img src="~/barcodes/@(Model.Layout.Barcode).png" style="width:180px;" />
+        <span style="display:block; width:100%; height:1px; border-bottom:1px solid rgb(50, 50, 50); margin:0px 0px 5px;"></span>
+        <label class="layoutModuleTitle">MACCHINA:</label>
+        <label class="layoutModuleValue">
+            <b style="width:105px; display:inline-block;">Nome:</b>&nbsp;@Model.Machine.ReferenceName
+            <br />
+            <b style="width:105px; display:inline-block;">Descrizione:</b>&nbsp;@Model.Machine.Description
+        </label>
+        <span style="display:block; width:100%; height:1px; border-bottom:1px solid rgb(50, 50, 50); margin:0px 0px 5px;"></span>
+        <label class="layoutModuleTitle">STAMPO:</label>
+        <label class="layoutModuleValue">
+            <b style="width:105px; display:inline-block;">Codice:</b>&nbsp;@(Model.Layout.Mould.Code)
+            <br />
+            <b style="width:105px; display:inline-block;">Descrizione:</b>&nbsp;@(Model.Layout.Mould.Description)
+        </label>
+        <span style="display:block; width:100%; height:1px; border-bottom:1px solid rgb(50, 50, 50); margin:0px 0px 5px;"></span>
+        <label class="layoutModuleTitle">CLIENTE:</label>
+        <label class="layoutModuleValue">
+            <b style="width:105px; display:inline-block;">Nome:</b>&nbsp;@(Model.Layout.Client.Name)
+            <br />
+            <b style="width:105px; display:inline-block;">Codice:</b>&nbsp;@(Model.Layout.Client.Code)
+        </label>
+        <span style="display:block; width:100%; height:1px; border-bottom:1px solid rgb(50, 50, 50); margin:0px 0px 5px;"></span>
+        <label class="layoutModuleTitle">QUANTIT&Agrave;:</label>
+        <label class="layoutModuleValue"><b>@Model.Layout.Quantity</b></label>
+        <span style="display:block; width:100%; height:1px; border-bottom:1px solid rgb(50, 50, 50); margin:0px 0px 5px;"></span>
+        <label class="layoutModuleTitle">MISCELA:</label>
+        <label class="layoutModuleValue">
+            <b>Nome:</b>&nbsp;@(Model.Layout.Mixture.Name)
+            <br />
+            <b>Materiali:</b>
+            <br />
+            @foreach (var m in Model.Layout.Mixture.Items)
+            {
+                @Html.Raw("<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + m.Quantity + "</b>&nbsp;&nbsp;&nbsp;x&nbsp;&nbsp;&nbsp;" + m.Material.Name)<br />
+            }
+        </label>
+        <span style="display:block; width:100%; height:1px; border-bottom:1px solid rgb(50, 50, 50); margin:0px 0px 5px;"></span>
+        <label class="layoutModuleTitle">MASTER:</label>
+        <label class="layoutModuleValue">
+            <b style="width:105px; display:inline-block;">Nome:</b>&nbsp;@(Model.Layout.Master.Name)
+            <br />
+            <b style="width:105px; display:inline-block;">Codice:</b>&nbsp;@(Model.Layout.Master.Code)
+            <br />
+            <b style="width:105px; display:inline-block;">Colore:</b>&nbsp;<b style="vertical-align:top; display:inline-block; width:35px; height:35px; background-color: @Model.Layout.Master.Color.ToHex(); border:1px solid rgba(0,0,0,0.3);"></b>
+        </label>
+        <span style="display:block; width:100%; height:1px; border-bottom:1px solid rgb(50, 50, 50); margin:0px 0px 5px;"></span>
+        <label class="layoutModuleTitle">MACINATO:</label>
+        <label class="layoutModuleValue">@minced</label>
+        <span style="display:block; width:100%; height:1px; border-bottom:1px solid rgb(50, 50, 50); margin:0px 0px 5px;"></span>
+        <label class="layoutModuleTitle">UMIDIFICAZIONE:</label>
+        <label class="layoutModuleValue">@(hum)&nbsp;&nbsp;minuti</label>
+        <span style="display:block; width:100%; height:1px; border-bottom:1px solid rgb(50, 50, 50); margin:0px 0px 5px;"></span>
+        <label class="layoutModuleTitle">CONFEZIONAMENTO:</label>
+        <label class="layoutModuleValue">
+            <b style="width:105px; display:inline-block;">Tipo:</b>&nbsp;@(Enum.GetName(typeof(Package), Model.Layout.Packaging))
+            <br />
+            <b style="width:105px; display:inline-block;">Quantità:</b>&nbsp;@(Model.Layout.PackagingQuantity)
+        </label>
+    </div>
+    <br />
+    <br />
+    <br />
+    <div style="text-align:right; display:inline-block; width:100%;">
+        <label style="font-size:17px; font-weight:bold;">Firma Responsabile:</label>
+        <br />
+        <br />
+        <label>__________________________</label>
+    </div>
+</div>

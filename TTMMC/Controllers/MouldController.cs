@@ -154,8 +154,8 @@ namespace TTMMC.Controllers
                     mould.Code = code;
                     mould.Description = description;
                     mould.Image = (newFileName != "") ? "mouldImages/" + newFileName : mould.Image;
-                    mould.Location = mould.Location;
-                    mould.Notes = mould.Notes;
+                    mould.Location = location;
+                    mould.Notes = notes;
                     await _dB.SaveChangesAsync();
                     return RedirectToAction("Index");
                 }

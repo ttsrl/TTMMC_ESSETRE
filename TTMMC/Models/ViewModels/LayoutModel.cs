@@ -53,4 +53,15 @@ namespace TTMMC.Models.ViewModels
         public DateTime Start { get; set; }
         public string Notes { get; set; }
     }
+
+    public class EditLayoutViewModel
+    {
+        public Layout Layout { get; set; }
+        public List<IMachine> Machines { get; set; }
+        public List<Client> Clients { get; set; }
+        public List<Mould> Moulds { get; set; }
+        public List<Master> Masters { get; set; }
+        public List<Mixture> Mixtures { get; set; }
+        public Dictionary<int, string> Packaging { get; set; }
+    }
 }

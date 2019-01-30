@@ -27,8 +27,8 @@ namespace TTMMC.Services
             _ean13 = new TyKonKet.BarcodeGenerator.Barcode(o =>
             {
                 o.Encode = Encodes.Ean13;
-                o.Height = 50;
-                o.Scale = 5;
+                o.Height = 40;
+                o.Scale = 10;
                 o.BackgroundColor = Rgba32.Transparent;
                 o.Font = "Arial";
             });
@@ -77,12 +77,10 @@ namespace TTMMC.Services
         private static string EanValidate(string barcode)
         {
             var sum = 0;
-            for (var i = 7; i > 0; i--)
+            for (var i = 0; i < barcode.Length; i++)
             {
-                var tmp = (i % 2 * 2 + 1) * barcode[i - 1].ToInt();
-                sum += tmp;
+                sum += (i % 2 == 1) ? (barcode[i].ToInt() * 3) : barcode[i].ToInt();
             }
-
             return ((10 - sum % 10) % 10).ToString();
         }
     }

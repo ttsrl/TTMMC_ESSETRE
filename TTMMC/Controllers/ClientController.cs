@@ -57,6 +57,7 @@ namespace TTMMC.Controllers
                         Address = model.AddressStreetMode + " " + model.Address + ", " +  model.AddressNumber
                     };
                     _dB.Clients.Add(newc);
+                    barcode.GenerateEan8(newc.Code);
                     await _dB.SaveChangesAsync();
                 }
                 return RedirectToAction("Index");
@@ -112,6 +113,20 @@ namespace TTMMC.Controllers
                 {
                     _dB.Clients.Remove(client);
                     await _dB.SaveChangesAsync();
+                }
+            }
+            return RedirectToAction("Index");
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> ViewModule(int id)
+        {
+            if (id != 0)
+            {
+                var client = await _dB.Clients.FindAsync(id);
+                if (client is Client)
+                {
+                    return RedirectToAction("ClientModule", "Pdf", new { id });
                 }
             }
             return RedirectToAction("Index");

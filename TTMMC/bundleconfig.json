@@ -26,5 +26,11 @@
     "inputFiles": [
       "wwwroot/lib/jquery-minicolor/jquery.minicolors.js"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/css/pdf.min.css",
+    "inputFiles": [
+      "wwwroot/css/pdf.css"
+    ]
   }
 ]

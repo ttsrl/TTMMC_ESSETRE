@@ -11,11 +11,11 @@
     </div>
     <table class="table">
         <tr>
-            <td style="font-weight:bold; width:150px;">Codice</td>
-            <td style="font-weight:bold; width:370px;">Nome</td>
-            <td style="font-weight:bold; width:120px;">Partita I.V.A</td>
-            <td style="font-weight:bold; width:120px;">Telefono</td>
-            <td style="font-weight:bold; width:140px;">Azioni</td>
+            <td style="font-weight:bold; width:100px;">Codice</td>
+            <td style="font-weight:bold; width:365px;">Nome</td>
+            <td style="font-weight:bold; width:115px;">Partita I.V.A</td>
+            <td style="font-weight:bold; width:115px;">Telefono</td>
+            <td style="font-weight:bold; width:205px;">Azioni</td>
         </tr>
         @foreach (var c in Model.Clients)
         {
@@ -25,9 +25,11 @@
                 <td>@c.VAT</td>
                 <td>@c.Phone</td>
                 <td>
+                    <a asp-action="ViewModule" asp-controller="Client" asp-route-id="@c.Id" target="_blank">Scheda</a>
+                    &nbsp;-&nbsp;
                     <a asp-action="Edit" asp-controller="Client" asp-route-id="@c.Id">Modifica</a>
                     &nbsp;-&nbsp;
-                    <a asp-action="Delete" asp-controller="Client" asp-route-id="@c.Id" class="confirmDialog" data-msg="Sei sicuro di voler cancellare questo cliente?" data-title="Conferma Eliminazione" >Rimuovi</a>
+                    <a asp-action="Delete" asp-controller="Client" asp-route-id="@c.Id" class="confirmDialog" data-msg="Sei sicuro di voler cancellare questo cliente?" data-title="Conferma Eliminazione">Rimuovi</a>
                 </td>
             </tr>
         }

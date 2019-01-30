@@ -30,7 +30,7 @@
             @foreach (var m in Model.Mixtures)
             {
                 var c = m.Items.Select(it => it.Quantity.ToString() + " " + it.Material.Name).Aggregate<string>((i, j) => i + " + " + j);
-                <option value="@m.Id" title="@c">@m.Name</option>
+                <option asp-selected="@(Model.Mould.DefaultMixture?.Id == m.Id)" value="@m.Id" title="@c">@m.Name</option>
             }
         </select>
         <div id="mixtureDetails" style="width: 500px; margin-left: 125px; font-size: 12px; font-weight: normal;"></div>

@@ -1,5 +1,66 @@
 ﻿body {
-    font-family: sans-serif;
+    font-family: Arial, Helvetica, sans-serif;
     margin: 0px;
     padding: 0px;
+    font-size: 12px;
+    letter-spacing: 0px;
+}
+
+.pdfPage {
+    margin: 45px;
+    text-align: left;
+}
+
+    .pdfPage .pdfContentPage{
+        margin:0px 55px;
+    }
+
+    header {
+        text-align: center;
+        border-bottom: 1px solid #454545;
+    }
+
+    header #logo {
+        margin-top: 20px;
+        margin-bottom: 20px;
+        width: 350px;
+    }
+
+.pdfPage h2 {
+    margin-top: 25px;
+    margin-bottom: 25px;
+    font-size: 22px;
+    color: #191919;
+}
+
+.pdfPage .moduleTitle {
+    vertical-align: top;
+    display: inline-block;
+    width: 125px;
+    font-weight: bold;
+    margin: 4px 0px;
+    line-height: 24px;
+}
+
+.pdfPage .moduleValue {
+    margin: 4px 0px;
+    display: inline-block;
+    width:430px;
+    line-height:24px;
+}
+
+.pdfPage .layoutModuleTitle {
+    vertical-align: top;
+    display: inline-block;
+    width: 210px;
+    font-weight: bold;
+    margin: 5px 0px;
+    line-height: 26px;
+}
+
+.pdfPage .layoutModuleValue {
+    margin: 5px 0px;
+    display: inline-block;
+    width: 350px;
+    line-height: 26px;
 }

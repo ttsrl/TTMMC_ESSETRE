@@ -10,4 +10,15 @@ namespace TTMMC.Models.ViewModels
     {
         public Mould Mould { get; set; }
     }
+
+    public class PDFClientModuleModel
+    {
+        public Client Client { get; set; }
+    }
+
+    public class PDFLayoutModuleModel
+    {
+        public Layout Layout { get; set; }
+        public IMachine Machine { get; set; }
+    }
 }

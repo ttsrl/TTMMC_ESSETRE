@@ -93,6 +93,8 @@
             $("#listBoxMaterials").empty();
             $('#listItems').empty();
             $('#mixtureForm').trigger("reset");
+            $('#mixtureForm input, #mixtureForm select, #mixtureForm label').removeClass("error");
+            window.validation.resetForm();
             $("#mixtureForm").attr("action", href);
             $("#mixtureForm").dialog({ title: "Aggiungi Miscela" }).dialog("open");
             return false;
@@ -105,6 +107,8 @@
             $("#listBoxMaterials").empty();
             $('#listItems').empty();
             $('#mixtureForm').trigger("reset");
+            $('#mixtureForm input, #mixtureForm select, #mixtureForm label').removeClass("error");
+            window.validation.resetForm();
             //get data
             var nm = $(obj).attr("data-name") || "";
             var items = $(obj).attr("data-items") || "";

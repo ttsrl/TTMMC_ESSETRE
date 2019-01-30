@@ -67,11 +67,16 @@
 
         function openAddMaterialDialog() {
             $('#newMaterialForm').trigger("reset");
+            $('#newMaterialForm input, #newMaterialForm select, #newMaterialForm label').removeClass("error");
+            window.validation.resetForm();
             $("#newMaterialForm").dialog("open");
             return false;
         }
 
         function openEditMaterialDialog(it) {
+            $('#editMaterialForm').trigger("reset");
+            $('#editMaterialForm input, #editMaterialForm select, #editMaterialForm label').removeClass("error");
+            window.validation1.resetForm();
             var nm = $(it).attr("data-name");
             var desc = $(it).attr("data-description");
             var link = $(it).attr("href");

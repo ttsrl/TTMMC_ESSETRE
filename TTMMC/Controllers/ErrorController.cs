@@ -56,6 +56,19 @@ namespace TTMMC.Controllers
             {
                 txt = "Errore imprevisto. Impossibile modificare la lavorazione";
             }
+            //------------------- errori pdf ------------------
+            else if (id == 13)
+            {
+                txt = "Errore imprevisto. Impossibile creare la scheda dello stampo";
+            }
+            else if (id == 14)
+            {
+                txt = "Errore imprevisto. Impossibile creare la scheda del cliente";
+            }
+            else if (id == 15)
+            {
+                txt = "Errore imprevisto. Impossibile creare la scheda di lavorazione";
+            }
             return View(new ResultsModel { Text = txt });
         }
     }

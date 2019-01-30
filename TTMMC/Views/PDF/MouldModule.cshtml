@@ -2,6 +2,60 @@
 @{
     Layout = "_Layout";
     ViewData["Title"] = "Scheda Stampo";
+
+    var image = (string.IsNullOrEmpty(Model.Mould.Image)) ? "/images/machinesDetails/default.jpg" : "/" + Model.Mould.Image;
+    var desc = (string.IsNullOrEmpty(Model.Mould.Description)) ? "Nessuna descrizione inserita" : Model.Mould.Description;
+    var location = (string.IsNullOrEmpty(Model.Mould.Location)) ? "Nessuna posizione inserita" : Model.Mould.Location;
+    var note = (string.IsNullOrEmpty(Model.Mould.Notes)) ? "Nessuna nota aggiunta" : Model.Mould.Notes;
 }
 
-<h2>MouldModule</h2>
+<div class="pdfPage">
+    @(await Html.PartialAsync("Header"))
+    <h2>Scheda tecnica stampo @Model.Mould.Code</h2>
+    <div class="pdfContentPage">
+        <label class="moduleTitle">Immagine:</label>
+        <img src="@image" style="width:350px; max-height:390px;" />
+        <br />
+        <label class="moduleTitle">ID:</label>
+        <label class="moduleValue">@Model.Mould.Id</label>
+        <br />
+        <label class="moduleTitle">Codice:</label>
+        <label class="moduleValue">@Model.Mould.Code</label>
+        <br />
+        <label class="moduleTitle">Descrizione:</label>
+        <label class="moduleValue">@desc</label>
+        <br />
+        <label class="moduleTitle">Cliente Default:</label>
+        <label class="moduleValue">
+            <b>Nome:</b>&nbsp;@(Model.Mould.DefaultClient.Name)
+            <br />
+            <b>IVA:</b>&nbsp;@(Model.Mould.DefaultClient.VAT)
+        </label>
+        <br />
+        <label class="moduleTitle">Miscela Default:</label>
+        <label class="moduleValue">
+            <b>Nome:</b>&nbsp;@(Model.Mould.DefaultMixture.Name)
+            <br />
+            <b>Materiali:</b>
+            <br />
+            @foreach (var m in Model.Mould.DefaultMixture.Items)
+            {
+                @Html.Raw("<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + m.Quantity + "</b>&nbsp;&nbsp;&nbsp;x&nbsp;&nbsp;&nbsp;" + m.Material.Name)<br />
+            }
+        </label>
+        <br />
+        <label class="moduleTitle">Posizione:</label>
+        <label class="moduleValue">@location</label>
+        <br />
+        <label class="moduleTitle">Note:</label>
+        <label class="moduleValue">@note</label>
+    </div>
+</div>
+
+@section Scripts{ 
+    <script type="text/javascript">
+
+        
+
+    </script>
+}

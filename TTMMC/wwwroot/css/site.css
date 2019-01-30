@@ -387,7 +387,7 @@ input[type="button"], input[type="submit"], .btn {
 }
 
 /*-------------------------- ERROR SETTINGS --------------------------*/
-input[type="text"].error, select.error, input[type="password"].error, textarea.error, input[type="number"].error, input[type="radio"].error {
+input[type="text"].error, select.error, input[type="password"].error, textarea.error, input[type="number"].error, input[type="radio"].error, input[type="date"].error {
     border: 1px solid rgb(219, 21, 21) !important;
 }
 
@@ -410,7 +410,7 @@ label.error {
     text-align: left;
     position: absolute;
     width: 220px;
-    margin-left: 420px;
+    margin-left: 450px;
     margin-top: -27px !important;
     display: block;
 }

@@ -107,12 +107,62 @@ namespace TTMMC.Controllers
                             Start = model.Start
                         };
                         _dB.Layouts.Add(layout);
+                        barcode.GenerateEan13(layout.Barcode);
                         await _dB.SaveChangesAsync();
                         return RedirectToAction("Index");
                     }
                 }
             }
             return RedirectToAction("Index", "Error", new { id = 11 });
+        }
+
+        [HttpGet]
+        public async Task<IActionResult> Edit(int id)
+        {
+            if(id != 0)
+            {
+                var layout = await _dB.Layouts
+                    .Include(l => l.Client)
+                    .Include(l => l.Master)
+                    .Include(l => l.Mixture)
+                        .ThenInclude(m => m.Items)
+                            .ThenInclude(m => m.Material)
+                    .Include(l => l.Mould)
+                    .FirstOrDefaultAsync(l => l.Id == id);
+                var clients = await _dB.Clients.ToListAsync();
+                var masters = await _dB.Masters.ToListAsync();
+                var moulds = await _dB.Moulds
+                    .Include(m => m.DefaultClient)
+                    .Include(m => m.DefaultMixture)
+                    .ToListAsync();
+                var mixtures = await _dB.Mixtures
+                    .Include(m => m.Items)
+                    .ThenInclude(m => m.Material)
+                    .ToListAsync();
+                var packaging = Enum.GetValues(typeof(Package)).Cast<Package>().ToDictionary(t => (int)t, t => t.ToString());
+                if (layout is Layout && layout.Status == Status.Waiting)
+                {
+                    var m = new EditLayoutViewModel
+                    {
+                        Layout = layout,
+                        Clients = clients,
+                        Machines = _machines.GetMachines().ToList(),
+                        Masters = masters,
+                        Mixtures = mixtures,
+                        Moulds = moulds,
+                        Packaging = packaging
+                    };
+                    return View(m);
+                }
+            }
+            return RedirectToAction("Index");
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, NewLayoutModel model)
+        {
+            return RedirectToAction("Index", "Error", new { id = 12 });
         }
 
         [HttpGet]
@@ -177,5 +227,20 @@ namespace TTMMC.Controllers
             }
             return RedirectToAction("Index");
         }
+
+        [HttpGet]
+        public async Task<IActionResult> ViewModule(int id)
+        {
+            if (id != 0)
+            {
+                var layout = await _dB.Layouts.FindAsync(id);
+                if (layout is Layout)
+                {
+                    return RedirectToAction("LayoutModule", "Pdf", new { id });
+                }
+            }
+            return RedirectToAction("Index");
+        }
+
     }
 }
