@@ -6,6 +6,7 @@ using TTMMC.Services;
 using TTMMC.ConfigurationModels;
 using Hylasoft.Opc.Common;
 using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 
 namespace TTMMC.Models
 {
@@ -38,7 +39,7 @@ namespace TTMMC.Models
             HaveImage = (!string.IsNullOrEmpty(machine.Image)) ? true : false;
             imgLink = (!string.IsNullOrEmpty(machine.Image)) ? machine.Image : null;
             datasAddressToRead = machine.DatasAddressToRead ?? new Dictionary<string, List<DataItem>>();
-            uaClient = new UaClient(new Uri("opc.tcp://" + Address + ":" + Port + "/Objects"));
+            uaClient = new UaClient(new Uri("opc.tcp://" + Address + ":" + Port));
             uaClient.ServerConnectionLost += _uaClient_ServerConnectionLost;
         }
 
@@ -221,8 +222,6 @@ namespace TTMMC.Models
         {
             return datasAddressToRead;
         }
-
-
 
     }
 }

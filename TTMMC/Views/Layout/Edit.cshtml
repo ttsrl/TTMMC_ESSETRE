@@ -73,7 +73,7 @@
         <input type="text" name="minced" style="width: 106px; @((Model.Layout.Humidification == TimeSpan.Zero) ? "visibility:hidden;" : "")" class="minced" value="@Model.Layout.Minced" />
         <br />
         <label for="packaging" class="title">Confezionamento:</label>
-        <select name="packaging" id="packaging" style="width: 186px;" onchange="packagingChange();" >
+        <select name="packaging" id="packaging" style="width: 186px;" onchange="packagingChange();">
             @foreach (var p in Model.Packaging)
             {
                 <option asp-selected="@(Enum.GetName(typeof(Package), Model.Layout.Packaging) == p.Value)" value="@p.Key">@p.Value</option>
@@ -88,12 +88,17 @@
         <textarea name="notes" style="width:250px;height:60px;margin-top: 4px;">@Model.Layout.Notes</textarea>
         <br />
         <br />
-        <input type="submit" value="Aggiungi" />
+        <input type="submit" value="Salva" />
     </form>
 </div>
 
 @section Scripts{
+    @await Html.PartialAsync("_ValidationScriptsPartial")
     <script type="text/javascript">
+
+        var validation = $('#editLayoutForm').validate();
+        validation.settings.rules = validateNewLayoutRules;
+        validation.settings.messages = validateNewLayoutMessages;
 
         function mincedChange() {
             var v = $("input[name='mincedCheck']:checked").val();

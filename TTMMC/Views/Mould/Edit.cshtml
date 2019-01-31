@@ -1,6 +1,6 @@
 ﻿@model EditMouldViewModel
 @{
-    ViewData["Title"] = "Edit";
+    ViewData["Title"] = "Modifica Stampo";
 }
 <h2>Modifica Stampo</h2>
 <div class="content_page margin_bottom">
@@ -25,7 +25,7 @@
         </select>
         <br />
         <label for="mixture" class="title">Miscela Default:</label>
-        <select name="mixture" style="width: 280px;" onchange="viewMixtureDetails(this);">
+        <select name="mixture" id="mixture" style="width: 280px;" onchange="viewMixtureDetails(this);">
             <option value="">--</option>
             @foreach (var m in Model.Mixtures)
             {
@@ -33,8 +33,7 @@
                 <option asp-selected="@(Model.Mould.DefaultMixture?.Id == m.Id)" value="@m.Id" title="@c">@m.Name</option>
             }
         </select>
-        <div id="mixtureDetails" style="width: 500px; margin-left: 125px; font-size: 12px; font-weight: normal;"></div>
-        <br />
+        <div id="mixtureDetails" style="width: 500px; margin-left: 155px; font-size: 12px; font-weight: normal;"></div>
         <label for="description" class="title">Descrizione:</label>
         <input type="text" name="description" style="width:300px;" value="@Model.Mould.Description" />
         <br />
@@ -52,7 +51,7 @@
         <textarea name="notes" style="width:300px; min-height:70px;">@Model.Mould.Notes</textarea>
         <br />
         <br />
-        <input type="submit" value="Modifica" />
+        <input type="submit" value="Salva" />
     </form>
 </div>
 
@@ -64,6 +63,10 @@
         validation.settings.rules = validateNewMouldRules;
         validation.settings.messages = validateNewMouldMessages;
 
+        $(document).ready(function () {
+            viewMixtureDetails($("#mixture"));
+        });
+
         function emptyImage() {
             $("#imageInput").val(null);
             return false;
@@ -74,7 +77,7 @@
             var val = $(obj).find("option:selected").attr("title") || "";
             if (val == "") {
             } else {
-                $("#mixtureDetails").append("<label style='margin: 0px !important;'>" + val + "</label>");
+                $("#mixtureDetails").append("<label style='margin: 0px !important;'>" + val + "</label><br /><br />");
             }
         }
 

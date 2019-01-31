@@ -155,6 +155,7 @@
             if (material != 0 && matName != "" && quantity != 0) {
                 if (!matAdded.contains(matName)) {
                     $("#addMaterial").val("");
+                    $("#addQuantity").val("1");
                     addItemMaterial(quantity, material, matName);
                 } else {
                     errorDialog("Errore", "Materiale già presente nella miscela");
@@ -176,11 +177,13 @@
 
         function removeMaterial() {
             var mat = $("#listBoxMaterials option:selected").val() || "";
-            var nm = $("#listBoxMaterials option:selected").html().toString() || "";
-            nm = nm.substr(nm.indexOf("x") + 2);
+            var nm = $("#listBoxMaterials option:selected").html() || "";
+            nm = nm.toString().substr(nm.indexOf("x") + 2);
             if (mat != "") {
                 matAdded.remove(nm);
                 $("." + mat).remove();
+            } else {
+                alertDialog("Errore", "Selezionare l'elemento da rimuovere");
             }
             return false;
         }

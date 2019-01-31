@@ -11,6 +11,7 @@ using Microsoft.EntityFrameworkCore;
 using TTMMC.Models.DBModels;
 using TTMMC.Models.ViewModels;
 using TTMMC.Services;
+using TTMMC.Utils;
 
 namespace TTMMC.Controllers
 {
@@ -42,13 +43,15 @@ namespace TTMMC.Controllers
         [HttpGet]
         public async Task<IActionResult> New()
         {
-            var clients = await _dB.Clients.ToListAsync();
+            var clients = await _dB.Clients.OrderBy(c => c.Name).ToListAsync();
             var mixtures = await _dB.Mixtures
                 .Include(mm => mm.Items)
                     .ThenInclude(it => it.Material)
                 .ToListAsync();
+            var materials = await _dB.Materials.OrderBy(c => c.Name).ToListAsync();
             var m = new NewMouldViewModel
             {
+                Materials = materials,
                 Mixtures = mixtures,
                 Clients = clients
             };
@@ -61,39 +64,85 @@ namespace TTMMC.Controllers
         {
             if (ModelState.IsValid) //se il modello è valido
             {
-                var existMould = await _dB.Moulds.FirstOrDefaultAsync(m => m.Code == model.Code);
-                var client = await _dB.Clients.FindAsync(model.Client);
-                var mixture = await _dB.Mixtures.FirstOrDefaultAsync(m => m.Id == model.Mixture);
-                if (mixture is Mixture && client is Client && existMould == null)
+                if (!string.IsNullOrEmpty(model.Code) && model.Client != 0 && model.Mixture != 0 && !string.IsNullOrEmpty(model.Description) && !string.IsNullOrEmpty(model.Location))
                 {
-                    var newFileName = "";
-                    if (model.Image != null && model.Image.Length > 0) //se è presente un'immagine
+                    var existMould = await _dB.Moulds.FirstOrDefaultAsync(m => m.Code == model.Code);
+                    var client = await _dB.Clients.FindAsync(model.Client);
+                    Mixture mixture = null;
+                    if (model.Mixture == -1)
                     {
-                        var fileName = ContentDispositionHeaderValue.Parse(model.Image.ContentDisposition).FileName.Trim('"');
-                        newFileName = Convert.ToString(Guid.NewGuid()) + Path.GetExtension(fileName); //set unique id filename + extension
-                        fileName = Path.Combine(_environment.WebRootPath, "mouldImages") + $@"\{newFileName}";
-                        using (FileStream fs = System.IO.File.Create(fileName))
-                        {
-                            model.Image.CopyTo(fs);
-                            fs.Flush();
-                        }
+                        mixture = await addMixture(model.MixtureName, model.MixtureQuantitys, model.MixtureMaterials, model.MixtureNotes);
+                        _dB.Mixtures.Add(mixture);
                     }
-                    var mould = new Mould
+                    else
                     {
-                        Location = model.Location,
-                        DefaultClient = client,
-                        DefaultMixture = mixture,
-                        Image = (model.Image != null && model.Image.Length > 0) ? "mouldImages/" + newFileName : "",
-                        Code = model.Code,
-                        Description = model.Description,
-                        Notes = model.Notes
-                    };
-                    _dB.Moulds.Add(mould);
-                    await _dB.SaveChangesAsync();
-                    return RedirectToAction("Index");
+                        mixture = await _dB.Mixtures.FirstOrDefaultAsync(m => m.Id == model.Mixture);
+                    }
+                    if (mixture is Mixture && client is Client && existMould == null)
+                    {
+                        var newFileName = "";
+                        if (model.Image != null && model.Image.Length > 0) //se è presente un'immagine
+                        {
+                            var fileName = ContentDispositionHeaderValue.Parse(model.Image.ContentDisposition).FileName.Trim('"');
+                            newFileName = Convert.ToString(Guid.NewGuid()) + Path.GetExtension(fileName); //set unique id filename + extension
+                            fileName = Path.Combine(_environment.WebRootPath, "mouldImages") + $@"\{newFileName}";
+                            using (FileStream fs = System.IO.File.Create(fileName))
+                            {
+                                model.Image.CopyTo(fs);
+                                fs.Flush();
+                            }
+                        }
+                        var mould = new Mould
+                        {
+                            Location = model.Location,
+                            DefaultClient = client,
+                            DefaultMixture = mixture,
+                            Image = (model.Image != null && model.Image.Length > 0) ? "mouldImages/" + newFileName : "",
+                            Code = model.Code,
+                            Description = model.Description,
+                            Notes = model.Notes
+                        };
+                        _dB.Moulds.Add(mould);
+                        await _dB.SaveChangesAsync();
+                        return RedirectToAction("Index");
+                    }
                 }
             }
             return RedirectToAction("Index", "Error", new { id = 3 });
+        }
+
+        private async Task<Mixture> addMixture(string name, Dictionary<string, int> quantitys, Dictionary<string, int> materials, string notes)
+        {
+            if (!string.IsNullOrEmpty(name) && quantitys.Count > 0 && materials.Count > 0 && quantitys.Count == materials.Count)
+            {
+                var exist = await _dB.Mixtures.Where(m => m.Name == name.ToTrim().ToFirstCharUpper()).CountAsync();
+                if (exist == 0)
+                {
+                    var mats = await _dB.Materials.ToListAsync();
+                    if (mats != null && mats.Count > 0)
+                    {
+                        var mixItems = new List<MixtureItem>();
+                        foreach (var q in quantitys)
+                        {
+                            var mat = mats.Where(m => m.Id == materials[q.Key]).FirstOrDefault();
+                            var it = new MixtureItem
+                            {
+                                Quantity = q.Value,
+                                Material = mat
+                            };
+                            mixItems.Add(it);
+                        }
+                        var mix = new Mixture
+                        {
+                            Name = name,
+                            Items = mixItems,
+                            Notes = notes
+                        };
+                        return mix;
+                    }
+                }
+            }
+            return null;
         }
 
         [HttpGet]
@@ -103,7 +152,7 @@ namespace TTMMC.Controllers
                 .Include(mm => mm.DefaultClient)
                 .Include(mm => mm.DefaultMixture)
                 .FirstOrDefaultAsync(mm => mm.Id == id);
-            var clients = await _dB.Clients.ToListAsync();
+            var clients = await _dB.Clients.OrderBy(c => c.Name).ToListAsync();
             var mixtures = await _dB.Mixtures
                 .Include(mm => mm.Items)
                     .ThenInclude(it => it.Material)

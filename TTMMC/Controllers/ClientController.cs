@@ -21,7 +21,7 @@ namespace TTMMC.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var clients = await _dB.Clients.ToListAsync();
+            var clients = await _dB.Clients.OrderByDescending(c => c.Id).ToListAsync();
             return View(new IndexClientModel { Clients = clients });
         }
 

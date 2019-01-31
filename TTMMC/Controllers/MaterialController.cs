@@ -22,7 +22,7 @@ namespace TTMMC.Controllers
 
         public async Task<IActionResult> Index()
         {
-            var ms = await _dB.Materials.ToListAsync();
+            var ms = await _dB.Materials.OrderByDescending(mx => mx.Id).ToListAsync();
             var m = new IndexMaterialModel
             {
                 Materials = ms

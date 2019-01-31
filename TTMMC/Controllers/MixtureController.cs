@@ -26,8 +26,9 @@ namespace TTMMC.Controllers
             var mix = await _dB.Mixtures
                 .Include(mx => mx.Items)
                     .ThenInclude(i => i.Material)
+                .OrderByDescending(mx => mx.Id)
                 .ToListAsync();
-            var ms = await _dB.Materials.ToListAsync();
+            var ms = await _dB.Materials.OrderBy(c => c.Name).ToListAsync();
             var model = new IndexMixtureModel
             {
                 Materials = ms,

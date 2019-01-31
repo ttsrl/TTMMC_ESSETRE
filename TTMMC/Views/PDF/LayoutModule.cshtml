@@ -1,6 +1,6 @@
 ﻿@model PDFLayoutModuleModel
 @{
-    ViewData["Title"] = "LayoutModule";
+    ViewData["Title"] = "Modulo Lavorazione";
     Layout = "_Layout";
 
     var minced = (string.IsNullOrEmpty(Model.Layout.Minced)) ? "NO" : Model.Layout.Minced;
@@ -40,15 +40,11 @@
         <label class="layoutModuleTitle">QUANTIT&Agrave;:</label>
         <label class="layoutModuleValue"><b>@Model.Layout.Quantity</b></label>
         <span style="display:block; width:100%; height:1px; border-bottom:1px solid rgb(50, 50, 50); margin:0px 0px 5px;"></span>
-        <label class="layoutModuleTitle">MISCELA:</label>
+        <label class="layoutModuleTitle">MATERIALI:</label>
         <label class="layoutModuleValue">
-            <b>Nome:</b>&nbsp;@(Model.Layout.Mixture.Name)
-            <br />
-            <b>Materiali:</b>
-            <br />
             @foreach (var m in Model.Layout.Mixture.Items)
             {
-                @Html.Raw("<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + m.Quantity + "</b>&nbsp;&nbsp;&nbsp;x&nbsp;&nbsp;&nbsp;" + m.Material.Name)<br />
+                @Html.Raw(m.Quantity + "</b>&nbsp;&nbsp;&nbsp;x&nbsp;&nbsp;&nbsp;" + m.Material.Name)<br />
             }
         </label>
         <span style="display:block; width:100%; height:1px; border-bottom:1px solid rgb(50, 50, 50); margin:0px 0px 5px;"></span>
