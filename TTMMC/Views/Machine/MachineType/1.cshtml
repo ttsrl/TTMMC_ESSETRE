@@ -3,18 +3,24 @@
 <br />
 <h3>Dati in Realtime</h3>
 <br />
-<table class="table">
+<table class="table" style="font-size: 13px;">
     <tr>
-        <td style="width:250px; font-weight:bold;">Parametro</td>
-        <td style="width:350px; font-weight:bold;">Descrizione</td>
+        <td style="width:300px; font-weight:bold;">Parametro</td>
+        <td style="width:400px; font-weight:bold;">Descrizione</td>
         <td style="width:200px; font-weight:bold;">Valore</td>
     </tr>
     @foreach (var it in Model.Machine.GetParametersRead())
     {
         <tr>
-            <td style="padding-left:20px;"><b>@it.Key</b></td>
-            <td>@it.Value[0].Description</td>
-            <td class="parameters_" id="p_@it.Key"></td>
+            <td style="padding-left:20px; vertical-align: middle;"><b>@it.Key.ToWhiteSpaceInsert()</b></td>
+            <td style="vertical-align: middle;">
+                @foreach (var d in it.Value)
+                {
+                    @(d.Description)
+                    <br />
+                }
+            </td>
+            <td class="parameters_" id="p_@it.Key" style="font-size: 15px; font-weight:bold; vertical-align: middle;"></td>
         </tr>
     }
     <tr asp-if="Model.Machine.GetParametersRead().Count == 0">
@@ -32,11 +38,11 @@
                     var strAgg = "";
                     for (var key in it) {
                         var val = it[key];
-                        strAgg += val + ", ";
+                        strAgg += val + "<br />";
                     }
                     strAgg = strAgg.substring(0, strAgg.length - 2);
                     $("#p_" + k).html(strAgg);
-                    $("#p_" + k).css("color", "green");
+                    $("#p_" + k).css("color", "#206800");
                 });
             } else {
                 $(".parameters_").html("Offline");

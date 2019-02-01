@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using TTMMC.Services;
 using Newtonsoft.Json;
 using TTMMC.Models;
+using TTMMC.Utils;
 
 namespace TTMMC.Controllers.Api
 {
@@ -38,7 +39,7 @@ namespace TTMMC.Controllers.Api
                             var val = "";
                             try
                             {
-                                val = machine.Read(k.Address, type) ?? "";
+                                val = convertVal(type, machine.Read(k.Address, type) ?? "");
                             }
                             catch { }
                             elmL.Add(c.ToString(), val);
@@ -54,6 +55,18 @@ namespace TTMMC.Controllers.Api
                 return Ok(new { status = (int)machine.GetStatus(), parameters = out_ });
             }
             return NotFound(new { });
+        }
+
+        private string convertVal(Type type, string val)
+        {
+            if(type != typeof(string))
+            {
+                if ((val.Contains(",")))
+                {
+                    return val.Substring(0, val.IndexOf(",") + 3).ToTrim(new char[] { '0' });
+                }
+            }
+            return val;
         }
     }
 }

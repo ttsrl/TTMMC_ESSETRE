@@ -19,6 +19,7 @@ namespace TTMMC.ConfigurationModels
         public string Port { get; set; }
         public string Image { get; set; }
         public Dictionary<string, List<DataItem>> DatasAddressToRead { get; set; }
+        public Dictionary<string, List<DataItem>> DatasAddressToWrite { get; set; }
     }
 
     public class DataItem

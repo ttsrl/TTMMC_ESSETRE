@@ -2,12 +2,23 @@
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Http;
 
 namespace TTMMC.Utils
 {
     public static class Extensions
     {
+        public static string ToWhiteSpaceInsert(this string input)
+        {
+            switch (input)
+            {
+                case null: return "";
+                case "": return "";
+                default: return Regex.Replace(input, "(\\B[A-Z])", " $1");
+            }
+        }
+
         public static string ToTrim(this string input)
         {
             switch (input)
@@ -15,6 +26,16 @@ namespace TTMMC.Utils
                 case null: return "";
                 case "": return "";
                 default: return input.Trim(new char[] { ' ' });
+            }
+        }
+
+        public static string ToTrim(this string input, char[] chars)
+        {
+            switch (input)
+            {
+                case null: return "";
+                case "": return "";
+                default: return input.Trim(chars);
             }
         }
 
