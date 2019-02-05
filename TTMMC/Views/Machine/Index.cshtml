@@ -8,7 +8,7 @@
     @foreach (var m in Model.Machines)
     {
         <a asp-action="Details" asp-controller="Machine" asp-route-id="@m.Id" class="machine" id="@(m.ReferenceName)">
-            <img class="machine_icon @(m.GetStatus().ToString())" />
+            <img class="machine_icon @(m.GetStatus().ToString())" src="~/images/pic.png" />
             <span asp-if="@m.Recording" class="recordIcon"></span>
             <div class="machine_details">
                 <label class="machine_title">@m.Description</label>

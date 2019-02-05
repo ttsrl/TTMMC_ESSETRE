@@ -37,11 +37,11 @@ namespace TTMMC.Controllers.Api
                         {
                             var type = machine.GetDataItemType(k);
                             var val = "";
-                            try
-                            {
+                            //try
+                            //{
                                 val = convertVal(type, machine.Read(k.Address, type) ?? "");
-                            }
-                            catch { }
+                            //}
+                            //catch { }
                             elmL.Add(c.ToString(), val);
                             c++;
                         }
