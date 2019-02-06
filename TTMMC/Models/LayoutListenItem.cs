@@ -29,7 +29,8 @@ namespace TTMMC.Models
         public IMachine Machine { get => _machine; }
         public static int DefaultTimerTick = 5;
 
-        private string _referenceKeyOld = "";
+        private string _referenceKeyLogOld = "";
+        private string _referenceKeyFinisched = "";
 
         public LayoutListenItem(Layout layout, IMachine machine)
         {
@@ -49,7 +50,8 @@ namespace TTMMC.Models
                     await _dB.SaveChangesAsync();
                 }
                 _layout = ll;
-                _referenceKeyOld = await _machine.ReadAsync(_machine.ReferenceKey.Value[0].Address, _machine.GetDataItemType(_machine.ReferenceKey.Value[0]));
+                _referenceKeyLogOld = await _machine.ReadAsync(_machine.ReferenceKeyLog.Value[0].Address, _machine.GetDataItemType(_machine.ReferenceKeyLog.Value[0]));
+                _referenceKeyFinisched = await _machine.ReadAsync(_machine.ReferenceKeyFinished.Value[0].Address, _machine.GetDataItemType(_machine.ReferenceKeyFinished.Value[0]));
                 _timer = new Timer(Do, null, TimeSpan.Zero, TimeSpan.FromSeconds(timerTick));
                 _isBusy = true;
                 _machine.Recording = true;
@@ -62,6 +64,7 @@ namespace TTMMC.Models
             {
                 var fields = new List<LayoutRecordField>();
                 var acts = _machine.GetParametersRead();
+                var valRefKeyLog = "";
                 foreach (var act in acts)
                 {
                     if (act.Key.Substring(0, 1) != "[" && act.Key.Substring(act.Key.Length - 1, 1) != "]") // se non è una proprietà nascosta
@@ -73,6 +76,7 @@ namespace TTMMC.Models
                             var val = _machine.Read(dataIt.Address, type) ?? "";
                             newIt.Add(act.Value.IndexOf(dataIt).ToString(), val);
                         }
+                        valRefKeyLog = (act.Key.Substring(0, 1) != "{" && act.Key.Substring(act.Key.Length - 1, 1) != "}") ? newIt[newIt.Keys.ElementAt(0)] : "";
                         var json = JsonConvert.SerializeObject(newIt) ?? "";
                         fields.Add(new LayoutRecordField { Key = act.Key, Value = json });
                     }
@@ -82,6 +86,14 @@ namespace TTMMC.Models
                     Fields = fields
                 };
 
+                //if is finished
+                if (valRefKeyLog == _referenceKeyFinisched)
+                {
+                    _layout.Status = Status.Finished;
+                    _isBusy = false;
+                    _machine.Recording = false;
+                    _timer?.Change(Timeout.Infinite, 0);
+                }
                 _layout.LayoutActRecords.Add(record);
                 await _dB.SaveChangesAsync();
                 workCount += 1;
@@ -90,11 +102,11 @@ namespace TTMMC.Models
 
         private async Task<bool> isChangedReferenceKey()
         {
-            var di = _machine.ReferenceKey.Value[0];
+            var di = _machine.ReferenceKeyLog.Value[0];
             var actV = await _machine.ReadAsync(di.Address, _machine.GetDataItemType(di));
-            if(actV != _referenceKeyOld)
+            if(actV != _referenceKeyLogOld)
             {
-                _referenceKeyOld = actV;
+                _referenceKeyLogOld = actV;
                 return true;
             }
             return false;

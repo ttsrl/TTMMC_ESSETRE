@@ -15,7 +15,9 @@ namespace TTMMC.Models
         private UaClient uaClient;
         private bool firstConnection = false;
         private Dictionary<string, List<DataItem>> datasAddressToRead = new Dictionary<string, List<DataItem>>();
-        private KeyValuePair<string, List<DataItem>> referenceKey = new KeyValuePair<string, List<DataItem>>();
+        private Dictionary<string, List<DataItem>> datasAddressToWrite = new Dictionary<string, List<DataItem>>();
+        private KeyValuePair<string, List<DataItem>> referenceKeyLog = new KeyValuePair<string, List<DataItem>>();
+        private KeyValuePair<string, List<DataItem>> referenceKeyFinished = new KeyValuePair<string, List<DataItem>>();
         private string imgLink;
 
         public string Description { get; }
@@ -27,7 +29,8 @@ namespace TTMMC.Models
         public ConnectionProtocol ConnectionProtocol { get; }
         public bool HaveImage { get; }
         public bool Recording { get; set; }
-        public KeyValuePair<string, List<DataItem>> ReferenceKey { get => referenceKey; }
+        public KeyValuePair<string, List<DataItem>> ReferenceKeyLog { get => referenceKeyLog; }
+        public KeyValuePair<string, List<DataItem>> ReferenceKeyFinished { get => referenceKeyFinished; }
 
         public OPCMachine(Machine machine)
         {
@@ -41,12 +44,14 @@ namespace TTMMC.Models
             HaveImage = (!string.IsNullOrEmpty(machine.Image)) ? true : false;
             imgLink = (!string.IsNullOrEmpty(machine.Image)) ? machine.Image : null;
             datasAddressToRead = machine.DatasAddressToRead ?? new Dictionary<string, List<DataItem>>();
-            referenceKey = getReferenceKey();
+            datasAddressToWrite = machine.DatasAddressToWrite ?? new Dictionary<string, List<DataItem>>();
+            referenceKeyLog = getReferenceKeyRead();
+            referenceKeyFinished = getReferenceKeyWrite();
             uaClient = new UaClient(new Uri("opc.tcp://" + Address + ":" + Port));
             uaClient.ServerConnectionLost += _uaClient_ServerConnectionLost;
         }
 
-        private KeyValuePair<string, List<DataItem>> getReferenceKey()
+        private KeyValuePair<string, List<DataItem>> getReferenceKeyRead()
         {
             foreach (var d in datasAddressToRead)
             {
@@ -54,7 +59,18 @@ namespace TTMMC.Models
                 if (isRef)
                     return d;
             }
-            return referenceKey;
+            return referenceKeyLog;
+        }
+
+        private KeyValuePair<string, List<DataItem>> getReferenceKeyWrite()
+        {
+            foreach (var d in datasAddressToWrite)
+            {
+                var isRef = (d.Key.Substring(0, 1) == "{" && d.Key.Substring(d.Key.Length - 1, 1) == "}");
+                if (isRef)
+                    return d;
+            }
+            return referenceKeyFinished;
         }
 
         private void _uaClient_ServerConnectionLost(object sender, EventArgs e)
@@ -235,6 +251,11 @@ namespace TTMMC.Models
         public Dictionary<string, List<DataItem>> GetParametersRead()
         {
             return datasAddressToRead;
+        }
+
+        public Dictionary<string, List<DataItem>> GetParametersWrite()
+        {
+            return datasAddressToWrite;
         }
 
     }
