@@ -37,15 +37,15 @@ namespace TTMMC.Controllers.Api
                         {
                             var type = machine.GetDataItemType(k);
                             var val = "";
-                            //try
-                            //{
+                            try
+                            {
                                 val = convertVal(type, machine.Read(k.Address, type) ?? "");
-                            //}
-                            //catch { }
+                            }
+                            catch { }
                             elmL.Add(c.ToString(), val);
                             c++;
                         }
-                        out_.Add(elm.Key, elmL);
+                        out_.Add(elm.Key.ToNotMappedAttribute(), elmL);
                     }
                 }
                 else
@@ -63,7 +63,7 @@ namespace TTMMC.Controllers.Api
             {
                 if ((val.Contains(",")))
                 {
-                    return val.Substring(0, val.IndexOf(",") + 3).ToTrim(new char[] { '0' });
+                    return val.Substring(0, val.IndexOf(",") + 3);
                 }
             }
             return val;

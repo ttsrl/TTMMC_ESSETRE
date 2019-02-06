@@ -9,6 +9,16 @@ namespace TTMMC.Utils
 {
     public static class Extensions
     {
+        public static string ToNotMappedAttribute(this string input)
+        {
+            switch (input)
+            {
+                case null: return "";
+                case "": return "";
+                default: return input.Trim(new char[] { '[', ']', '{', '}'});
+            }
+        }
+
         public static string ToWhiteSpaceInsert(this string input)
         {
             switch (input)

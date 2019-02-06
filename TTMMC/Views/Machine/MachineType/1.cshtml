@@ -12,7 +12,7 @@
     @foreach (var it in Model.Machine.GetParametersRead())
     {
         <tr>
-            <td style="padding-left:20px; vertical-align: middle;"><b>@it.Key.ToWhiteSpaceInsert()</b></td>
+            <td style="padding-left:20px; vertical-align: middle;"><b>@it.Key.ToNotMappedAttribute().ToWhiteSpaceInsert()</b></td>
             <td style="vertical-align: middle;">
                 @foreach (var d in it.Value)
                 {
@@ -20,7 +20,7 @@
                     <br />
                 }
             </td>
-            <td class="parameters_" id="p_@it.Key" style="font-size: 15px; font-weight:bold; vertical-align: middle;"></td>
+            <td class="parameters_" id="p_@it.Key.ToNotMappedAttribute()" style="font-size: 15px; font-weight:bold; vertical-align: middle;"></td>
         </tr>
     }
     <tr asp-if="Model.Machine.GetParametersRead().Count == 0">

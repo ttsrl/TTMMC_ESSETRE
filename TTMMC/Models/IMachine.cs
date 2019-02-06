@@ -18,6 +18,7 @@ namespace TTMMC.Models
         ConnectionProtocol ConnectionProtocol { get; }
         bool HaveImage { get; }
         bool Recording { get; set; }
+        KeyValuePair<string, List<DataItem>> ReferenceKey { get; }
 
         void Connect();
         MachineStatus GetStatus();

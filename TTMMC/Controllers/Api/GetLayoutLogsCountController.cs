@@ -23,13 +23,13 @@ namespace TTMMC.Controllers.Api
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var ls = await _dB.Layouts.Include(l => l.LayoutRecords).Where(l => l.Status == Models.DBModels.Status.Recording).ToListAsync();
+            var ls = await _dB.Layouts.Include(l => l.LayoutActRecords).Where(l => l.Status == Models.DBModels.Status.Recording).ToListAsync();
             if (ls != null && ls.Count > 0)
             {
                 var out_ = new Dictionary<string, int>();
                 foreach (var l in ls)
                 {
-                    out_.Add(l.Barcode, l.LayoutRecords.Count());
+                    out_.Add(l.Barcode, l.LayoutActRecords.Count());
                 }
                 return Ok(out_);
             }

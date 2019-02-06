@@ -33,7 +33,7 @@
                 <td style="vertical-align: middle;">@l.Mould.Code</td>
                 <td style="vertical-align: middle;"><a asp-if="Model.Machines.Select(m => m.Id).Contains(l.Machine)" asp-action="Details" asp-controller="Machine" asp-route-id="@l.Machine">@Model.Machines.FirstOrDefault(m => m.Id == l.Machine).ReferenceName.ToString()</a><label asp-if="@(!Model.Machines.Select(m => m.Id).Contains(l.Machine))" style="font-size:11px">Macchina non trovata</label></td>
                 <td style="vertical-align: middle; text-align:center; font-weight:bold;">
-                    <span id="c_@l.Barcode">@l.LayoutRecords.Count.ToString()</span>
+                    <span id="c_@l.Barcode">@l.LayoutActRecords.Count.ToString()</span>
                 </td>
                 <td style="vertical-align: bottom; text-align: right;">
                     <a asp-if="@(l.Status == Status.Waiting)" asp-action="Start" asp-controller="Layout" asp-route-id="@l.Id" class="confirmDialog" data-msg="Confermi di voler avviare la disposizione N. @l.Barcode ?" data-title="Conferma Avvio" title="Avvia la lavorazione">AVVIA</a>

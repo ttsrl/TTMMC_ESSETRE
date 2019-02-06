@@ -1,10 +1,12 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using TTMMC.ConfigurationModels;
 using TTMMC.Models.DBModels;
 using TTMMC.Services;
 
@@ -27,6 +29,8 @@ namespace TTMMC.Models
         public IMachine Machine { get => _machine; }
         public static int DefaultTimerTick = 5;
 
+        private string _referenceKeyOld = "";
+
         public LayoutListenItem(Layout layout, IMachine machine)
         {
             _machine = machine;
@@ -36,7 +40,7 @@ namespace TTMMC.Models
 
         public async Task Start()
         {
-            var ll = await _dB.Layouts.Include(l => l.LayoutRecords).FirstOrDefaultAsync(l => l.Id == _layout.Id);
+            var ll = await _dB.Layouts.Include(l => l.LayoutActRecords).FirstOrDefaultAsync(l => l.Id == _layout.Id);
             if (ll is Layout)
             {
                 if (ll.Status == Status.Waiting)
@@ -45,6 +49,7 @@ namespace TTMMC.Models
                     await _dB.SaveChangesAsync();
                 }
                 _layout = ll;
+                _referenceKeyOld = await _machine.ReadAsync(_machine.ReferenceKey.Value[0].Address, _machine.GetDataItemType(_machine.ReferenceKey.Value[0]));
                 _timer = new Timer(Do, null, TimeSpan.Zero, TimeSpan.FromSeconds(timerTick));
                 _isBusy = true;
                 _machine.Recording = true;
@@ -53,14 +58,46 @@ namespace TTMMC.Models
 
         private async void Do(object state)
         {
-            //sql writer
-            var r = new LayoutRecord
+            if (await isChangedReferenceKey())
             {
-                Value = "dsa"
-            };
-            _layout.LayoutRecords.Add(r);
-            await _dB.SaveChangesAsync();
-            workCount += 1;
+                var fields = new List<LayoutRecordField>();
+                var acts = _machine.GetParametersRead();
+                foreach (var act in acts)
+                {
+                    if (act.Key.Substring(0, 1) != "[" && act.Key.Substring(act.Key.Length - 1, 1) != "]") // se non è una proprietà nascosta
+                    {
+                        var newIt = new Dictionary<string, string>();
+                        foreach (var dataIt in act.Value)
+                        {
+                            var type = _machine.GetDataItemType(dataIt);
+                            var val = _machine.Read(dataIt.Address, type) ?? "";
+                            newIt.Add(act.Value.IndexOf(dataIt).ToString(), val);
+                        }
+                        var json = JsonConvert.SerializeObject(newIt) ?? "";
+                        fields.Add(new LayoutRecordField { Key = act.Key, Value = json });
+                    }
+                }
+                var record = new LayoutRecord
+                {
+                    Fields = fields
+                };
+
+                _layout.LayoutActRecords.Add(record);
+                await _dB.SaveChangesAsync();
+                workCount += 1;
+            }
+        }
+
+        private async Task<bool> isChangedReferenceKey()
+        {
+            var di = _machine.ReferenceKey.Value[0];
+            var actV = await _machine.ReadAsync(di.Address, _machine.GetDataItemType(di));
+            if(actV != _referenceKeyOld)
+            {
+                _referenceKeyOld = actV;
+                return true;
+            }
+            return false;
         }
 
         public async Task Stop()

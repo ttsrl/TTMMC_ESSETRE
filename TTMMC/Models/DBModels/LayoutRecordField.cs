@@ -5,9 +5,10 @@ using System.Threading.Tasks;
 
 namespace TTMMC.Models.DBModels
 {
-    public class LayoutRecord
+    public class LayoutRecordField
     {
         public int Id { get; set; }
-        public List<LayoutRecordField> Fields { get; set; }
+        public string Key { get; set; }
+        public string Value { get; set; }
     }
 }

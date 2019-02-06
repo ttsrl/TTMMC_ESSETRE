@@ -15,6 +15,7 @@ namespace TTMMC.Models
         private UaClient uaClient;
         private bool firstConnection = false;
         private Dictionary<string, List<DataItem>> datasAddressToRead = new Dictionary<string, List<DataItem>>();
+        private KeyValuePair<string, List<DataItem>> referenceKey = new KeyValuePair<string, List<DataItem>>();
         private string imgLink;
 
         public string Description { get; }
@@ -26,6 +27,7 @@ namespace TTMMC.Models
         public ConnectionProtocol ConnectionProtocol { get; }
         public bool HaveImage { get; }
         public bool Recording { get; set; }
+        public KeyValuePair<string, List<DataItem>> ReferenceKey { get => referenceKey; }
 
         public OPCMachine(Machine machine)
         {
@@ -39,8 +41,20 @@ namespace TTMMC.Models
             HaveImage = (!string.IsNullOrEmpty(machine.Image)) ? true : false;
             imgLink = (!string.IsNullOrEmpty(machine.Image)) ? machine.Image : null;
             datasAddressToRead = machine.DatasAddressToRead ?? new Dictionary<string, List<DataItem>>();
+            referenceKey = getReferenceKey();
             uaClient = new UaClient(new Uri("opc.tcp://" + Address + ":" + Port));
             uaClient.ServerConnectionLost += _uaClient_ServerConnectionLost;
+        }
+
+        private KeyValuePair<string, List<DataItem>> getReferenceKey()
+        {
+            foreach (var d in datasAddressToRead)
+            {
+                var isRef = (d.Key.Substring(0, 1) == "{" && d.Key.Substring(d.Key.Length - 1, 1) == "}");
+                if (isRef)
+                    return d;
+            }
+            return referenceKey;
         }
 
         private void _uaClient_ServerConnectionLost(object sender, EventArgs e)

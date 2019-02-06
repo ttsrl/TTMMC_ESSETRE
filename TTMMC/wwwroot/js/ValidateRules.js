@@ -35,30 +35,6 @@
         return this.optional(element) || value.match(new RegExp(".(" + param + ")$", "i"));
     }, "");
 
-    jQuery.validator.addMethod("radioYesRequired", function (value, element, param) {
-        var v = $("input[name='" + param + "']:checked").val() || "1";
-        if (v === "0") {
-            return true;
-        } else {
-            if (element.value !== "") {
-                return true;
-            }
-        }
-        return false;
-    }, "");
-
-    jQuery.validator.addMethod("selectRequired", function (value, element, param) {
-        var v = $("input[name='" + param + "']").val() || "";
-        if (v === "0") {
-            return true;
-        } else {
-            if (element.value !== "0") {
-                return true;
-            }
-        }
-        return false;
-    }, "");
-
 });
 
 var validateNewMouldRules = {
@@ -157,28 +133,4 @@ var validateNewMasterRules = {
     'code': { required: true },
     'name': { required: true },
     'hexColor': { required: true }
-};
-
-var validateNewLayoutRules = {
-    'client': { required: true },
-    'mould': { required: true },
-    'master': { required: true },
-    'mixture': { required: true },
-    'machine': { required: true },
-    'quantity': { required: true, min: 1 },
-    'minced': { radioYesRequired: "mincedCheck" },
-    'packagingCount': { selectRequired: "packaging" },
-    'start': { required: true }
-};
-
-var validateNewLayoutMessages = {
-    'client': { required: "Selezionare un cliente" },
-    'mould': { required: "Selezionare uno stampo" },
-    'master': { required: "Selezionare un master" },
-    'mixture': { required: "Selezionare una miscela" },
-    'machine': { required: "Selezionare una macchina" },
-    'quantity': { required: "Indicare la quantità", min: "Quantità minima da inserire 1" },
-    'minced': { radioYesRequired: "Inserire un valoce per il macinato" },
-    'packagingCount': { selectRequired: "Inserire una quantità di confezioni" },
-    'start': { required: "Definire una data di inizio" }
 };

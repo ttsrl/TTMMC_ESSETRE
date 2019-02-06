@@ -30,7 +30,6 @@ namespace TTMMC.Models.DBModels
         private string _minced = "";
 
         public int Id { get; set; }
-        public List<LayoutRecord> LayoutRecords { get; set; }
         public Status Status { get; set; }
         public string Barcode { get; set; }
         public Client Client { get; set; }
@@ -44,6 +43,8 @@ namespace TTMMC.Models.DBModels
         public Package Packaging { get; set; }
         public int PackagingQuantity { get; set; }
         public DateTime Start { get; set; }
+        public List<LayoutRecord> LayoutActRecords { get; set; }
+        public LayoutRecord LayoutSetRecord { get; set; }
         public string Notes { get; set; }
     }
 }

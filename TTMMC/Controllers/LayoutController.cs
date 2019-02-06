@@ -32,7 +32,7 @@ namespace TTMMC.Controllers
                 .Include(ll => ll.Mixture)
                     .ThenInclude(m => m.Items)
                 .Include(ll => ll.Mould)
-                .Include(ll => ll.LayoutRecords)
+                .Include(ll => ll.LayoutActRecords)
                 .ToListAsync();
             var c = await _dB.Clients.ToListAsync();
             var model = new IndexLayoutModel
@@ -176,6 +176,7 @@ namespace TTMMC.Controllers
                     if(!_lListener.Contains(layout))
                         _lListener.Add(layout);
                     var ll = _lListener.GetLayoutListenItem(layout);
+                    ll.TimerTick = 2;
                     await ll.Start();
                 }
             }
@@ -216,11 +217,11 @@ namespace TTMMC.Controllers
             if(id != 0)
             {
                 var layout = await _dB.Layouts
-                    .Include(l => l.LayoutRecords)
+                    .Include(l => l.LayoutActRecords)
                     .FirstOrDefaultAsync(l => l.Id == id);
                 if (layout is Layout)
                 {
-                    _dB.LayoutsRecords.RemoveRange(layout.LayoutRecords);
+                    _dB.LayoutsActRecords.RemoveRange(layout.LayoutActRecords);
                     _dB.Layouts.Remove(layout);
                     await _dB.SaveChangesAsync();
                 }
