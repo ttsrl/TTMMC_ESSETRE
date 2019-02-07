@@ -35,13 +35,13 @@
                 <td style="vertical-align: middle; text-align:center; font-weight:bold;">
                     <span id="c_@l.Barcode">@l.LayoutActRecords.Count.ToString()</span>
                 </td>
-                <td style="vertical-align: bottom; text-align: right;">
-                    <a asp-if="@(l.Status == Status.Finished || l.Status == Status.Stopped)" asp-action="Report" asp-controller="Layout" target="_blank">REPORT</a>
+                <td class="buttons" style="vertical-align: middle; text-align: right;">
+                    <a asp-if="@(l.Status == Status.Finished || l.Status == Status.Stopped)" asp-action="Report" asp-controller="Layout" asp-route-id="@l.Id" class="reportButton" target="_blank" style="@((l.Status == Status.Finished || l.Status == Status.Stopped) ? "" : "display:none;")">REPORT</a>
                     <a asp-if="@(l.Status == Status.Waiting)" asp-action="Start" asp-controller="Layout" asp-route-id="@l.Id" class="confirmDialog startButton" data-msg="Confermi di voler avviare la disposizione N. @l.Barcode ?" data-title="Conferma Avvio" title="Avvia la lavorazione">AVVIA</a>
                     <a asp-if="@(l.Status == Status.Recording)" asp-action="Stop" asp-controller="Layout" asp-route-id="@l.Id" class="confirmDialog stopButton" data-msg="Confermi di voler interrompere la disposizione N. @l.Barcode ?" data-title="Conferma Arresto" title="Ferma la lavorazione">FERMA</a>
-                    <label asp-if="@(l.Status == Status.Waiting || l.Status == Status.Stopped)">&nbsp;|&nbsp;</label>
+                    <span asp-if="@(l.Status == Status.Waiting || l.Status == Status.Stopped)">&nbsp;|&nbsp;</span>
                     <a asp-if="@(l.Status == Status.Waiting)" asp-action="Edit" asp-controller="Layout" asp-route-id="@l.Id" >Modifica</a>
-                    <label asp-if="@(l.Status == Status.Waiting)">-</label>
+                    <span asp-if="@(l.Status == Status.Waiting)">-</span>
                     <a asp-if="@(l.Status == Status.Waiting || l.Status == Status.Stopped)" asp-action="Delete" asp-controller="Layout" asp-route-id="@l.Id" class="confirmDialog" data-msg="Sei sicuro di voler rimuovere questa lavorazione?" data-title="Conferma Eliminazione">Rimuovi</a>
                 </td>
             </tr>
@@ -74,6 +74,7 @@
                     $("#c_" + bc).html(it.logs);
                     if (it.status == "@Enum.GetName(typeof(Status), Status.Finished)") {
                         $("#" + bc + " .stopButton").remove();
+                        $("#" + bc + " .reportButton").css("display", "inline-block");
                     }
                 });
             }).fail(function (data) {

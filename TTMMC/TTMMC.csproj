@@ -36,6 +36,7 @@
     <Folder Include="wwwroot\lib\jquery-minicolor\" />
     <Folder Include="wwwroot\mouldImages\" />
     <Folder Include="wwwroot\barcodes\" />
+    <Folder Include="wwwroot\favicon\" />
   </ItemGroup>
 
 </Project>

@@ -202,7 +202,7 @@ namespace TTMMC.Controllers
         {
             if(id != 0)
             {
-                var layout = await _dB.Layouts.Where(l => l.Status == Status.Finished).FirstOrDefaultAsync(l => l.Id == id);
+                var layout = await _dB.Layouts.Where(l => l.Status == Status.Finished || l.Status == Status.Stopped).FirstOrDefaultAsync(l => l.Id == id);
                 if(layout is Layout)
                 {
                     return RedirectToAction("Report", "Pdf", new { id });
