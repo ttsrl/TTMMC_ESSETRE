@@ -33,7 +33,6 @@
     function ReadRealtimeDatas() {
         var start_time = new Date().getTime();
         $.getJSON("/Api/RealtimeMachineDatasRead", { id: @Model.Machine.Id }).done(function (data) {
-            console.log(data);
             if (data.status == 1) {
                 $.each(data.parameters, function (k, it) {
                     var strAgg = "";

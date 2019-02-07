@@ -28,6 +28,7 @@ namespace TTMMC.Models.DBModels
     public class Layout
     {
         private string _minced = "";
+        private DateTime? _startTimestamp;
 
         public int Id { get; set; }
         public Status Status { get; set; }
@@ -46,5 +47,10 @@ namespace TTMMC.Models.DBModels
         public List<LayoutRecord> LayoutActRecords { get; set; }
         public LayoutRecord LayoutSetRecord { get; set; }
         public string Notes { get; set; }
+        public DateTime StartTimestamp
+        {
+            get => _startTimestamp ?? DateTime.Now;
+            set => _startTimestamp = value;
+        }
     }
 }
