@@ -18,8 +18,6 @@ namespace TTMMC.Models
         ConnectionProtocol ConnectionProtocol { get; }
         bool HaveImage { get; }
         bool Recording { get; set; }
-        KeyValuePair<string, List<DataItem>> ReferenceKeyLog { get; }
-        KeyValuePair<string, List<DataItem>> ReferenceKeyFinished { get; }
 
         void Connect();
         MachineStatus GetStatus();
@@ -31,6 +29,8 @@ namespace TTMMC.Models
         Type GetDataItemType(DataItem data);
         Dictionary<string, List<DataItem>> GetParametersRead();
         Dictionary<string, List<DataItem>> GetParametersWrite();
+        KeyValuePair<string, List<DataItem>> GetReferenceKeyWrite();
+        KeyValuePair<string, List<DataItem>> GetReferenceKeyRead();
     }
 
 }

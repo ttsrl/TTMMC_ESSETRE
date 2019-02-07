@@ -30,7 +30,6 @@ namespace TTMMC.Models
         public static int DefaultTimerTick = 5;
 
         private string _referenceKeyLogOld = "";
-        private string _referenceKeyFinisched = "";
 
         public LayoutListenItem(Layout layout, IMachine machine)
         {
@@ -50,8 +49,8 @@ namespace TTMMC.Models
                     await _dB.SaveChangesAsync();
                 }
                 _layout = ll;
-                _referenceKeyLogOld = await _machine.ReadAsync(_machine.ReferenceKeyLog.Value[0].Address, _machine.GetDataItemType(_machine.ReferenceKeyLog.Value[0]));
-                _referenceKeyFinisched = await _machine.ReadAsync(_machine.ReferenceKeyFinished.Value[0].Address, _machine.GetDataItemType(_machine.ReferenceKeyFinished.Value[0]));
+                var refRead = _machine.GetReferenceKeyRead();
+                _referenceKeyLogOld = await _machine.ReadAsync(refRead.Value[0].Address, _machine.GetDataItemType(refRead.Value[0]));
                 _timer = new Timer(Do, null, TimeSpan.Zero, TimeSpan.FromSeconds(timerTick));
                 _isBusy = true;
                 _machine.Recording = true;
@@ -64,7 +63,9 @@ namespace TTMMC.Models
             {
                 var fields = new List<LayoutRecordField>();
                 var acts = _machine.GetParametersRead();
-                var valRefKeyLog = "";
+
+                var refRead = _machine.GetReferenceKeyRead();
+                var refWrite = _machine.GetReferenceKeyWrite();
                 foreach (var act in acts)
                 {
                     if (act.Key.Substring(0, 1) != "[" && act.Key.Substring(act.Key.Length - 1, 1) != "]") // se non è una proprietà nascosta
@@ -76,7 +77,6 @@ namespace TTMMC.Models
                             var val = _machine.Read(dataIt.Address, type) ?? "";
                             newIt.Add(act.Value.IndexOf(dataIt).ToString(), val);
                         }
-                        valRefKeyLog = (act.Key.Substring(0, 1) != "{" && act.Key.Substring(act.Key.Length - 1, 1) != "}") ? newIt[newIt.Keys.ElementAt(0)] : "";
                         var json = JsonConvert.SerializeObject(newIt) ?? "";
                         fields.Add(new LayoutRecordField { Key = act.Key, Value = json });
                     }
@@ -86,8 +86,11 @@ namespace TTMMC.Models
                     Fields = fields
                 };
 
+                var referenceKeyRead = await _machine.ReadAsync(refRead.Value[0].Address, _machine.GetDataItemType(refRead.Value[0]));
+                var referenceKeyFinisched = await _machine.ReadAsync(refWrite.Value[0].Address, _machine.GetDataItemType(refWrite.Value[0]));
+
                 //if is finished
-                if (valRefKeyLog == _referenceKeyFinisched)
+                if (referenceKeyRead == referenceKeyFinisched)
                 {
                     _layout.Status = Status.Finished;
                     _isBusy = false;
@@ -102,7 +105,7 @@ namespace TTMMC.Models
 
         private async Task<bool> isChangedReferenceKey()
         {
-            var di = _machine.ReferenceKeyLog.Value[0];
+            var di = _machine.GetReferenceKeyRead().Value[0];
             var actV = await _machine.ReadAsync(di.Address, _machine.GetDataItemType(di));
             if(actV != _referenceKeyLogOld)
             {

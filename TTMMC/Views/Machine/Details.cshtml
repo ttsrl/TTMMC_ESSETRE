@@ -9,10 +9,10 @@
     <div style="font-size: 11px;font-weight:normal;">
         <a href="#" onclick="return SendPing();">Ping</a>
         &nbsp;-&nbsp;
-        <label><b>TimerUpdate:</b></label>
-        <label id="timerUp" style="font-weight: normal;display: inline-block;width: 60px;"></label>
         <label>RequestTime:</label>
         <label id="reqTime" style="font-weight: normal;"></label>
+        <label><b>UpdateTime:</b></label>
+        <label id="timerUp" style="font-weight: normal;display: inline-block;width: 60px;"></label>
     </div>
 </div>
 
@@ -21,13 +21,15 @@
 
         var machineId = @Model.Machine.Id;
         var unload = false;
-        var timer;
-        var TimerVal = 2000;
         var loadingHidePing = false;
+        //var timer;
+        var uploadEnable = true;
+        var reqCount = 0;
+        var mediaRef = 0;
         $(document).ready(function () {
             loadingDialogShow();
-            timer = setInterval(ReadRealtimeDatas, TimerVal);
-            $("#timerUp").html(TimerVal + " ms");
+            //timer = setInterval(ReadRealtimeDatas, TimerVal);
+            ReadRealtimeDatas();
         });
 
         $(window).on('beforeunload', function () {
@@ -53,7 +55,8 @@
         }
 
         function StopReadRealtimeDatas() {
-            clearInterval(timer);
+            //clearInterval(timer);
+            window.uploadEnable = false;
         }
 
         function NoImageFound(obj) {

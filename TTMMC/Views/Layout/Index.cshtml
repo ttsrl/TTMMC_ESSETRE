@@ -26,7 +26,7 @@
                     <a asp-action="ViewModule" asp-controller="Layout" asp-route-id="@l.Id" target="_blank" title="Apri scheda lavorazione" style="font-size: 13px;">@l.Barcode</a>
                 </td>
                 <td style="text-align:center; vertical-align: middle;">
-                    <span class="led @Enum.GetName(typeof(Status), l.Status)" title="@l.Status"></span>
+                    <span id="l_@l.Barcode" class="led @Enum.GetName(typeof(Status), l.Status)" title="@l.Status"></span>
                 </td>
                 <td style="vertical-align: middle;">@l.Start.ToString("dd/MM/yyyy")</td>
                 <td style="vertical-align: middle;">@l.Client.Name</td>
@@ -65,9 +65,12 @@
         });
 
         function updateLogs() {
-            $.getJSON("/Api/GetLayoutLogsCount").done(function (data) {
+            $.getJSON("/Api/RealtimeLayouts").done(function (data) {
+                console.log(data);
                 $.each(data, function (bc, it) {
-                    $("#c_" + bc).html(it);
+                    $("#l_" + bc).removeAttr("class");
+                    $("#l_" + bc).attr("class", "led " + it.status);
+                    $("#c_" + bc).html(it.logs);
                 });
             }).fail(function (data) {
 
