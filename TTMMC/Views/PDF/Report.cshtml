@@ -1,0 +1,11 @@
+﻿@model PDFReportModel
+@{
+    ViewData["Title"] = "Report";
+    Layout = "_Layout.cshtml";
+}
+<div class="pdfPage">
+    @(await Html.PartialAsync("Header"))
+    <h2>Scheda Report </h2>
+    <div class="pdfContentPage">
+    </div>
+</div>

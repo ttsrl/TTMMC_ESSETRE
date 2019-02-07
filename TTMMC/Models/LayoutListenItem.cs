@@ -43,14 +43,39 @@ namespace TTMMC.Models
             var ll = await _dB.Layouts.Include(l => l.LayoutActRecords).FirstOrDefaultAsync(l => l.Id == _layout.Id);
             if (ll is Layout)
             {
+                _layout = ll;
                 if (ll.Status == Status.Waiting)
                 {
                     ll.Status = Status.Recording;
-                    await _dB.SaveChangesAsync();
                 }
-                _layout = ll;
+                
                 var refRead = _machine.GetReferenceKeyRead();
                 _referenceKeyLogOld = await _machine.ReadAsync(refRead.Value[0].Address, _machine.GetDataItemType(refRead.Value[0]));
+
+                //log sets
+                var writes = _machine.GetParametersWrite();
+                var fields = new List<LayoutRecordField>();
+                foreach (var par in writes)
+                {
+                    var newIt = new Dictionary<string, string>();
+                    foreach (var dataIt in par.Value)
+                    {
+                        var type = _machine.GetDataItemType(dataIt);
+                        var val = _machine.Read(dataIt.Address, type) ?? "";
+                        newIt.Add(par.Value.IndexOf(dataIt).ToString(), val);
+                    }
+                    var json = JsonConvert.SerializeObject(newIt);
+                    fields.Add(new LayoutRecordField { Key = par.Key, Value = json });
+                }
+
+                var record = new LayoutRecord
+                {
+                    Fields = fields
+                };
+
+                ll.LayoutSetRecord = record;
+                await _dB.SaveChangesAsync();
+
                 _timer = new Timer(Do, null, TimeSpan.Zero, TimeSpan.FromSeconds(timerTick));
                 _isBusy = true;
                 _machine.Recording = true;

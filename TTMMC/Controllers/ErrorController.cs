@@ -69,6 +69,10 @@ namespace TTMMC.Controllers
             {
                 txt = "Errore imprevisto. Impossibile creare la scheda di lavorazione";
             }
+            else if (id == 16)
+            {
+                txt = "Errore imprevisto. Impossibile creare la scheda di report";
+            }
             return View(new ResultsModel { Text = txt });
         }
     }

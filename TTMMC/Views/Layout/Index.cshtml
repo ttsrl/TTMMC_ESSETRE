@@ -36,9 +36,10 @@
                     <span id="c_@l.Barcode">@l.LayoutActRecords.Count.ToString()</span>
                 </td>
                 <td style="vertical-align: bottom; text-align: right;">
+                    <a asp-if="@(l.Status == Status.Finished || l.Status == Status.Stopped)" asp-action="Report" asp-controller="Layout" target="_blank">REPORT</a>
                     <a asp-if="@(l.Status == Status.Waiting)" asp-action="Start" asp-controller="Layout" asp-route-id="@l.Id" class="confirmDialog startButton" data-msg="Confermi di voler avviare la disposizione N. @l.Barcode ?" data-title="Conferma Avvio" title="Avvia la lavorazione">AVVIA</a>
                     <a asp-if="@(l.Status == Status.Recording)" asp-action="Stop" asp-controller="Layout" asp-route-id="@l.Id" class="confirmDialog stopButton" data-msg="Confermi di voler interrompere la disposizione N. @l.Barcode ?" data-title="Conferma Arresto" title="Ferma la lavorazione">FERMA</a>
-                    <label asp-if="@(l.Status == Status.Waiting)">&nbsp;|&nbsp;</label>
+                    <label asp-if="@(l.Status == Status.Waiting || l.Status == Status.Stopped)">&nbsp;|&nbsp;</label>
                     <a asp-if="@(l.Status == Status.Waiting)" asp-action="Edit" asp-controller="Layout" asp-route-id="@l.Id" >Modifica</a>
                     <label asp-if="@(l.Status == Status.Waiting)">-</label>
                     <a asp-if="@(l.Status == Status.Waiting || l.Status == Status.Stopped)" asp-action="Delete" asp-controller="Layout" asp-route-id="@l.Id" class="confirmDialog" data-msg="Sei sicuro di voler rimuovere questa lavorazione?" data-title="Conferma Eliminazione">Rimuovi</a>

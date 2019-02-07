@@ -21,4 +21,10 @@ namespace TTMMC.Models.ViewModels
         public Layout Layout { get; set; }
         public IMachine Machine { get; set; }
     }
+
+    public class PDFReportModel
+    {
+        public Layout Layout { get; set; }
+        public IMachine Machine { get; set; }
+    }
 }
