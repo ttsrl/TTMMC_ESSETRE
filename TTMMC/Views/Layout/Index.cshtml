@@ -36,8 +36,8 @@
                     <span id="c_@l.Barcode">@l.LayoutActRecords.Count.ToString()</span>
                 </td>
                 <td style="vertical-align: bottom; text-align: right;">
-                    <a asp-if="@(l.Status == Status.Waiting)" asp-action="Start" asp-controller="Layout" asp-route-id="@l.Id" class="confirmDialog" data-msg="Confermi di voler avviare la disposizione N. @l.Barcode ?" data-title="Conferma Avvio" title="Avvia la lavorazione">AVVIA</a>
-                    <a asp-if="@(l.Status == Status.Recording)" asp-action="Stop" asp-controller="Layout" asp-route-id="@l.Id" class="confirmDialog" data-msg="Confermi di voler interrompere la disposizione N. @l.Barcode ?" data-title="Conferma Arresto" title="Ferma la lavorazione">FERMA</a>
+                    <a asp-if="@(l.Status == Status.Waiting)" asp-action="Start" asp-controller="Layout" asp-route-id="@l.Id" class="confirmDialog startButton" data-msg="Confermi di voler avviare la disposizione N. @l.Barcode ?" data-title="Conferma Avvio" title="Avvia la lavorazione">AVVIA</a>
+                    <a asp-if="@(l.Status == Status.Recording)" asp-action="Stop" asp-controller="Layout" asp-route-id="@l.Id" class="confirmDialog stopButton" data-msg="Confermi di voler interrompere la disposizione N. @l.Barcode ?" data-title="Conferma Arresto" title="Ferma la lavorazione">FERMA</a>
                     <label asp-if="@(l.Status == Status.Waiting)">&nbsp;|&nbsp;</label>
                     <a asp-if="@(l.Status == Status.Waiting)" asp-action="Edit" asp-controller="Layout" asp-route-id="@l.Id" >Modifica</a>
                     <label asp-if="@(l.Status == Status.Waiting)">-</label>
@@ -66,11 +66,14 @@
 
         function updateLogs() {
             $.getJSON("/Api/RealtimeLayouts").done(function (data) {
-                console.log(data);
                 $.each(data, function (bc, it) {
                     $("#l_" + bc).removeAttr("class");
                     $("#l_" + bc).attr("class", "led " + it.status);
+                    $("#l_" + bc).attr("title", it.status);
                     $("#c_" + bc).html(it.logs);
+                    if (it.status == "@Enum.GetName(typeof(Status), Status.Finished)") {
+                        $("#" + bc + " .stopButton").remove();
+                    }
                 });
             }).fail(function (data) {
 

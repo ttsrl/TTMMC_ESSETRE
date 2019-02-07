@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TTMMC.Models;
+using TTMMC.Models.DBModels;
 using TTMMC.Services;
 
 namespace TTMMC.Controllers.Api
@@ -29,7 +29,7 @@ namespace TTMMC.Controllers.Api
                 var out_ = new Dictionary<string, object>();
                 foreach (var l in ls)
                 {
-                    out_.Add(l.Barcode, new { status = l.Status, logs = l.Count });
+                    out_.Add(l.Barcode, new { status = Enum.GetName(typeof(Status),l.Status), logs = l.Count });
                 }
                 return Ok(out_);
             }

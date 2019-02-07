@@ -11,6 +11,7 @@
         &nbsp;-&nbsp;
         <label>RequestTime:</label>
         <label id="reqTime" style="font-weight: normal;"></label>
+        &nbsp;&nbsp;
         <label><b>UpdateTime:</b></label>
         <label id="timerUp" style="font-weight: normal;display: inline-block;width: 60px;"></label>
     </div>
@@ -22,13 +23,11 @@
         var machineId = @Model.Machine.Id;
         var unload = false;
         var loadingHidePing = false;
-        //var timer;
         var uploadEnable = true;
         var reqCount = 0;
         var mediaRef = 0;
         $(document).ready(function () {
             loadingDialogShow();
-            //timer = setInterval(ReadRealtimeDatas, TimerVal);
             ReadRealtimeDatas();
         });
 
@@ -55,7 +54,6 @@
         }
 
         function StopReadRealtimeDatas() {
-            //clearInterval(timer);
             window.uploadEnable = false;
         }
 
