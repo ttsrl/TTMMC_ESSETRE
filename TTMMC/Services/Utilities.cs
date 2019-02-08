@@ -80,6 +80,16 @@ namespace TTMMC.Services
             return string.Concat(red, red, green, green, blue, blue, alpha, alpha);
         }
 
-
+        public string ValueToString(Type type, string val, int numberDecimal = 2)
+        {
+            if (type != typeof(string))
+            {
+                if ((val.Contains(",")))
+                {
+                    return val.Substring(0, val.IndexOf(",") + numberDecimal + 1);
+                }
+            }
+            return val;
+        }
     }
 }

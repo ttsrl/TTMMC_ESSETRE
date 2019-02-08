@@ -111,8 +111,22 @@ namespace TTMMC.Controllers
                 var client = await _dB.Clients.FindAsync(id);
                 if (client is Client)
                 {
-                    _dB.Clients.Remove(client);
-                    await _dB.SaveChangesAsync();
+                    var lavok = await _dB.Layouts.Include(l => l.Client).Where(l => l.Client.Id == id).CountAsync();
+                    if (lavok == 0)
+                    {
+                        var moulds = await _dB.Moulds.ToListAsync();
+                        foreach (var m in moulds)
+                        {
+                            if (m.DefaultClient == client)
+                            {
+                                m.DefaultClient = null;
+                            }
+                        }
+                        _dB.Clients.Remove(client);
+                        await _dB.SaveChangesAsync();
+                        return RedirectToAction("Index");
+                    }
+                    return RedirectToAction("Index", "Error", new { id = 17 });
                 }
             }
             return RedirectToAction("Index");

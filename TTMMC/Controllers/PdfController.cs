@@ -38,9 +38,9 @@ namespace TTMMC.Controllers
                 var pdf = new ViewAsPdf
                 {
                     PageOrientation = Orientation.Portrait,
-                    PageSize = Size.A4,
                     PageWidth = 210,
                     PageHeight = 297,
+                    PageSize = Size.A4,
                     PageMargins = new Margins(1, 1, 1, 1),
                     Model = new PDFMouldModuleModel { Mould = mould },
                     IsLowQuality = false,

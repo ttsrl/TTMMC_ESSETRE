@@ -21,9 +21,7 @@ namespace TTMMC.Models.ViewModels
     {
         [Required]
         public string Code { get; set; }
-        [Required]
         public int Client { get; set; }
-        [Required]
         public int Mixture { get; set; }
         [Required]
         public string Description { get; set; }

@@ -1,12 +1,40 @@
-﻿@model PDFReportModel
+﻿@inject Utilities _utils
+@model PDFReportModel
 @{
     ViewData["Title"] = "Report";
     Layout = "_Layout.cshtml";
 }
 <div class="pdfPage">
     @(await Html.PartialAsync("Header"))
-    <h2>Scheda Report </h2>
-    <div class="pdfContentPage">
+    <div style="vertical-align:middle; overflow:auto;">
+        <h2 style="float:left;">Report Lavorazione - @Model.Layout.Barcode</h2>
+        <img src="~/barcodes/@(Model.Layout.Barcode).png" style="float:right;width:150px;margin-top:10px;"/>
+    </div>
+    <div>
+        <h3>Impostazioni macchina</h3>
+        <table class="pdf_table" border="0">
+            <tr>
+                @foreach (var set in Model.Layout.LayoutSetRecord.Fields)
+                {
+                    <td>@(set.Key.ToNotMappedAttribute().ToWhiteSpaceInsert())</td>
+                }
+            </tr>
+            <tr>
+                @foreach (var set in Model.Layout.LayoutSetRecord.Fields)
+                {
+                    var json = JsonConvert.DeserializeObject<Dictionary<string, string>>(set.Value) ?? new Dictionary<string, string>();
+                    if (json.Count == 1)
+                    {
+                        <td style="text-align:center;">@(_utils.ValueToString(typeof(double),json.Values.ElementAt(0), 3))</td>
+                    }
+                    else
+                    {
+                        <td>
 
+                        </td>
+                    }
+                }
+            </tr>
+        </table>
     </div>
 </div>

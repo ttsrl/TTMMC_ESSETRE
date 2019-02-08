@@ -83,8 +83,14 @@ namespace TTMMC.Controllers
             var material = await _dB.Materials.FindAsync(id);
             if (material is Material)
             {
-                _dB.Materials.Remove(material);
-                await _dB.SaveChangesAsync();
+                var mixok = await _dB.MixtureItems.Include(l => l.Material).Where(l => l.Material.Id == id).CountAsync();
+                if (mixok == 0)
+                {
+                    _dB.Materials.Remove(material);
+                    await _dB.SaveChangesAsync();
+                    return RedirectToAction("Index");
+                }
+                return RedirectToAction("Index", "Error", new { id = 21 });
             }
             return RedirectToAction("Index");
         }

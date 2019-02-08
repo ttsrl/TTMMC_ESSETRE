@@ -92,8 +92,14 @@ namespace TTMMC.Controllers
                 var master = await _dB.Masters.FindAsync(id);
                 if (master is Master)
                 {
-                    _dB.Masters.Remove(master);
-                    await _dB.SaveChangesAsync();
+                    var lavok = await _dB.Layouts.Include(l => l.Master).Where(l => l.Master.Id == id).CountAsync();
+                    if (lavok == 0)
+                    {
+                        _dB.Masters.Remove(master);
+                        await _dB.SaveChangesAsync();
+                        return RedirectToAction("Index");
+                    }
+                    return RedirectToAction("Index", "Error", new { id = 20 });
                 }
             }
             return RedirectToAction("Index");

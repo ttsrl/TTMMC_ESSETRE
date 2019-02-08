@@ -15,9 +15,11 @@ namespace TTMMC.Controllers.Api
     public class RealtimeMachineDatasReadController : ControllerBase
     {
         private readonly MachinesService _machineService;
-        public RealtimeMachineDatasReadController(MachinesService machineService)
+        private readonly Utilities _utils;
+        public RealtimeMachineDatasReadController(Utilities utils, MachinesService machineService)
         {
             _machineService = machineService ?? throw new ArgumentNullException(nameof(machineService));
+            _utils = utils ?? throw new ArgumentNullException(nameof(utils));
         }
 
         [HttpGet]
@@ -39,7 +41,7 @@ namespace TTMMC.Controllers.Api
                             var val = "";
                             try
                             {
-                                val = convertVal(type, machine.Read(k.Address, type) ?? "");
+                                val = _utils.ValueToString(type, machine.Read(k.Address, type) ?? "");
                             }
                             catch { }
                             elmL.Add(c.ToString(), val);
@@ -55,18 +57,6 @@ namespace TTMMC.Controllers.Api
                 return Ok(new { status = (int)machine.GetStatus(), parameters = out_ });
             }
             return NotFound(new { });
-        }
-
-        private string convertVal(Type type, string val)
-        {
-            if(type != typeof(string))
-            {
-                if ((val.Contains(",")))
-                {
-                    return val.Substring(0, val.IndexOf(",") + 3);
-                }
-            }
-            return val;
         }
     }
 }

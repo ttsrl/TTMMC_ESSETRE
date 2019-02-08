@@ -236,8 +236,14 @@ namespace TTMMC.Controllers
                 var mould = await _dB.Moulds.FirstOrDefaultAsync(m => m.Id == id);
                 if (mould is Mould)
                 {
-                    _dB.Moulds.Remove(mould);
-                    await _dB.SaveChangesAsync();
+                    var lavok = await _dB.Layouts.Include(l => l.Mould).Where(l => l.Mould.Id == id).CountAsync();
+                    if (lavok == 0)
+                    {
+                        _dB.Moulds.Remove(mould);
+                        await _dB.SaveChangesAsync();
+                        return RedirectToAction("Index");
+                    }
+                    return RedirectToAction("Index", "Error", new { id = 19 });
                 }
             }
             return RedirectToAction("Index");

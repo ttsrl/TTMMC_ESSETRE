@@ -218,9 +218,15 @@ namespace TTMMC.Controllers
             {
                 var layout = await _dB.Layouts
                     .Include(l => l.LayoutActRecords)
+                        .ThenInclude(lr => lr.Fields)
                     .FirstOrDefaultAsync(l => l.Id == id);
                 if (layout is Layout)
                 {
+                    var fields = layout.LayoutActRecords;
+                    foreach(var f in fields)
+                    {
+                        _dB.LayoutsActRecordsFields.RemoveRange(f.Fields);
+                    }
                     _dB.LayoutsActRecords.RemoveRange(layout.LayoutActRecords);
                     _dB.Layouts.Remove(layout);
                     await _dB.SaveChangesAsync();

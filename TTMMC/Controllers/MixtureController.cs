@@ -144,9 +144,23 @@ namespace TTMMC.Controllers
                            .FirstOrDefaultAsync();
                 if (mixt is Mixture)
                 {
-                    _dB.MixtureItems.RemoveRange(mixt.Items);
-                    _dB.Mixtures.Remove(mixt);
-                    await _dB.SaveChangesAsync();
+                    var lavok = await _dB.Layouts.Include(l => l.Mixture).Where(l => l.Mixture.Id == id).CountAsync();
+                    if (lavok == 0)
+                    {
+                        var moulds = await _dB.Moulds.ToListAsync();
+                        foreach (var m in moulds)
+                        {
+                            if (m.DefaultMixture == mixt)
+                            {
+                                m.DefaultMixture = null;
+                            }
+                        }
+                        _dB.MixtureItems.RemoveRange(mixt.Items);
+                        _dB.Mixtures.Remove(mixt);
+                        await _dB.SaveChangesAsync();
+                        return RedirectToAction("Index");
+                    }
+                    return RedirectToAction("Index", "Error", new { id = 18 });
                 }
             }
             return RedirectToAction("Index");

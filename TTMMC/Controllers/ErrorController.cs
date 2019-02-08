@@ -73,6 +73,26 @@ namespace TTMMC.Controllers
             {
                 txt = "Errore imprevisto. Impossibile creare la scheda di report";
             }
+            else if (id == 17)
+            {
+                txt = "Impossibile cancellare questo cliente perchè è legato ad una o più lavorazioni.";
+            }
+            else if (id == 18)
+            {
+                txt = "Impossibile cancellare questa miscela perchè è legata ad una o più lavorazioni.";
+            }
+            else if (id == 19)
+            {
+                txt = "Impossibile cancellare questo stampo perchè è legato ad una o più lavorazioni.";
+            }
+            else if (id == 20)
+            {
+                txt = "Impossibile cancellare questo master perchè è legata ad una o più lavorazioni.";
+            }
+            else if (id == 21)
+            {
+                txt = "Impossibile cancellare questo materiale perchè è legato ad una o più miscele.";
+            }
             return View(new ResultsModel { Text = txt });
         }
     }
