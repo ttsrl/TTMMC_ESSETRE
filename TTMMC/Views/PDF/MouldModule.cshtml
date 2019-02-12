@@ -7,6 +7,10 @@
     var desc = (string.IsNullOrEmpty(Model.Mould.Description)) ? "Nessuna descrizione inserita" : Model.Mould.Description;
     var location = (string.IsNullOrEmpty(Model.Mould.Location)) ? "Nessuna posizione inserita" : Model.Mould.Location;
     var note = (string.IsNullOrEmpty(Model.Mould.Notes)) ? "Nessuna nota aggiunta" : Model.Mould.Notes;
+
+    var clientN = (Model.Mould.DefaultClient == null) ? "--" : Model.Mould.DefaultClient.Name;
+    var clientVAT = (Model.Mould.DefaultClient == null) ? "--" : Model.Mould.DefaultClient.VAT;
+    var mixt = (Model.Mould.DefaultMixture == null) ? "--" : Model.Mould.DefaultMixture.Name;
 }
 
 <div class="pdfPage">
@@ -27,20 +31,27 @@
         <br />
         <label class="moduleTitle">Cliente Default:</label>
         <label class="moduleValue">
-            <b>Nome:</b>&nbsp;@(Model.Mould.DefaultClient.Name)
+            <b>Nome:</b>&nbsp;@(clientN)
             <br />
-            <b>IVA:</b>&nbsp;@(Model.Mould.DefaultClient.VAT)
+            <b>IVA:</b>&nbsp;@(clientVAT)
         </label>
         <br />
         <label class="moduleTitle">Miscela Default:</label>
         <label class="moduleValue">
-            <b>Nome:</b>&nbsp;@(Model.Mould.DefaultMixture.Name)
+            <b>Nome:</b>&nbsp;@(mixt)
             <br />
             <b>Materiali:</b>
             <br />
-            @foreach (var m in Model.Mould.DefaultMixture.Items)
+            @if (Model.Mould.DefaultMixture != null)
             {
-                @Html.Raw("<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + m.Quantity + "</b>&nbsp;&nbsp;&nbsp;x&nbsp;&nbsp;&nbsp;" + m.Material.Name)<br />
+                foreach (var m in Model.Mould.DefaultMixture.Items)
+                {
+                    @Html.Raw("<b>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;" + m.Quantity + "</b>&nbsp;&nbsp;&nbsp;x&nbsp;&nbsp;&nbsp;" + m.Material.Name)<br />
+                }
+            }
+            else
+            {
+                <span>--</span>
             }
         </label>
         <br />
