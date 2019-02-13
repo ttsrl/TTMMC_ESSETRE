@@ -15,6 +15,7 @@ namespace TTMMC.Models.ViewModels
         public List<Material> Materials { get; set; }
         public List<Mixture> Mixtures { get; set; }
         public List<Client> Clients { get; set; }
+        public List<Master> Masters { get; set; }
     }
 
     public class NewMouldModel
@@ -23,6 +24,7 @@ namespace TTMMC.Models.ViewModels
         public string Code { get; set; }
         public int Client { get; set; }
         public int Mixture { get; set; }
+        public int Master { get; set; }
         [Required]
         public string Description { get; set; }
         [Required]
@@ -38,6 +40,7 @@ namespace TTMMC.Models.ViewModels
 
     public class EditMouldViewModel
     {
+        public List<Master> Masters { get; set; }
         public List<Mixture> Mixtures { get; set; }
         public List<Client> Clients { get; set; }
         public Mould Mould { get; set; }

@@ -73,6 +73,7 @@ namespace TTMMC.Controllers
             {
                 txt = "Errore imprevisto. Impossibile creare la scheda di report";
             }
+            // ---------------- errori cancellazioni
             else if (id == 17)
             {
                 txt = "Impossibile cancellare questo cliente perchè è legato ad una o più lavorazioni.";

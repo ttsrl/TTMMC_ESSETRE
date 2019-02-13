@@ -11,6 +11,8 @@
     var clientN = (Model.Mould.DefaultClient == null) ? "--" : Model.Mould.DefaultClient.Name;
     var clientVAT = (Model.Mould.DefaultClient == null) ? "--" : Model.Mould.DefaultClient.VAT;
     var mixt = (Model.Mould.DefaultMixture == null) ? "--" : Model.Mould.DefaultMixture.Name;
+    var masterN = (Model.Mould.DefaultMaster == null) ? "--" : Model.Mould.DefaultMaster.Name;
+    var masterC = (Model.Mould.DefaultMaster == null) ? "--" : Model.Mould.DefaultMaster.Code;
 }
 
 <div class="pdfPage">
@@ -53,6 +55,13 @@
             {
                 <span>--</span>
             }
+        </label>
+        <br />
+        <label class="moduleTitle">Master Default:</label>
+        <label class="moduleValue">
+            <b>Codice:</b>&nbsp;@(masterN)
+            <br />
+            <b>Nome:</b>&nbsp;@(masterC)
         </label>
         <br />
         <label class="moduleTitle">Posizione:</label>

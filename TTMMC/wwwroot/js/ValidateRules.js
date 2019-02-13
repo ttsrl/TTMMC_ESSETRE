@@ -41,14 +41,12 @@ var validateNewMouldRules = {
     'code': { required: true },
     'description': { required: true },
     'location': { required: true },
-    'master': { required: true },
     'image': { extension: "jpg|jpeg|png", filesize: 3145728 }
 };
 var validateNewMouldMessages = {
     'code': { required: "Inserisci un codice" },
     'description': { required: "Inserisci una descrizione" },
     'location': { required: "Inserisci la posizione dello stampo" },
-    'master': { required: "Definisci un master" },
     'image': { extension:"Estensione file non supportata", filesize: "Dimensione file superiore a 3MB" }
 };
 

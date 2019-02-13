@@ -28,6 +28,15 @@
         </select>
         <a asp-action="#" onclick="return openAddDialog();">Aggiungi</a>
         <div id="mixtureDetails" style="width: 500px; margin-left: 154px; font-size: 12px; font-weight: normal;"></div>
+        <label for="master" class="title">Master Default:</label>
+        <select style="width:280px;" name="master">
+            <option value="">--</option>
+            @foreach (var m in Model.Masters)
+            {
+                <option value="@m.Id">@m.Name</option>
+            }
+        </select>
+        <br />
         <label for="description" class="title">Descrizione:</label>
         <input type="text" style="width:280px;" name="description" />
         <br />

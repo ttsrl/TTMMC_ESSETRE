@@ -95,6 +95,14 @@ namespace TTMMC.Controllers
                     var lavok = await _dB.Layouts.Include(l => l.Master).Where(l => l.Master.Id == id).CountAsync();
                     if (lavok == 0)
                     {
+                        var moulds = await _dB.Moulds.ToListAsync();
+                        foreach (var m in moulds)
+                        {
+                            if (m.DefaultMaster == master)
+                            {
+                                m.DefaultMaster = null;
+                            }
+                        }
                         _dB.Masters.Remove(master);
                         await _dB.SaveChangesAsync();
                         return RedirectToAction("Index");

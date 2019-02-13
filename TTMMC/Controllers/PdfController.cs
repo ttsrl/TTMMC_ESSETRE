@@ -46,7 +46,8 @@ namespace TTMMC.Controllers
                     IsLowQuality = false,
                     CustomSwitches = "--disable-smart-shrinking",
                     FileName = "mouldModule_" + mould.Code + ".pdf",
-                    ContentDisposition = ContentDisposition.Inline
+                    ContentDisposition = ContentDisposition.Inline,
+                    ContentType = "application/pdf"
                 };
                 return pdf;
             }
@@ -72,7 +73,8 @@ namespace TTMMC.Controllers
                     IsLowQuality = false,
                     CustomSwitches = "--disable-smart-shrinking",
                     FileName = "clientModule_" + client.Code + ".pdf",
-                    ContentDisposition = ContentDisposition.Inline
+                    ContentDisposition = ContentDisposition.Inline,
+                    ContentType = "application/pdf"
                 };
                 return pdf;
             }
@@ -104,7 +106,8 @@ namespace TTMMC.Controllers
                     IsLowQuality = false,
                     CustomSwitches = "--disable-smart-shrinking",
                     FileName = "layoutModule_" + layout.Barcode + ".pdf",
-                    ContentDisposition = ContentDisposition.Inline
+                    ContentDisposition = ContentDisposition.Inline,
+                    ContentType = "application/pdf"
                 };
                 return pdf;
             }
@@ -140,7 +143,8 @@ namespace TTMMC.Controllers
                     IsLowQuality = false,
                     CustomSwitches = "--disable-smart-shrinking",
                     FileName = "report_" + layout.Barcode + ".pdf",
-                    ContentDisposition = ContentDisposition.Inline
+                    ContentDisposition = ContentDisposition.Inline,
+                    ContentType = "application/pdf"
                 };
                 return pdf;
             }

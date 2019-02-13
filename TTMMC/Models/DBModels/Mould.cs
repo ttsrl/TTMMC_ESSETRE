@@ -13,6 +13,7 @@ namespace TTMMC.Models.DBModels
         public string Code { get => _code; set => _code = value?.ToTrim(); }
         public Client DefaultClient { get; set; }
         public Mixture DefaultMixture { get; set; }
+        public Master DefaultMaster { get; set; }
         public string Description { get => _description; set => _description = value?.ToTrim().ToFirstCharUpper(); }
         public string Location { get => _location; set => _location = value?.ToTrim().ToUpper(); }
         public string Image { get; set; }
