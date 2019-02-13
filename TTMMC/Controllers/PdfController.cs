@@ -46,13 +46,14 @@ namespace TTMMC.Controllers
                     IsLowQuality = false,
                     CustomSwitches = "--disable-smart-shrinking",
                     FileName = "mouldModule_" + mould.Code + ".pdf",
-                    ContentDisposition = ContentDisposition.Inline,
-                    ContentType = "application/pdf"
+                    ContentDisposition = ContentDisposition.Inline
                 };
                 return pdf;
             }
             return RedirectToAction("Index", "Error", new { id = 13 });
         }
+
+
 
         [HttpGet]
         public async Task<IActionResult> ClientModule(int id)
@@ -71,8 +72,7 @@ namespace TTMMC.Controllers
                     IsLowQuality = false,
                     CustomSwitches = "--disable-smart-shrinking",
                     FileName = "clientModule_" + client.Code + ".pdf",
-                    ContentDisposition = ContentDisposition.Inline,
-                    ContentType = "application/pdf"
+                    ContentDisposition = ContentDisposition.Inline
                 };
                 return pdf;
             }
@@ -104,8 +104,7 @@ namespace TTMMC.Controllers
                     IsLowQuality = false,
                     CustomSwitches = "--disable-smart-shrinking",
                     FileName = "layoutModule_" + layout.Barcode + ".pdf",
-                    ContentDisposition = ContentDisposition.Inline,
-                    ContentType = "application/pdf"
+                    ContentDisposition = ContentDisposition.Inline
                 };
                 return pdf;
             }
@@ -141,8 +140,7 @@ namespace TTMMC.Controllers
                     IsLowQuality = false,
                     CustomSwitches = "--disable-smart-shrinking",
                     FileName = "report_" + layout.Barcode + ".pdf",
-                    ContentDisposition = ContentDisposition.Inline,
-                    ContentType = "application/pdf"
+                    ContentDisposition = ContentDisposition.Inline
                 };
                 return pdf;
             }

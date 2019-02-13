@@ -174,40 +174,38 @@ namespace TTMMC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, string code, int client, int mixture, string description, string location, IFormFile image, string notes)
         {
-            if (ModelState.IsValid)
+            var mould = await _dB.Moulds.FirstOrDefaultAsync(m => m.Id == id);
+            if (mould is Mould)
             {
-                var mould = await _dB.Moulds.FirstOrDefaultAsync(m => m.Id == id);
-                var existClient = await _dB.Clients.FirstOrDefaultAsync(c => c.Id == client);
-                var mix = await _dB.Mixtures.FirstOrDefaultAsync(m => m.Id == mixture);
-                if (mix is Mixture && mould is Mould && existClient is Client)
-                {
-                    var urlImg = (mould.Image == "" || mould.Image == null) ? "" : Path.Combine(_environment.WebRootPath, "mouldImages") + $@"\{mould.Image.Replace("mouldImages/", "")}";
-                    var newFileName = "";
-                    if (image != null && image.Length > 0) //se è presente un'immagine
-                    {
-                        //cancello l'immagine precedente se c 'era
-                        if (urlImg != "" && System.IO.File.Exists(urlImg))
-                            System.IO.File.Delete(urlImg);
+                var exClient = await _dB.Clients.FirstOrDefaultAsync(c => c.Id == client);
+                var mixt = await _dB.Mixtures.FirstOrDefaultAsync(m => m.Id == mixture);
 
-                        var fileName = ContentDispositionHeaderValue.Parse(image.ContentDisposition).FileName.Trim('"');
-                        newFileName = Convert.ToString(Guid.NewGuid()) + Path.GetExtension(fileName); //set unique id filename + extension
-                        fileName = Path.Combine(_environment.WebRootPath, "mouldImages") + $@"\{newFileName}";
-                        using (FileStream fs = System.IO.File.Create(fileName))
-                        {
-                            image.CopyTo(fs);
-                            fs.Flush();
-                        }
+                var urlImg = (mould.Image == "" || mould.Image == null) ? "" : Path.Combine(_environment.WebRootPath, "mouldImages") + $@"\{mould.Image.Replace("mouldImages/", "")}";
+                var newFileName = "";
+                if (image != null && image.Length > 0) //se è presente un'immagine
+                {
+                    //cancello l'immagine precedente se c 'era
+                    if (urlImg != "" && System.IO.File.Exists(urlImg))
+                        System.IO.File.Delete(urlImg);
+
+                    var fileName = ContentDispositionHeaderValue.Parse(image.ContentDisposition).FileName.Trim('"');
+                    newFileName = Convert.ToString(Guid.NewGuid()) + Path.GetExtension(fileName); //set unique id filename + extension
+                    fileName = Path.Combine(_environment.WebRootPath, "mouldImages") + $@"\{newFileName}";
+                    using (FileStream fs = System.IO.File.Create(fileName))
+                    {
+                        image.CopyTo(fs);
+                        fs.Flush();
                     }
-                    mould.DefaultMixture = mix;
-                    mould.DefaultClient = existClient;
-                    mould.Code = code;
-                    mould.Description = description;
-                    mould.Image = (newFileName != "") ? "mouldImages/" + newFileName : mould.Image;
-                    mould.Location = location;
-                    mould.Notes = notes;
-                    await _dB.SaveChangesAsync();
-                    return RedirectToAction("Index");
                 }
+                mould.DefaultMixture = mixt;
+                mould.DefaultClient = exClient;
+                mould.Code = code;
+                mould.Description = description;
+                mould.Image = (newFileName != "") ? "mouldImages/" + newFileName : mould.Image;
+                mould.Location = location;
+                mould.Notes = notes;
+                await _dB.SaveChangesAsync();
+                return RedirectToAction("Index");
             }
             return RedirectToAction("Index", "Error", new { id = 4 });
         }
