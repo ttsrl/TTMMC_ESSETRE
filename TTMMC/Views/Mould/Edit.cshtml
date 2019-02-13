@@ -7,7 +7,7 @@
     <form id="editMouldForm" asp-action="Edit" asp-controller="Mould" method="post" asp-route-id="@Model.Mould.Id" enctype="multipart/form-data" asp-antiforgery="true" autocomplete="off">
         <label for="code" class="title">Foto caricata:</label>
         <div style="display: inline-block;  margin-bottom: 8px;">
-            <img src="/@(Model.Mould.Image)" style="width: 300px; height:auto; margin-top: 4px; margin-bottom:4px; border: 1px dashed rgba(0,0,0,0.15);" onerror="this.src ='/images/machinesDetails/default.jpg'" />
+            <img src="/mouldImages/@(Model.Mould.Image)" style="width: 300px; height:auto; margin-top: 4px; margin-bottom:4px; border: 1px dashed rgba(0,0,0,0.15);" onerror="this.src ='/images/machinesDetails/default.jpg'" />
             <br />
             <a asp-action="DeleteImage" asp-controller="Mould" asp-route-id="@Model.Mould.Id" style="margin-left:1px;top: -3px; position: relative;">Rimuovi</a>
         </div>

@@ -52,7 +52,6 @@ namespace TTMMC
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
 
-            //RotativaConfiguration.Setup(env);
             RotativaConfiguration.Setup(env);
         }
     }

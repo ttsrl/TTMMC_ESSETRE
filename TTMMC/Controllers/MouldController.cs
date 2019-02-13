@@ -85,7 +85,7 @@ namespace TTMMC.Controllers
                         {
                             var fileName = ContentDispositionHeaderValue.Parse(model.Image.ContentDisposition).FileName.Trim('"');
                             newFileName = Convert.ToString(Guid.NewGuid()) + Path.GetExtension(fileName); //set unique id filename + extension
-                            fileName = Path.Combine(_environment.WebRootPath, "mouldImages") + $@"\{newFileName}";
+                            fileName = Path.Combine(_environment.WebRootPath, "mouldImages", newFileName);
                             using (FileStream fs = System.IO.File.Create(fileName))
                             {
                                 model.Image.CopyTo(fs);
@@ -97,7 +97,7 @@ namespace TTMMC.Controllers
                             Location = model.Location,
                             DefaultClient = client,
                             DefaultMixture = mixture,
-                            Image = (model.Image != null && model.Image.Length > 0) ? "mouldImages/" + newFileName : "",
+                            Image = (model.Image != null && model.Image.Length > 0) ? newFileName : "",
                             Code = model.Code,
                             Description = model.Description,
                             Notes = model.Notes
@@ -179,8 +179,8 @@ namespace TTMMC.Controllers
             {
                 var exClient = await _dB.Clients.FirstOrDefaultAsync(c => c.Id == client);
                 var mixt = await _dB.Mixtures.FirstOrDefaultAsync(m => m.Id == mixture);
-
-                var urlImg = (mould.Image == "" || mould.Image == null) ? "" : Path.Combine(_environment.WebRootPath, "mouldImages") + $@"\{mould.Image.Replace("mouldImages/", "")}";
+                var path = Path.Combine(_environment.WebRootPath, "mouldImages", mould.Image);
+                var urlImg = (mould.Image == "" || mould.Image == null) ? "" : path;
                 var newFileName = "";
                 if (image != null && image.Length > 0) //se è presente un'immagine
                 {
@@ -190,7 +190,7 @@ namespace TTMMC.Controllers
 
                     var fileName = ContentDispositionHeaderValue.Parse(image.ContentDisposition).FileName.Trim('"');
                     newFileName = Convert.ToString(Guid.NewGuid()) + Path.GetExtension(fileName); //set unique id filename + extension
-                    fileName = Path.Combine(_environment.WebRootPath, "mouldImages") + $@"\{newFileName}";
+                    fileName = Path.Combine(_environment.WebRootPath, "mouldImages", newFileName);
                     using (FileStream fs = System.IO.File.Create(fileName))
                     {
                         image.CopyTo(fs);
@@ -201,7 +201,7 @@ namespace TTMMC.Controllers
                 mould.DefaultClient = exClient;
                 mould.Code = code;
                 mould.Description = description;
-                mould.Image = (newFileName != "") ? "mouldImages/" + newFileName : mould.Image;
+                mould.Image = (newFileName != "") ? newFileName : mould.Image;
                 mould.Location = location;
                 mould.Notes = notes;
                 await _dB.SaveChangesAsync();
@@ -216,7 +216,7 @@ namespace TTMMC.Controllers
             var mould = await _dB.Moulds.FirstOrDefaultAsync(m => m.Id == id);
             if (mould is Mould)
             {
-                var urlImg = (mould.Image == "" || mould.Image == null) ? "" : Path.Combine(_environment.WebRootPath, "mouldImages") + $@"\{mould.Image.Replace("mouldImages/", "")}";
+                var urlImg = (mould.Image == "" || mould.Image == null) ? "" : Path.Combine(_environment.WebRootPath, "mouldImages", mould.Image);
                 if (urlImg != "" && System.IO.File.Exists(urlImg))
                     System.IO.File.Delete(urlImg);
                 mould.Image = "";
