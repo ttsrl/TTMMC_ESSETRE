@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace TTMMC.Models.DBModels
+namespace TTMMC_ESSETRE.Models.DBModels
 {
     public class LayoutRecord
     {

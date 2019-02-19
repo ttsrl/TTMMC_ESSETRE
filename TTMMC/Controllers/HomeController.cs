@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
-using TTMMC.Models.ViewModels;
+using TTMMC_ESSETRE.Models.ViewModels;
 
-namespace TTMMC.Controllers
+namespace TTMMC_ESSETRE.Controllers
 {
     public class HomeController : Controller
     {

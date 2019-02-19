@@ -135,9 +135,9 @@ a.add:hover, a.remove:hover {
 }
 
     #header #logo {
-        width: 349px;
+        width: 268px;
         height: auto;
-        margin: 8px auto;
+        margin: 21px auto 5px;
         position: relative;
         display: inline-block;
     }

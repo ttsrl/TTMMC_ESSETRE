@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace TTMMC.Models.ViewModels
+namespace TTMMC_ESSETRE.Models.ViewModels
 {
     public class HomeModel
     {

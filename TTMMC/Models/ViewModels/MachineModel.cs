@@ -1,4 +1,4 @@
-﻿namespace TTMMC.Models.ViewModels
+﻿namespace TTMMC_ESSETRE.Models.ViewModels
 {
     public class MachineDetailsModel
     {

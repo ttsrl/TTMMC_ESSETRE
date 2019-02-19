@@ -1,13 +1,13 @@
 ﻿using Hylasoft.Opc.Ua;
 using Microsoft.AspNetCore.Mvc;
-using TTMMC.Models;
-using TTMMC.Services;
+using TTMMC_ESSETRE.Models;
+using TTMMC_ESSETRE.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace TTMMC.Controllers.Api
+namespace TTMMC_ESSETRE.Controllers.Api
 {
     [Produces("application/json")]
     [Route("api/GetMachinesStatus")]

@@ -2,29 +2,17 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TTMMC.Models.DBModels;
+using TTMMC_ESSETRE.Models.DBModels;
 
-namespace TTMMC.Models.ViewModels
+namespace TTMMC_ESSETRE.Models.ViewModels
 {
-    public class PDFMouldModuleModel
-    {
-        public Mould Mould { get; set; }
-    }
-
-    public class PDFClientModuleModel
-    {
-        public Client Client { get; set; }
-    }
-
     public class PDFLayoutModuleModel
     {
         public Layout Layout { get; set; }
-        public IMachine Machine { get; set; }
     }
 
     public class PDFReportModel
     {
         public Layout Layout { get; set; }
-        public IMachine Machine { get; set; }
     }
 }

@@ -2,10 +2,10 @@
 using System;
 using System.Collections.Generic;
 using System.Net.NetworkInformation;
-using TTMMC.Models;
-using TTMMC.Services;
+using TTMMC_ESSETRE.Models;
+using TTMMC_ESSETRE.Services;
 
-namespace TTMMC.Controllers.Api
+namespace TTMMC_ESSETRE.Controllers.Api
 {
     [Produces("application/json")]
     [Route("api/PingMachine")]

@@ -1,10 +1,10 @@
-﻿using TTMMC.Services;
+﻿using TTMMC_ESSETRE.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace TTMMC.ConfigurationModels
+namespace TTMMC_ESSETRE.ConfigurationModels
 {
     public class Machine
     {

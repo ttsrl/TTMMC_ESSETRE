@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace TTMMC.Models.ViewModels
+namespace TTMMC_ESSETRE.Models.ViewModels
 {
     public class ResultsModel
     {

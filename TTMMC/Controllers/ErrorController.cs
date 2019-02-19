@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using TTMMC.Models.ViewModels;
+using TTMMC_ESSETRE.Models.ViewModels;
 
-namespace TTMMC.Controllers
+namespace TTMMC_ESSETRE.Controllers
 {
     public class ErrorController : Controller
     {

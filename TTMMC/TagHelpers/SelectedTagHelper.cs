@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Razor.TagHelpers;
 
-namespace TTMMC.TagHelpers
+namespace TTMMC_ESSETRE.TagHelpers
 {
     [HtmlTargetElement(Attributes = "asp-selected")]
     public class SelectedTagHelper : TagHelper

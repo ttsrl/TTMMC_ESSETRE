@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Http;
 
-namespace TTMMC.Utils
+namespace TTMMC_ESSETRE.Utils
 {
     public static class Extensions
     {

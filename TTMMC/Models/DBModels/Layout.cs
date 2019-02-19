@@ -1,22 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using TTMMC.Services;
-using TTMMC.Utils;
+using System.Linq;
+using System.Threading.Tasks;
 
-namespace TTMMC.Models.DBModels
+namespace TTMMC_ESSETRE.Models.DBModels
 {
-    public enum Package
-    {
-        Nessuna,
-        GabbiaRossa,
-        GabbiaVerde,
-        Sacco,
-        ScatolaGrande,
-        ScatolaMedia,
-        ScatolaPiccola,
-        Cesta
-    }
-
     public enum Status
     {
         Waiting,
@@ -27,30 +15,26 @@ namespace TTMMC.Models.DBModels
 
     public class Layout
     {
-        private string _minced = "";
-        private DateTime? _startTimestamp;
-
+        private DateTime? _timestamp;
         public int Id { get; set; }
-        public Status Status { get; set; }
-        public string Barcode { get; set; }
-        public Client Client { get; set; }
-        public Mould Mould { get; set; }
+        public string MachineName { get; set; }
+        public int? MachineNumber { get; set; }
         public int Machine { get; set; }
-        public Mixture Mixture { get; set; }
-        public Master Master { get; set; }
+        //public DispositionType? LayoutType { get; set; }
+        public long LayoutNumber { get; set; }
+        public int LayoutPhase { get; set; }
+        public int? ItemNumber { get; set; }
+        public string ItemDescription { get; set; }
+        public string ItemColor { get; set; }
+        public int Meters { get; set; }
         public int Quantity { get; set; }
-        public string Minced { get => _minced; set => _minced = value?.ToTrim().ToTitleCase(); }
-        public TimeSpan Humidification { get; set; }
-        public Package Packaging { get; set; }
-        public int PackagingQuantity { get; set; }
-        public DateTime Start { get; set; }
+        public Status Status { get; set; }
         public List<LayoutRecord> LayoutActRecords { get; set; }
         public LayoutRecord LayoutSetRecord { get; set; }
-        public string Notes { get; set; }
         public DateTime StartTimestamp
         {
-            get => _startTimestamp ?? DateTime.Now;
-            set => _startTimestamp = value;
+            get => _timestamp ?? DateTime.Now;
+            set => _timestamp = value;
         }
     }
 }

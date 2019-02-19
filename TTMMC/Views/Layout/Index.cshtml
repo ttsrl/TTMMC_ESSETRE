@@ -13,32 +13,28 @@
             <td style="font-weight:bold; width:115px;">Barcode</td>
             <td style="font-weight:bold; width:50px;">Stato</td>
             <td style="font-weight:bold; width:85px;">Data</td>
-            <td style="font-weight:bold; width:200px;">Cliente</td>
-            <td style="font-weight:bold; width:120px;">Stampo</td>
             <td style="font-weight:bold; width:110px;">Macchina</td>
             <td style="font-weight:bold; width:60px;">Logs</td>
             <td style="font-weight:bold; width:190px;">Azioni</td>
         </tr>
         @foreach (var l in Model.Layouts)
         {
-            <tr id="@l.Barcode" style="font-size: 12px;">
+            <tr id="@l.LayoutNumber" style="font-size: 12px;">
                 <td style="font-weight:bold; vertical-align: middle;">
-                    <a asp-action="ViewModule" asp-controller="Layout" asp-route-id="@l.Id" target="_blank" title="Apri scheda lavorazione" style="font-size: 13px;">@l.Barcode</a>
+                    <a asp-action="ViewModule" asp-controller="Layout" asp-route-id="@l.Id" target="_blank" title="Apri scheda lavorazione" style="font-size: 13px;">@l.LayoutNumber</a>
                 </td>
                 <td style="text-align:center; vertical-align: middle;">
-                    <span id="l_@l.Barcode" class="led @Enum.GetName(typeof(Status), l.Status)" title="@l.Status"></span>
+                    <span id="l_@l.LayoutNumber" class="led @Enum.GetName(typeof(Status), l.Status)" title="@l.Status"></span>
                 </td>
-                <td style="vertical-align: middle;">@l.Start.ToString("dd/MM/yyyy")</td>
-                <td style="vertical-align: middle;">@l.Client.Name</td>
-                <td style="vertical-align: middle;">@l.Mould.Code</td>
+                <td style="vertical-align: middle;">@l.StartTimestamp.ToString("dd/MM/yyyy")</td>
                 <td style="vertical-align: middle;"><a asp-if="Model.Machines.Select(m => m.Id).Contains(l.Machine)" asp-action="Details" asp-controller="Machine" asp-route-id="@l.Machine">@Model.Machines.FirstOrDefault(m => m.Id == l.Machine).ReferenceName.ToString()</a><label asp-if="@(!Model.Machines.Select(m => m.Id).Contains(l.Machine))" style="font-size:11px">Macchina non trovata</label></td>
                 <td style="vertical-align: middle; text-align:center; font-weight:bold;">
-                    <span id="c_@l.Barcode">@l.LayoutActRecords.Count.ToString()</span>
+                    <span id="c_@l.LayoutNumber">@l.LayoutActRecords.Count.ToString()</span>
                 </td>
                 <td class="buttons" style="vertical-align: middle; text-align: right;">
                     <a asp-if="@(l.Status == Status.Finished || l.Status == Status.Stopped)" asp-action="Report" asp-controller="Layout" asp-route-id="@l.Id" class="reportButton" target="_blank" style="@((l.Status == Status.Finished || l.Status == Status.Stopped) ? "" : "display:none;")">REPORT</a>
-                    <a asp-if="@(l.Status == Status.Waiting)" asp-action="Start" asp-controller="Layout" asp-route-id="@l.Id" class="confirmDialog startButton" data-msg="Confermi di voler avviare la disposizione N. @l.Barcode ?" data-title="Conferma Avvio" title="Avvia la lavorazione">AVVIA</a>
-                    <a asp-if="@(l.Status == Status.Recording)" asp-action="Stop" asp-controller="Layout" asp-route-id="@l.Id" class="confirmDialog stopButton" data-msg="Confermi di voler interrompere la disposizione N. @l.Barcode ?" data-title="Conferma Arresto" title="Ferma la lavorazione">FERMA</a>
+                    <a asp-if="@(l.Status == Status.Waiting)" asp-action="Start" asp-controller="Layout" asp-route-id="@l.Id" class="confirmDialog startButton" data-msg="Confermi di voler avviare la disposizione N. @l.LayoutNumber ?" data-title="Conferma Avvio" title="Avvia la lavorazione">AVVIA</a>
+                    <a asp-if="@(l.Status == Status.Recording)" asp-action="Stop" asp-controller="Layout" asp-route-id="@l.Id" class="confirmDialog stopButton" data-msg="Confermi di voler interrompere la disposizione N. @l.LayoutNumber ?" data-title="Conferma Arresto" title="Ferma la lavorazione">FERMA</a>
                     <span asp-if="@(l.Status == Status.Waiting || l.Status == Status.Stopped)">&nbsp;|&nbsp;</span>
                     <a asp-if="@(l.Status == Status.Waiting)" asp-action="Edit" asp-controller="Layout" asp-route-id="@l.Id" >Modifica</a>
                     <span asp-if="@(l.Status == Status.Waiting)">-</span>
@@ -99,18 +95,16 @@
             for (var i = 0; i < words.length; i++) {
                 var word = words[i].toLowerCase();
                 $(layouts).each(function (index, item) {
-                    var bc = item.Barcode.toLowerCase();
-                    var client = item.Client.Name.toLowerCase();
-                    var mould = item.Mould.Code.toLowerCase();
+                    var bc = item.LayoutNumber.toLowerCase();
                     if (i == 0) {
-                        if ((bc.indexOf(word) >= 0) || (client.indexOf(word) >= 0) || (mould.indexOf(word) >= 0)) {
+                        if ((bc.indexOf(word) >= 0)) {
                             $("#" + bc).css("display", "");
                         } else {
                             $("#" + bc).css("display", "none");
                         }
                     } else {
                         if ($("#" + bc).css("display") != "none") {
-                            if ((bc.indexOf(word) >= 0) || (client.indexOf(word) >= 0) || (mould.indexOf(word) >= 0)) {
+                            if ((bc.indexOf(word) >= 0)) {
                                 $("#" + bc).css("display", "");
                             } else {
                                 $("#" + bc).css("display", "none");

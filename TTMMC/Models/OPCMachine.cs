@@ -2,22 +2,23 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using TTMMC.Services;
-using TTMMC.ConfigurationModels;
+using TTMMC_ESSETRE.Services;
+using TTMMC_ESSETRE.ConfigurationModels;
 using Hylasoft.Opc.Common;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
 
-namespace TTMMC.Models
+namespace TTMMC_ESSETRE.Models
 {
     partial class OPCMachine : IMachine
     {
+        private bool recording = false;
         private UaClient uaClient;
         private bool firstConnection = false;
         private Dictionary<string, List<DataItem>> datasAddressToRead = new Dictionary<string, List<DataItem>>();
         private Dictionary<string, List<DataItem>> datasAddressToWrite = new Dictionary<string, List<DataItem>>();
         private string imgLink;
-
+        
         public string Description { get; }
         public int Id { get; }
         public string Address { get; }
@@ -26,7 +27,7 @@ namespace TTMMC.Models
         public MachineType Type { get; }
         public ConnectionProtocol ConnectionProtocol { get; }
         public bool HaveImage { get; }
-        public bool Recording { get; set; }
+        public bool Recording { get => recording; set => recording = value; }
 
         public OPCMachine(Machine machine)
         {

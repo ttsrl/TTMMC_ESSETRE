@@ -3,7 +3,7 @@ using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using TTMMC.Services;
+using TTMMC_ESSETRE.Services;
 
 namespace TTMMC
 {
@@ -17,8 +17,8 @@ namespace TTMMC
             {
                 try
                 {
-                    var context = scope.ServiceProvider.GetRequiredService<DBContext>();
-                    DBContext.Initialize(context);
+                    //var context = scope.ServiceProvider.GetRequiredService<DBContext>();
+                    //DBContext.Initialize(context);
                 }
                 catch (Exception ex)
                 {

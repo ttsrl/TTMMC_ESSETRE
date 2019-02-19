@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using TTMMC.Models;
-using TTMMC.Models.ViewModels;
-using TTMMC.Services;
+using TTMMC_ESSETRE.Models;
+using TTMMC_ESSETRE.Models.ViewModels;
+using TTMMC_ESSETRE.Services;
 
-namespace TTMMC.Controllers
+namespace TTMMC_ESSETRE.Controllers
 {
     public class MachineController : Controller
     {

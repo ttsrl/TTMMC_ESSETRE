@@ -1,11 +1,11 @@
-﻿using TTMMC.Services;
+﻿using TTMMC_ESSETRE.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TTMMC.ConfigurationModels;
+using TTMMC_ESSETRE.ConfigurationModels;
 
-namespace TTMMC.Models
+namespace TTMMC_ESSETRE.Models
 {
     public interface IMachine 
     {

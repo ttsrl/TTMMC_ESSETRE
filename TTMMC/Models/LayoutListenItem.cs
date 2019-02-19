@@ -6,11 +6,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using TTMMC.ConfigurationModels;
-using TTMMC.Models.DBModels;
-using TTMMC.Services;
+using TTMMC_ESSETRE.ConfigurationModels;
+using TTMMC_ESSETRE.Models.DBModels;
+using TTMMC_ESSETRE.Services;
 
-namespace TTMMC.Models
+namespace TTMMC_ESSETRE.Models
 {
     public class LayoutListenItem
     {

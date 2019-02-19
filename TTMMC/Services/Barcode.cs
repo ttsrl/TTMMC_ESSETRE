@@ -2,10 +2,10 @@
 using SixLabors.ImageSharp.PixelFormats;
 using System;
 using System.Collections.Generic;
-using TTMMC.Utils;
+using TTMMC_ESSETRE.Utils;
 using TyKonKet.BarcodeGenerator;
 
-namespace TTMMC.Services
+namespace TTMMC_ESSETRE.Services
 {
     public class Barcode
     {

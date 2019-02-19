@@ -4,10 +4,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TTMMC.Models.DBModels;
-using TTMMC.Services;
+using TTMMC_ESSETRE.Models.DBModels;
+using TTMMC_ESSETRE.Services;
 
-namespace TTMMC.Controllers.Api
+namespace TTMMC_ESSETRE.Controllers.Api
 {
     [Produces("application/json")]
     [Route("api/RealtimeLayouts")]
@@ -23,13 +23,13 @@ namespace TTMMC.Controllers.Api
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var ls = await _dB.Layouts.Include(l => l.LayoutActRecords).Select(l => new {l.Barcode, l.Status, l.LayoutActRecords.Count }).Where(l => l.Status == Models.DBModels.Status.Recording || l.Status == Models.DBModels.Status.Finished).ToListAsync();
+            var ls = await _dB.Layouts.Include(l => l.LayoutActRecords).Select(l => new {l.LayoutNumber, l.Status, l.LayoutActRecords.Count }).Where(l => l.Status == Models.DBModels.Status.Recording || l.Status == Models.DBModels.Status.Finished).ToListAsync();
             if (ls != null && ls.Count > 0)
             {
                 var out_ = new Dictionary<string, object>();
                 foreach (var l in ls)
                 {
-                    out_.Add(l.Barcode, new { status = Enum.GetName(typeof(Status),l.Status), logs = l.Count });
+                    out_.Add(l.LayoutNumber.ToString(), new { status = Enum.GetName(typeof(Status),l.Status), logs = l.Count });
                 }
                 return Ok(out_);
             }

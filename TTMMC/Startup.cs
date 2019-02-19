@@ -3,8 +3,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
-using TTMMC.Services;
+using TTMMC_ESSETRE.Services;
 using Rotativa.AspNetCore;
+using TTMMC_ESSETRE.Models;
 
 namespace TTMMC
 {
@@ -20,10 +21,11 @@ namespace TTMMC
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            services.AddDbContext<owlDBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
             services.AddSingleton<Utilities>();
             services.AddSingleton<MachinesService>();
-            services.AddSingleton<LayoutListener>();
+            //services.AddSingleton<LayoutListener>();
             services.AddSingleton<Barcode>();
             services.AddRouting(options => options.LowercaseUrls = true);
             services.AddMvc();

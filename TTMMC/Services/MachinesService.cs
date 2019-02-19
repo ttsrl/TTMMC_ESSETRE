@@ -2,14 +2,14 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
-using TTMMC.Models;
+using TTMMC_ESSETRE.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using TTMMC.ConfigurationModels;
+using TTMMC_ESSETRE.ConfigurationModels;
 
-namespace TTMMC.Services
+namespace TTMMC_ESSETRE.Services
 {
     public enum ConnectionProtocol
     {
@@ -20,7 +20,7 @@ namespace TTMMC.Services
     public enum MachineType
     {
         Null,
-        SD_Systec100,
+        Decofast,
     }
 
     public enum MachineStatus
