@@ -13,13 +13,13 @@
         <h3>Impostazioni macchina</h3>
         <table class="pdf_table" border="0">
             <tr>
-                @foreach (var set in Model.Layout.LayoutSetRecord.Fields)
+                @*@foreach (var set in Model.Layout.LayoutSetRecord.Fields)
                 {
                     <td>@(set.Key.ToNotMappedAttribute().ToWhiteSpaceInsert())</td>
-                }
+                }*@
             </tr>
             <tr>
-                @foreach (var set in Model.Layout.LayoutSetRecord.Fields)
+                @*@foreach (var set in Model.Layout.LayoutSetRecord.Fields)
                 {
                     var json = JsonConvert.DeserializeObject<Dictionary<string, string>>(set.Value) ?? new Dictionary<string, string>();
                     if (json.Count == 1)
@@ -32,7 +32,7 @@
 
                         </td>
                     }
-                }
+                }*@
             </tr>
         </table>
     </div>

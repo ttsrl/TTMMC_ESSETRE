@@ -3,42 +3,40 @@
     ViewData["Title"] = "Lavorazioni";
 }
 <h2>Lavorazioni</h2>
-<div class="content_page margin_bottom" style="padding: 10px 35px 0px;">
+<div class="content_page margin_bottom">
     <div style="margin-bottom: 15px; text-align: right;">
         <label for="searchBar" style="width: 60px;">Cerca:</label>
         <input type="text" id="txtSearch" value="" style="margin: 0 !important; width: 200px;" placeholder="Codice, Cliente, Stampo" onkeyup="filterSearch(event)" autocomplete="off" />
     </div>
     <table class="table">
         <tr>
-            <td style="font-weight:bold; width:115px;">Barcode</td>
-            <td style="font-weight:bold; width:50px;">Stato</td>
-            <td style="font-weight:bold; width:85px;">Data</td>
-            <td style="font-weight:bold; width:110px;">Macchina</td>
-            <td style="font-weight:bold; width:60px;">Logs</td>
-            <td style="font-weight:bold; width:190px;">Azioni</td>
+            <td style="font-weight:bold; width:175px;">Numero</td>
+            <td style="font-weight:bold; width:55px;">Stato</td>
+            <td style="font-weight:bold; width:110px;">Data</td>
+            <td style="font-weight:bold; width:120px;">Macchina</td>
+            <td style="font-weight:bold; width:100px;">Metri</td>
+            <td style="font-weight:bold; width:100px;">Quantità</td>
+            <td style="font-weight:bold; width:65px;">Logs</td>
+            <td style="font-weight:bold; width:175px;">Azioni</td>
         </tr>
         @foreach (var l in Model.Layouts)
         {
-            <tr id="@l.LayoutNumber" style="font-size: 12px;">
-                <td style="font-weight:bold; vertical-align: middle;">
-                    <a asp-action="ViewModule" asp-controller="Layout" asp-route-id="@l.Id" target="_blank" title="Apri scheda lavorazione" style="font-size: 13px;">@l.LayoutNumber</a>
-                </td>
+            <tr id="@l.LayoutNumber" style="font-size: 14px;">
+                <td style="font-weight:bold; vertical-align: middle; padding-left:20px;">@l.LayoutNumber</td>
                 <td style="text-align:center; vertical-align: middle;">
-                    <span id="l_@l.LayoutNumber" class="led @Enum.GetName(typeof(Status), l.Status)" title="@l.Status"></span>
+                    <span id="l_@l.LayoutNumber" class="led @Enum.GetName(typeof(Status), l.Status)" title="@l.Status" style="top: 2px;position: relative;"></span>
                 </td>
                 <td style="vertical-align: middle;">@l.StartTimestamp.ToString("dd/MM/yyyy")</td>
                 <td style="vertical-align: middle;"><a asp-if="Model.Machines.Select(m => m.Id).Contains(l.Machine)" asp-action="Details" asp-controller="Machine" asp-route-id="@l.Machine">@Model.Machines.FirstOrDefault(m => m.Id == l.Machine).ReferenceName.ToString()</a><label asp-if="@(!Model.Machines.Select(m => m.Id).Contains(l.Machine))" style="font-size:11px">Macchina non trovata</label></td>
+                <td></td>
+                <td></td>
                 <td style="vertical-align: middle; text-align:center; font-weight:bold;">
-                    <span id="c_@l.LayoutNumber">@l.LayoutActRecords.Count.ToString()</span>
+                    <span id="c_@l.LayoutNumber">@((l.LayoutActRecords)?.Count.ToString() ?? "0")</span>
                 </td>
-                <td class="buttons" style="vertical-align: middle; text-align: right;">
+                <td class="buttons" style="vertical-align: middle; text-align: right; padding-right:20px;">
                     <a asp-if="@(l.Status == Status.Finished || l.Status == Status.Stopped)" asp-action="Report" asp-controller="Layout" asp-route-id="@l.Id" class="reportButton" target="_blank" style="@((l.Status == Status.Finished || l.Status == Status.Stopped) ? "" : "display:none;")">REPORT</a>
                     <a asp-if="@(l.Status == Status.Waiting)" asp-action="Start" asp-controller="Layout" asp-route-id="@l.Id" class="confirmDialog startButton" data-msg="Confermi di voler avviare la disposizione N. @l.LayoutNumber ?" data-title="Conferma Avvio" title="Avvia la lavorazione">AVVIA</a>
                     <a asp-if="@(l.Status == Status.Recording)" asp-action="Stop" asp-controller="Layout" asp-route-id="@l.Id" class="confirmDialog stopButton" data-msg="Confermi di voler interrompere la disposizione N. @l.LayoutNumber ?" data-title="Conferma Arresto" title="Ferma la lavorazione">FERMA</a>
-                    <span asp-if="@(l.Status == Status.Waiting || l.Status == Status.Stopped)">&nbsp;|&nbsp;</span>
-                    <a asp-if="@(l.Status == Status.Waiting)" asp-action="Edit" asp-controller="Layout" asp-route-id="@l.Id" >Modifica</a>
-                    <span asp-if="@(l.Status == Status.Waiting)">-</span>
-                    <a asp-if="@(l.Status == Status.Waiting || l.Status == Status.Stopped)" asp-action="Delete" asp-controller="Layout" asp-route-id="@l.Id" class="confirmDialog" data-msg="Sei sicuro di voler rimuovere questa lavorazione?" data-title="Conferma Eliminazione">Rimuovi</a>
                 </td>
             </tr>
         }

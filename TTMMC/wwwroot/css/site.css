@@ -564,28 +564,28 @@ form a:hover{
 }
 
 .led {
-    width: 22px;
-    height: 22px;
+    width: 24px;
+    height: 24px;
     background-image: url("../images/leds.png");
     background-position: 0px;
-    background-size: auto 22px;
+    background-size: auto 24px;
     background-repeat: no-repeat;
     display: inline-block;
 }
 
     .led.Recording {
         background-image: url("../images/recIcon.png");
-        background-size: 22px 22px;
+        background-size: 24px 24px;
     }
     .led.red, .led.Stopped {
-        background-position: -22px;
+        background-position: -24px;
     }
     .led.orange, .led.Waiting {
-        background-position: -44px;
+        background-position: -48px;
     }
     .led.blue {
-        background-position: -66px;
+        background-position: -72px;
     }
     .led.black, .led.Finished {
-        background-position: -88px;
+        background-position: -94px;
     }

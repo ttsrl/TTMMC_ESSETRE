@@ -11,12 +11,12 @@ namespace TTMMC_ESSETRE.Services
     public class LayoutListener
     {
         private List<LayoutListenItem> listenItems = new List<LayoutListenItem>();
-        private readonly DBContext _dB;
+        private readonly TTMMCContext _dB;
         private readonly MachinesService _machinesService;
 
         public LayoutListener([FromServices] MachinesService machinesService)
         {
-            _dB = DBContext.Instance;
+            _dB = TTMMCContext.Instance;
             _machinesService = machinesService;
         }
 

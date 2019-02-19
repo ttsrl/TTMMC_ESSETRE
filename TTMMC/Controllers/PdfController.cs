@@ -13,11 +13,11 @@ namespace TTMMC_ESSETRE.Controllers
 {
     public class PdfController : Controller
     {
-        private readonly DBContext _dB;
+        private readonly TTMMCContext _dB;
         private readonly IHostingEnvironment _hostingEnvironment;
         private readonly MachinesService _machines;
 
-        public PdfController(DBContext dB, MachinesService machines, IHostingEnvironment hostingEnvironment)
+        public PdfController(TTMMCContext dB, MachinesService machines, IHostingEnvironment hostingEnvironment)
         {
             _dB = dB ?? throw new ArgumentNullException(nameof(dB));
             _hostingEnvironment = hostingEnvironment ?? throw new ArgumentNullException(nameof(hostingEnvironment));

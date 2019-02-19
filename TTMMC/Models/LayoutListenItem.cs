@@ -19,7 +19,7 @@ namespace TTMMC_ESSETRE.Models
         private bool _isBusy = false;
         private int timerTick = 5;
         private Timer _timer;
-        private readonly DBContext _dB;
+        private readonly TTMMCContext _dB;
         private readonly IMachine _machine;
 
         public int TimerTick { get => timerTick; set => timerTick = value; }
@@ -35,7 +35,7 @@ namespace TTMMC_ESSETRE.Models
         {
             _machine = machine;
             _layout = layout;
-            _dB = DBContext.Instance;
+            _dB = TTMMCContext.Instance;
         }
 
         public async Task Start()

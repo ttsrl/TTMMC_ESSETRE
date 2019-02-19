@@ -17,8 +17,8 @@ namespace TTMMC
             {
                 try
                 {
-                    //var context = scope.ServiceProvider.GetRequiredService<DBContext>();
-                    //DBContext.Initialize(context);
+                    var context = scope.ServiceProvider.GetRequiredService<TTMMCContext>();
+                    TTMMCContext.Initialize(context);
                 }
                 catch (Exception ex)
                 {

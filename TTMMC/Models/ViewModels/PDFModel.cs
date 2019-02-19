@@ -6,10 +6,6 @@ using TTMMC_ESSETRE.Models.DBModels;
 
 namespace TTMMC_ESSETRE.Models.ViewModels
 {
-    public class PDFLayoutModuleModel
-    {
-        public Layout Layout { get; set; }
-    }
 
     public class PDFReportModel
     {

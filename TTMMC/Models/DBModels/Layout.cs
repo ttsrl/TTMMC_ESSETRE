@@ -20,14 +20,14 @@ namespace TTMMC_ESSETRE.Models.DBModels
         public string MachineName { get; set; }
         public int? MachineNumber { get; set; }
         public int Machine { get; set; }
-        //public DispositionType? LayoutType { get; set; }
+        public string LayoutType { get; set; }
         public long LayoutNumber { get; set; }
-        public int LayoutPhase { get; set; }
-        public int? ItemNumber { get; set; }
+        public int? LayoutPhase { get; set; }
+        public int? ItemCode { get; set; }
         public string ItemDescription { get; set; }
-        public string ItemColor { get; set; }
-        public int Meters { get; set; }
-        public int Quantity { get; set; }
+        public string Color { get; set; }
+        public int? Meters { get; set; }
+        public int? Quantity { get; set; }
         public Status Status { get; set; }
         public List<LayoutRecord> LayoutActRecords { get; set; }
         public LayoutRecord LayoutSetRecord { get; set; }

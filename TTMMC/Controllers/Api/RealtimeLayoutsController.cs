@@ -13,9 +13,9 @@ namespace TTMMC_ESSETRE.Controllers.Api
     [Route("api/RealtimeLayouts")]
     public class RealtimeLayoutsController : ControllerBase
     {
-        private readonly DBContext _dB;
+        private readonly TTMMCContext _dB;
 
-        public RealtimeLayoutsController(DBContext dB)
+        public RealtimeLayoutsController(TTMMCContext dB)
         {
             _dB = dB ?? throw new ArgumentNullException(nameof(dB));
         }

@@ -73,15 +73,20 @@ namespace TTMMC_ESSETRE.Services
             return null;
         }
 
-        //public OPCMachine GetMachineByName(string Name)
-        //{
-        //    if (!string.IsNullOrEmpty(Name))
-        //    {
-        //        var machine = Machines[Name];
-        //        return machine;
-        //    }
-        //    return null;
-        //}
+        public IMachine GetMachineByName(string Name)
+        {
+            if (!string.IsNullOrEmpty(Name))
+            {
+                foreach (var m in machines)
+                {
+                    if (m.ReferenceName == Name)
+                    {
+                        return m;
+                    }
+                }
+            }
+            return null;
+        }
 
         //public string MachineStatusJson
         //{
