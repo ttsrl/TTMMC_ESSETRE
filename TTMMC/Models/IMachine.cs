@@ -29,6 +29,8 @@ namespace TTMMC_ESSETRE.Models
         Type GetDataItemType(DataItem data);
         Dictionary<string, List<DataItem>> GetParametersRead();
         Dictionary<string, List<DataItem>> GetParametersWrite();
+        List<DataItem> GetParameterRead(string name);
+        List<DataItem> GetParameterWrite(string name);
         KeyValuePair<string, List<DataItem>> GetReferenceKeyWrite();
         KeyValuePair<string, List<DataItem>> GetReferenceKeyRead();
     }

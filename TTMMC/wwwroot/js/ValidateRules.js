@@ -36,3 +36,10 @@
     }, "");
 
 });
+
+var validateNewRecipeRules = {
+    'name': { required: true }
+};
+var validateNewRecipeMessages = {
+    'name': { required: "Inserire un nome." }
+};

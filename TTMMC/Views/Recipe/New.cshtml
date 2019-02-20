@@ -1,0 +1,51 @@
+﻿@model NewRecipeModel
+@{
+    ViewData["Title"] = "New";
+}
+<h2>Nuova Ricetta</h2>
+<div class="content_page margin_bottom">
+    <form id="newRecipeForm" asp-action="New" asp-controller="Recipe" method="post" asp-antiforgery="true" autocomplete="off">
+        <label for="code" class="title" style="width:205px;">Nome:</label>
+        <input type="text" style="width:180px;" name="name" />
+        <br />
+        @foreach (var f in Model.Fields)
+        {
+            var val = f.Value[0];
+            <label class="title" style="width:205px;">@f.Key.ToWhiteSpaceInsert()</label>
+            <input class="field" type="number" step="0.1" value="0" min="0" name="fields[@f.Key]" title="@val.Description" style="width:180px;" />
+            <br />
+        }
+        <br />
+        <label for="code" class="title" style="width:205px;">Note:</label>
+        <textarea name="notes" style="width:250px; height:60px;"></textarea>
+        <br />
+        <br />
+        <input type="submit" value="Aggiungi" />
+    </form>
+</div>
+
+@section Scripts{
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script type="text/javascript">
+
+        var validation = $('#newRecipeForm').validate();
+        validation.settings.rules = validateNewRecipeRules;
+        validation.settings.messages = validateNewRecipeMessages;
+
+        $(document).ready(function () {
+
+            $(".field").each(function () {
+                $(this).rules("add", {
+                    required: true,
+                    notEqual: "0",
+                    messages: {
+                        required: "Il campo non può essere vuoto",
+                        notEqual: "Il valore non può essere 0"
+                    }
+                });
+            });
+
+        });
+
+    </script>
+}

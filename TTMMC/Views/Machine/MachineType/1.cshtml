@@ -3,7 +3,7 @@
 <br />
 <h3>Dati in Realtime</h3>
 <br />
-<table class="table" style="font-size: 13px;">
+<table class="table">
     <tr>
         <td style="width:300px; font-weight:bold;">Parametro</td>
         <td style="width:400px; font-weight:bold;">Descrizione</td>
@@ -11,7 +11,7 @@
     </tr>
     @foreach (var it in Model.Machine.GetParametersRead())
     {
-        <tr>
+        <tr style="font-size: 13px;">
             <td style="padding-left:20px; vertical-align: middle;"><b>@it.Key.ToNotMappedAttribute().ToWhiteSpaceInsert()</b></td>
             <td style="vertical-align: middle;">
                 @foreach (var d in it.Value)

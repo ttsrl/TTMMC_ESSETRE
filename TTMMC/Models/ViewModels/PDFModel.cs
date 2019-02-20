@@ -6,6 +6,10 @@ using TTMMC_ESSETRE.Models.DBModels;
 
 namespace TTMMC_ESSETRE.Models.ViewModels
 {
+    public class PDFViewRecipe
+    {
+        public Recipe Recipe { get; set; }
+    }
 
     public class PDFReportModel
     {

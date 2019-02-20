@@ -12,6 +12,7 @@ namespace TTMMC_ESSETRE.Services
             Options = options;
         }
 
+        public DbSet<Recipe> Recipes { get; set; }
         public DbSet<Layout> Layouts { get; set; }
         public DbSet<LayoutRecord> LayoutsActRecords { get; set; }
         public DbSet<LayoutRecordField> LayoutsActRecordsFields { get; set; }

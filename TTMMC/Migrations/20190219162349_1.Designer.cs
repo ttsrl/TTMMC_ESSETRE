@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TTMMC_ESSETRE.Services;
 
 namespace TTMMC_ESSETRE.Migrations
 {
     [DbContext(typeof(TTMMCContext))]
-    partial class TTMMCContextModelSnapshot : ModelSnapshot
+    [Migration("20190219162349_1")]
+    partial class _1
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -102,11 +104,9 @@ namespace TTMMC_ESSETRE.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<string>("Notes");
-
                     b.Property<int?>("RepiceSettingsId");
 
-                    b.Property<DateTime>("Timestamp");
+                    b.Property<DateTime>("StartTimestamp");
 
                     b.HasKey("Id");
 

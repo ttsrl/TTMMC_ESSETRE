@@ -1,0 +1,77 @@
+﻿@model IndexRecipeModel
+@{
+    ViewData["Title"] = "Ricette";
+}
+<h2>Ricette</h2>
+<div class="content_page margin_bottom">
+    <div style="margin-bottom: 15px; text-align: right;">
+        <label for="searchBar" style="width: 60px;">Cerca:</label>
+        <input type="text" id="txtSearch" value="" style="margin: 0 !important; width: 200px;" placeholder="Nome, Data" onkeyup="filterSearch(event)" autocomplete="off" />
+    </div>
+    <table class="table">
+        <tr>
+            <td style="font-weight:bold; width:50px;">Id</td>
+            <td style="font-weight:bold; width:230px;">Nome</td>
+            <td style="font-weight:bold; width:135px;">Data Creazione</td>
+            <td style="font-weight:bold; width:260px;">Note</td>
+            <td style="font-weight:bold; width:225px;">Azioni</td>
+        </tr>
+        @foreach (var r in Model.Recipes)
+        {
+            <tr id="@r.Id">
+                <td>@r.Id</td>
+                <td><b>@r.Name</b></td>
+                <td>@r.Timestamp.ToString("dd/MM/yyyy HH:mm")</td>
+                <td>@(r.Notes ?? "Nessuna nota")</td>
+                <td>
+                    <a asp-action="View" asp-controller="Recipe" asp-route-id="@r.Id" target="_blank">Visualizza</a>
+                    &nbsp;-&nbsp;
+                    <a asp-action="Edit" asp-controller="Recipe" asp-route-id="@r.Id">Modifica</a>
+                    &nbsp;-&nbsp;
+                    <a asp-action="Delete" asp-controller="Recipe" asp-route-id="@r.Id" class="confirmDialog" data-msg="Sei sicuro di voler rimuovere questa ricetta?" data-title="Conferma Eliminazione">Rimuovi</a>
+                </td>
+            </tr>
+        }
+        <tr asp-if="@(Model.Recipes.Count == 0)">
+            <td colspan="5" style="text-align:center;">Nessuna Lavorazione presente.</td>
+        </tr>
+    </table>
+</div>
+
+@section Scripts{
+    <script class="inject-json" data-name="recipes" type="application/json">
+        @Html.Raw(JsonConvert.SerializeObject(Model.Recipes))
+    </script>
+    <script type="text/javascript">
+
+        function filterSearch(e) {
+            var val = e.currentTarget.value;
+            var words = val.split(' ');
+            for (var i = 0; i < words.length; i++) {
+                var word = words[i].toLowerCase();
+                $(recipes).each(function (index, item) {
+                    var id = item.Id.toString();
+                    var name = item.Name.toLowerCase();
+                    var data = new Date(item.Timestamp.toString());
+                    data = data.format("dd/mm/yyyy");
+                    if (i == 0) {
+                        if ((name.indexOf(word) >= 0) || (data.indexOf(word) >= 0)) {
+                            $("#" + id).css("display", "");
+                        } else {
+                            $("#" + id).css("display", "none");
+                        }
+                    } else {
+                        if ($("#" + id).css("display") != "none") {
+                            if ((name.indexOf(word) >= 0) || (data.indexOf(word) >= 0)) {
+                                $("#" + id).css("display", "");
+                            } else {
+                                $("#" + id).css("display", "none");
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+    </script>
+}

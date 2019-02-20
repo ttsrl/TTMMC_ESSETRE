@@ -23,7 +23,7 @@
     header #logo {
         margin-top: 20px;
         margin-bottom: 20px;
-        width: 350px;
+        width: 280px;
     }
 
 .pdfPage h2 {
@@ -45,7 +45,7 @@
 .pdfPage .moduleValue {
     margin: 4px 0px;
     display: inline-block;
-    width:430px;
+    width:400px;
     line-height:24px;
 }
 

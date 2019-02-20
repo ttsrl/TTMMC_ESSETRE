@@ -7,14 +7,9 @@ namespace TTMMC_ESSETRE.Controllers
     public class HomeController : Controller
     {
 
-        public HomeController()
-        {
-            
-        }
-
         public IActionResult Index()
         {
-            return View();
+            return RedirectToAction("Index", "Machine");
         }
 
         public IActionResult Error(int id = 500)

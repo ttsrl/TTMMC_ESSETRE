@@ -32,5 +32,11 @@
     "inputFiles": [
       "wwwroot/css/pdf.css"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/js/date.format.min.js",
+    "inputFiles": [
+      "wwwroot/js/date.format.js"
+    ]
   }
 ]

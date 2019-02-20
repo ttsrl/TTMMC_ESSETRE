@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using TTMMC_ESSETRE.Models;
 
-namespace TTMMC_ESSETRE.Models
+namespace TTMMC_ESSETRE.Services
 {
     public partial class owlDBContext : DbContext
     {

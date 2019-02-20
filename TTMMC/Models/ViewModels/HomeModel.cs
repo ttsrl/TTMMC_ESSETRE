@@ -1,11 +1,5 @@
-﻿using System.Collections.Generic;
-
-namespace TTMMC_ESSETRE.Models.ViewModels
+﻿namespace TTMMC_ESSETRE.Models.ViewModels
 {
-    public class HomeModel
-    {
-        public List<IMachine> Machines { get; set; }
-    }
 
     public class ErrorViewModel
     {

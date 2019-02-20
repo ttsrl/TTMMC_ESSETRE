@@ -18,8 +18,9 @@ namespace TTMMC_ESSETRE.Controllers
 
         public IActionResult Index()
         {
+            return RedirectToAction("Details", new { id = 1 });
             var machines = _machines.GetMachines().ToList();
-            var m = new HomeModel
+            var m = new IndexMachineModel
             {
                 Machines = machines
             };

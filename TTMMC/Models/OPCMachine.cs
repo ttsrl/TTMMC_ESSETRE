@@ -263,5 +263,29 @@ namespace TTMMC_ESSETRE.Models
             return datasAddressToWrite;
         }
 
+        public List<DataItem> GetParameterRead(string name)
+        {
+            foreach(var p in datasAddressToRead)
+            {
+                if(p.Key == name)
+                {
+                    return p.Value;
+                }
+            }
+            return null;
+        }
+
+        public List<DataItem> GetParameterWrite(string name)
+        {
+            foreach (var p in datasAddressToWrite)
+            {
+                if (p.Key == name)
+                {
+                    return p.Value;
+                }
+            }
+            return null;
+        }
+
     }
 }

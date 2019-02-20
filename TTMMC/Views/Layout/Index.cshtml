@@ -6,30 +6,32 @@
 <div class="content_page margin_bottom">
     <div style="margin-bottom: 15px; text-align: right;">
         <label for="searchBar" style="width: 60px;">Cerca:</label>
-        <input type="text" id="txtSearch" value="" style="margin: 0 !important; width: 200px;" placeholder="Codice, Cliente, Stampo" onkeyup="filterSearch(event)" autocomplete="off" />
+        <input type="text" id="txtSearch" value="" style="margin: 0 !important; width: 200px;" placeholder="Numero, Data, Articolo" onkeyup="filterSearch(event)" autocomplete="off" />
     </div>
     <table class="table">
         <tr>
-            <td style="font-weight:bold; width:175px;">Numero</td>
+            <td style="font-weight:bold; width:130px;">Numero</td>
             <td style="font-weight:bold; width:55px;">Stato</td>
-            <td style="font-weight:bold; width:110px;">Data</td>
-            <td style="font-weight:bold; width:120px;">Macchina</td>
-            <td style="font-weight:bold; width:100px;">Metri</td>
-            <td style="font-weight:bold; width:100px;">Quantità</td>
+            <td style="font-weight:bold; width:100px;">Data</td>
+            <td style="font-weight:bold; width:90px;">Articolo</td>
+            <td style="font-weight:bold; width:180px;">Descr. Articolo</td>
+            <td style="font-weight:bold; width:60px;">Metri</td>
+            <td style="font-weight:bold; width:80px;">Quantità</td>
             <td style="font-weight:bold; width:65px;">Logs</td>
-            <td style="font-weight:bold; width:175px;">Azioni</td>
+            <td style="font-weight:bold; width:140px;">Azioni</td>
         </tr>
         @foreach (var l in Model.Layouts)
         {
-            <tr id="@l.LayoutNumber" style="font-size: 14px;">
+            <tr id="@l.LayoutNumber" style="font-size: 12px;">
                 <td style="font-weight:bold; vertical-align: middle; padding-left:20px;">@l.LayoutNumber</td>
                 <td style="text-align:center; vertical-align: middle;">
                     <span id="l_@l.LayoutNumber" class="led @Enum.GetName(typeof(Status), l.Status)" title="@l.Status" style="top: 2px;position: relative;"></span>
                 </td>
                 <td style="vertical-align: middle;">@l.StartTimestamp.ToString("dd/MM/yyyy")</td>
-                <td style="vertical-align: middle;"><a asp-if="Model.Machines.Select(m => m.Id).Contains(l.Machine)" asp-action="Details" asp-controller="Machine" asp-route-id="@l.Machine">@Model.Machines.FirstOrDefault(m => m.Id == l.Machine).ReferenceName.ToString()</a><label asp-if="@(!Model.Machines.Select(m => m.Id).Contains(l.Machine))" style="font-size:11px">Macchina non trovata</label></td>
-                <td></td>
-                <td></td>
+                <td style="vertical-align: middle;">@(l.ItemCode.ToString() ?? "--")</td>
+                <td style="vertical-align: middle;">@(l.ItemDescription ?? "--")</td>
+                <td style="vertical-align: middle;">@(l.Meters.ToString() ?? "--")</td>
+                <td style="vertical-align: middle;">@(l.Quantity.ToString() ?? "--")</td>
                 <td style="vertical-align: middle; text-align:center; font-weight:bold;">
                     <span id="c_@l.LayoutNumber">@((l.LayoutActRecords)?.Count.ToString() ?? "0")</span>
                 </td>
@@ -93,16 +95,19 @@
             for (var i = 0; i < words.length; i++) {
                 var word = words[i].toLowerCase();
                 $(layouts).each(function (index, item) {
-                    var bc = item.LayoutNumber.toLowerCase();
+                    var bc = item.LayoutNumber.toString();
+                    var data = new Date(item.StartTimestamp.toString());
+                    data = data.format("dd/mm/yyyy");
+                    var art = item.ItemCode.toString();
                     if (i == 0) {
-                        if ((bc.indexOf(word) >= 0)) {
+                        if ((bc.indexOf(word) >= 0) || (data.indexOf(word) >= 0) || (art.indexOf(word) >= 0)) {
                             $("#" + bc).css("display", "");
                         } else {
                             $("#" + bc).css("display", "none");
                         }
                     } else {
                         if ($("#" + bc).css("display") != "none") {
-                            if ((bc.indexOf(word) >= 0)) {
+                            if ((bc.indexOf(word) >= 0) || (data.indexOf(word) >= 0) || (art.indexOf(word) >= 0)) {
                                 $("#" + bc).css("display", "");
                             } else {
                                 $("#" + bc).css("display", "none");

@@ -1,0 +1,55 @@
+﻿@model EditRecipeViewModel
+@{
+    ViewData["Title"] = "Edit";
+
+    var ff = Model.Recipe.RepiceSettings.Fields.Select(f => new { f.Key, f.Value }).ToDictionary(t => t.Key, t => t.Value);
+}
+
+<h2>Modifica Ricetta - @Model.Recipe.Name</h2>
+<div class="content_page margin_bottom">
+    <form id="editRecipeForm" asp-action="Edit" asp-controller="Recipe" method="post" asp-route-id="@Model.Recipe.Id" asp-antiforgery="true" autocomplete="off">
+        <label for="code" class="title" style="width:205px;">Nome:</label>
+        <input type="text" style="width:180px;" name="name" value="@Model.Recipe.Name" />
+        <br />
+        @foreach (var f in ff)
+        {
+            var desc = Model.Machine.GetParameterWrite(f.Key)[0];
+            <label class="title" style="width:205px;">@f.Key.ToWhiteSpaceInsert()</label>
+            <input class="field" type="number" step="0.1" value="@f.Value" min="0" name="fields[@f.Key]" title="@desc.Description" style="width:180px;" />
+            <br />
+        }
+        <br />
+        <label for="code" class="title" style="width:205px;">Note:</label>
+        <textarea name="notes" style="width:250px; height:60px;">@Model.Recipe.Notes</textarea>
+        <br />
+        <br />
+        <input type="submit" value="Salva" />
+    </form>
+</div>
+
+@section Scripts{
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+    <script type="text/javascript">
+
+        var validation = $('#editRecipeForm').validate();
+        validation.settings.rules = validateNewRecipeRules;
+        validation.settings.messages = validateNewRecipeMessages;
+
+        $(document).ready(function () {
+
+            $(".field").each(function () {
+                $(this).rules("add", {
+                    required: true,
+                    notEqual: "0",
+                    messages: {
+                        required: "Il campo non può essere vuoto",
+                        notEqual: "Il valore non può essere 0"
+                    }
+                });
+            });
+
+        });
+
+
+    </script>
+}

@@ -1,0 +1,28 @@
+﻿@model PDFViewRecipe
+@{
+    ViewData["Title"] = "Ricetta";
+    Layout = "_Layout.cshtml";
+}
+<div class="pdfPage">
+    @(await Html.PartialAsync("Header"))
+    <div style="vertical-align:middle; overflow:auto;">
+        <h2 style="float:left;">Dettagli Ricetta - @Model.Recipe.Name</h2>
+    </div>
+    <div class="pdfContentPage">
+        <label class="moduleTitle" style="width: 180px;">Nome:</label>
+        <label class="moduleValue">@Model.Recipe.Name</label>
+        <br />
+        <label class="moduleTitle" style="width: 180px;">Macchina:</label>
+        <label class="moduleValue">DE01</label>
+        <br />
+        @foreach (var f in Model.Recipe.RepiceSettings.Fields)
+        {
+            <label class="moduleTitle" style="width: 180px;">@(f.Key.ToWhiteSpaceInsert()):</label>
+            <label class="moduleValue">@f.Value</label>
+            <br />
+        }
+        <label class="moduleTitle" style="width: 180px;">Note:</label>
+        <label class="moduleValue">@(Model.Recipe.Notes ?? "Nessuna nota")</label>
+        <br />
+    </div>
+</div>
