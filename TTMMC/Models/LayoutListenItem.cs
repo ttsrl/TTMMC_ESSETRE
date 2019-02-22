@@ -18,9 +18,11 @@ namespace TTMMC_ESSETRE.Models
         private long workCount = 0;
         private bool _isBusy = false;
         private int timerTick = 5;
+        private readonly IMachine _machine;
+        private bool _roundedValue = false;
+        private int _roundedPrecision = 2;
         private Timer _timer;
         private readonly TTMMCContext _dB;
-        private readonly IMachine _machine;
 
         public int TimerTick { get => timerTick; set => timerTick = value; }
         public bool IsBusy { get => _isBusy; }
@@ -28,6 +30,8 @@ namespace TTMMC_ESSETRE.Models
         public Layout Layout { get => _layout; }
         public IMachine Machine { get => _machine; }
         public static int DefaultTimerTick = 5;
+        public bool Rounded { get => _roundedValue; set => _roundedValue = value; }
+        public int RoundedPrecision { get => _roundedPrecision; set => _roundedPrecision = value; }
 
         private string _referenceKeyLogOld = "";
 
@@ -102,6 +106,11 @@ namespace TTMMC_ESSETRE.Models
                         {
                             var type = _machine.GetDataItemType(dataIt);
                             var val = _machine.Read(dataIt.Address, type) ?? "";
+                            if (type != typeof(string) && (val.Contains(",") || val.Contains(".")))
+                            {
+                                var decimalVal = double.Parse(val);
+                                val = (Rounded) ? Math.Round(decimalVal, RoundedPrecision).ToString() : decimalVal.ToString();
+                            }
                             newIt.Add(act.Value.IndexOf(dataIt).ToString(), val);
                         }
                         var json = JsonConvert.SerializeObject(newIt) ?? "";

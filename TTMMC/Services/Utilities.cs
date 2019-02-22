@@ -84,9 +84,12 @@ namespace TTMMC_ESSETRE.Services
         {
             if (type != typeof(string))
             {
-                if ((val.Contains(",")))
+                if (val.Contains(",")) //è un numero
                 {
-                    return val.Substring(0, val.IndexOf(",") + numberDecimal + 1);
+                    var int_ = val.Substring(0, val.IndexOf(","));
+                    var decs = val.Substring(val.IndexOf(",") + 1);
+                    decs = (decs.Length > numberDecimal) ? decs.Substring(0, numberDecimal) : decs;
+                    return int_ + "," + decs;
                 }
             }
             return val;

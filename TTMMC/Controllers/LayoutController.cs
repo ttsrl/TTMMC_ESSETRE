@@ -92,6 +92,8 @@ namespace TTMMC_ESSETRE.Controllers
                         _lListener.Add(layout);
                     var ll = _lListener.GetLayoutListenItem(layout);
                     ll.TimerTick = 2;
+                    ll.Rounded = true;
+                    ll.RoundedPrecision = 2;
                     await ll.Start();
                 }
             }
@@ -123,17 +125,6 @@ namespace TTMMC_ESSETRE.Controllers
                     return RedirectToAction("Report", "Pdf", new { id });
                 }
             }
-            return RedirectToAction("Index");
-        }
-
-        [HttpGet]
-        public async Task<IActionResult> remove()
-        {
-            var f = await _dB.LayoutsRecordsFields.ToListAsync();
-            var ff = await _dB.LayoutsRecords.ToListAsync();
-            _dB.LayoutsRecordsFields.RemoveRange(f);
-            _dB.LayoutsRecords.RemoveRange(ff);
-            await _dB.SaveChangesAsync();
             return RedirectToAction("Index");
         }
 
