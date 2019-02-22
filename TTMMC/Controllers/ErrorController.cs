@@ -24,6 +24,14 @@ namespace TTMMC_ESSETRE.Controllers
             {
                 txt = "Errore imprevisto. Impossibile creare il pdf della ricetta";
             }
+            else if (id == 5)
+            {
+                txt = "Errore imprevisto. Impossibile aggiornare le disposizioni";
+            }
+            else if (id == 6)
+            {
+                txt = "Errore imprevisto. Impossibile creare il report per questa disposizione";
+            }
             return View(new ResultsModel { Text = txt });
         }
     }

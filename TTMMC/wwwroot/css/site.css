@@ -577,6 +577,9 @@ form a:hover{
         background-image: url("../images/recIcon.png");
         background-size: 24px 24px;
     }
+    .led.green, .led.Finished {
+        background-position: 0;
+    }
     .led.red, .led.Stopped {
         background-position: -24px;
     }
@@ -586,6 +589,6 @@ form a:hover{
     .led.blue {
         background-position: -72px;
     }
-    .led.black, .led.Finished {
-        background-position: -94px;
+    .led.black {
+        background-position: -96px;
     }

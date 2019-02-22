@@ -91,5 +91,36 @@ namespace TTMMC_ESSETRE.Services
             }
             return val;
         }
+
+        public List<List<T>> GrouppedByCount<T>(List<T> elements, int count, int first = 0)
+        {
+            first = (first == 0) ? count : first;
+            var out_ = new List<List<T>>();
+            var cc = 1;
+            var ff = false;
+            foreach (var elm in elements)
+            {
+                var check = (ff == false) ? first : count;
+                if (cc == 1)
+                {
+                    var l = new List<T>();
+                    l.Add(elm);
+                    out_.Add(l);
+                    cc++;
+                }
+                else if (cc < check)
+                {
+                    out_[out_.Count - 1].Add(elm);
+                    cc++;
+                }
+                else if (cc == check)
+                {
+                    out_[out_.Count - 1].Add(elm);
+                    cc = 1;
+                    ff = true;
+                }
+            }
+            return out_;
+        }
     }
 }

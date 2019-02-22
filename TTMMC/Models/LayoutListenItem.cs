@@ -70,7 +70,8 @@ namespace TTMMC_ESSETRE.Models
 
                 var record = new LayoutRecord
                 {
-                    Fields = fields
+                    Fields = fields,
+                    Timestamp = DateTime.Now
                 };
 
                 ll.LayoutSetRecord = record;
@@ -109,7 +110,8 @@ namespace TTMMC_ESSETRE.Models
                 }
                 var record = new LayoutRecord
                 {
-                    Fields = fields
+                    Fields = fields,
+                    Timestamp = DateTime.Now
                 };
 
                 var referenceKeyRead = await _machine.ReadAsync(refRead.Value[0].Address, _machine.GetDataItemType(refRead.Value[0]));

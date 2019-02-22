@@ -11,14 +11,14 @@
     text-align: left;
 }
 
-    .pdfPage .pdfContentPage{
-        margin:0px 55px;
+    .pdfPage .pdfContentPage {
+        margin: 0px 55px;
     }
 
-    header {
-        text-align: center;
-        border-bottom: 1px solid #454545;
-    }
+header {
+    text-align: center;
+    border-bottom: 1px solid #454545;
+}
 
     header #logo {
         margin-top: 20px;
@@ -45,8 +45,8 @@
 .pdfPage .moduleValue {
     margin: 4px 0px;
     display: inline-block;
-    width:400px;
-    line-height:24px;
+    width: 400px;
+    line-height: 24px;
 }
 
 .pdfPage .layoutModuleTitle {
@@ -66,45 +66,58 @@
 }
 
 .pdf_table {
-    border: 1px solid rgb(50, 50, 50);
     border-radius: 4px;
     border-spacing: 0;
-    overflow: hidden;
-    font-size: 8px;
+    font-size: 7px;
 }
-
-    .pdf_table tr:first-of-type td {
-        background-color: rgba(0, 0, 0, 0.11);
-        font-size: 8px;
-        font-weight: bold;
-        padding: 10px 8px;
-        text-align: center;
-    }
-
-    
-    /*.pdf_table tr td[rowspan], .pdf_table tr td:first-of-type {
-        border-width: 0px 0px 1px 0px;
-    }
-
-    .pdf_table tr:last-of-type td {
-        border-width: 0px 0px 0px 1px;
-    }
-
-        .pdf_table tr:last-of-type td:first-of-type, .pdf_table tr .last {
-            border-width: 0px 0px 0px 0px;
-        }*/
 
     .pdf_table tr:last-of-type td {
         border-bottom: none;
     }
 
-    .pdf_table tr td:last-of-type{
+    .pdf_table tr td:last-of-type {
         border-right: none;
     }
 
     .pdf_table td {
-        border-bottom: 1px solid rgb(50, 50, 50);
-        border-right: 1px solid rgb(50, 50, 50);
+        border-bottom: 1px solid #ccc;
+        border-right: 1px solid #ccc;
         color: rgb(50, 50, 50);
-        padding: 5px 8px;
+        padding: 1px 3px;
     }
+
+    .pdf_table .rotate {
+        /* Something you can count on */
+        height: 90px;
+        white-space: nowrap;
+        border-bottom: 1px solid #ccc;
+    }
+
+        .pdf_table .rotate > div {
+            transform: translate(15px, 33px) rotate(315deg);
+            -webkit-transform: translate(15px, 33px) rotate(315deg); /* Safari/Chrome */
+            -moz-transform: translate(15px, 33px) rotate(315deg); /* Firefox */
+            -o-transform: translate(15px, 33px) rotate(315deg); /* Opera */
+            -ms-transform: translate(15px, 33px) rotate(315deg); /* IE 9 */
+            width: 23px;
+        }
+
+            .pdf_table .rotate > div > span {
+                border-bottom: 1px solid #ccc;
+                padding: 3px 8px;
+            }
+
+        .pdf_table .rotate .divTimestamp {
+            transform: translate(24px, 30px) rotate(315deg);
+            -webkit-transform: translate(24px,30px) rotate(315deg); /* Safari/Chrome */
+            -moz-transform: translate(24px, 30px) rotate(315deg); /* Firefox */
+            -o-transform: translate(24px, 30px) rotate(315deg); /* Opera */
+            -ms-transform: translate(24px, 30px) rotate(315deg); /* IE 9 */
+            width: 35px;
+        }
+
+.page-breaker {
+    display: block;
+    clear: both;
+    page-break-after: always;
+}

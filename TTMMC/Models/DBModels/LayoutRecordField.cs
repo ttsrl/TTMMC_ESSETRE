@@ -7,7 +7,7 @@ namespace TTMMC_ESSETRE.Models.DBModels
 {
     public class LayoutRecordField
     {
-        public int Id { get; set; }
+        public long Id { get; set; }
         public string Key { get; set; }
         public string Value { get; set; }
     }

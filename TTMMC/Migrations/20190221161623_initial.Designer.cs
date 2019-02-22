@@ -10,8 +10,8 @@ using TTMMC_ESSETRE.Services;
 namespace TTMMC_ESSETRE.Migrations
 {
     [DbContext(typeof(TTMMCContext))]
-    [Migration("20190219162349_1")]
-    partial class _1
+    [Migration("20190221161623_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -70,16 +70,18 @@ namespace TTMMC_ESSETRE.Migrations
 
                     b.Property<int?>("LayoutId");
 
+                    b.Property<DateTime>("Timestamp");
+
                     b.HasKey("Id");
 
                     b.HasIndex("LayoutId");
 
-                    b.ToTable("LayoutsActRecords");
+                    b.ToTable("LayoutsRecords");
                 });
 
             modelBuilder.Entity("TTMMC_ESSETRE.Models.DBModels.LayoutRecordField", b =>
                 {
-                    b.Property<int>("Id")
+                    b.Property<long>("Id")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
@@ -93,7 +95,7 @@ namespace TTMMC_ESSETRE.Migrations
 
                     b.HasIndex("LayoutRecordId");
 
-                    b.ToTable("LayoutsActRecordsFields");
+                    b.ToTable("LayoutsRecordsFields");
                 });
 
             modelBuilder.Entity("TTMMC_ESSETRE.Models.DBModels.Recipe", b =>
@@ -104,9 +106,11 @@ namespace TTMMC_ESSETRE.Migrations
 
                     b.Property<string>("Name");
 
+                    b.Property<string>("Notes");
+
                     b.Property<int?>("RepiceSettingsId");
 
-                    b.Property<DateTime>("StartTimestamp");
+                    b.Property<DateTime>("Timestamp");
 
                     b.HasKey("Id");
 

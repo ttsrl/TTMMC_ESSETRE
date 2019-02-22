@@ -9,16 +9,17 @@ namespace TTMMC_ESSETRE.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "LayoutsActRecords",
+                name: "LayoutsRecords",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Timestamp = table.Column<DateTime>(nullable: false),
                     LayoutId = table.Column<int>(nullable: true)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_LayoutsActRecords", x => x.Id);
+                    table.PrimaryKey("PK_LayoutsRecords", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -46,18 +47,18 @@ namespace TTMMC_ESSETRE.Migrations
                 {
                     table.PrimaryKey("PK_Layouts", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_Layouts_LayoutsActRecords_LayoutSetRecordId",
+                        name: "FK_Layouts_LayoutsRecords_LayoutSetRecordId",
                         column: x => x.LayoutSetRecordId,
-                        principalTable: "LayoutsActRecords",
+                        principalTable: "LayoutsRecords",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(
-                name: "LayoutsActRecordsFields",
+                name: "LayoutsRecordsFields",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
+                    Id = table.Column<long>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Key = table.Column<string>(nullable: true),
                     Value = table.Column<string>(nullable: true),
@@ -65,11 +66,33 @@ namespace TTMMC_ESSETRE.Migrations
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_LayoutsActRecordsFields", x => x.Id);
+                    table.PrimaryKey("PK_LayoutsRecordsFields", x => x.Id);
                     table.ForeignKey(
-                        name: "FK_LayoutsActRecordsFields_LayoutsActRecords_LayoutRecordId",
+                        name: "FK_LayoutsRecordsFields_LayoutsRecords_LayoutRecordId",
                         column: x => x.LayoutRecordId,
-                        principalTable: "LayoutsActRecords",
+                        principalTable: "LayoutsRecords",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Recipes",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(nullable: true),
+                    Notes = table.Column<string>(nullable: true),
+                    RepiceSettingsId = table.Column<int>(nullable: true),
+                    Timestamp = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Recipes", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Recipes_LayoutsRecords_RepiceSettingsId",
+                        column: x => x.RepiceSettingsId,
+                        principalTable: "LayoutsRecords",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Restrict);
                 });
@@ -80,18 +103,23 @@ namespace TTMMC_ESSETRE.Migrations
                 column: "LayoutSetRecordId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_LayoutsActRecords_LayoutId",
-                table: "LayoutsActRecords",
+                name: "IX_LayoutsRecords_LayoutId",
+                table: "LayoutsRecords",
                 column: "LayoutId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_LayoutsActRecordsFields_LayoutRecordId",
-                table: "LayoutsActRecordsFields",
+                name: "IX_LayoutsRecordsFields_LayoutRecordId",
+                table: "LayoutsRecordsFields",
                 column: "LayoutRecordId");
 
+            migrationBuilder.CreateIndex(
+                name: "IX_Recipes_RepiceSettingsId",
+                table: "Recipes",
+                column: "RepiceSettingsId");
+
             migrationBuilder.AddForeignKey(
-                name: "FK_LayoutsActRecords_Layouts_LayoutId",
-                table: "LayoutsActRecords",
+                name: "FK_LayoutsRecords_Layouts_LayoutId",
+                table: "LayoutsRecords",
                 column: "LayoutId",
                 principalTable: "Layouts",
                 principalColumn: "Id",
@@ -101,14 +129,17 @@ namespace TTMMC_ESSETRE.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropForeignKey(
-                name: "FK_Layouts_LayoutsActRecords_LayoutSetRecordId",
+                name: "FK_Layouts_LayoutsRecords_LayoutSetRecordId",
                 table: "Layouts");
 
             migrationBuilder.DropTable(
-                name: "LayoutsActRecordsFields");
+                name: "LayoutsRecordsFields");
 
             migrationBuilder.DropTable(
-                name: "LayoutsActRecords");
+                name: "Recipes");
+
+            migrationBuilder.DropTable(
+                name: "LayoutsRecords");
 
             migrationBuilder.DropTable(
                 name: "Layouts");

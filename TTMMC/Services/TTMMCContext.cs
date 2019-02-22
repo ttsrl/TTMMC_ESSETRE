@@ -14,8 +14,8 @@ namespace TTMMC_ESSETRE.Services
 
         public DbSet<Recipe> Recipes { get; set; }
         public DbSet<Layout> Layouts { get; set; }
-        public DbSet<LayoutRecord> LayoutsActRecords { get; set; }
-        public DbSet<LayoutRecordField> LayoutsActRecordsFields { get; set; }
+        public DbSet<LayoutRecord> LayoutsRecords { get; set; }
+        public DbSet<LayoutRecordField> LayoutsRecordsFields { get; set; }
 
         private static TTMMCContext _instance;
         public static TTMMCContext Instance

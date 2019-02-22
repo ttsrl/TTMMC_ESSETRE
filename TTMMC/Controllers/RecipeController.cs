@@ -125,8 +125,8 @@ namespace TTMMC_ESSETRE.Controllers
                 var recipe = await _dB.Recipes.Include(r => r.RepiceSettings).ThenInclude(rs => rs.Fields).FirstOrDefaultAsync(r => r.Id == id);
                 if (recipe is Recipe)
                 {
-                    _dB.LayoutsActRecordsFields.RemoveRange(recipe.RepiceSettings.Fields);
-                    _dB.LayoutsActRecords.Remove(recipe.RepiceSettings);
+                    _dB.LayoutsRecordsFields.RemoveRange(recipe.RepiceSettings.Fields);
+                    _dB.LayoutsRecords.Remove(recipe.RepiceSettings);
                     _dB.Recipes.Remove(recipe);
                     await _dB.SaveChangesAsync();
                     return RedirectToAction("Index");
