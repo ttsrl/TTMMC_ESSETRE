@@ -100,6 +100,7 @@ header {
             -o-transform: translate(15px, 33px) rotate(315deg); /* Opera */
             -ms-transform: translate(15px, 33px) rotate(315deg); /* IE 9 */
             width: 23px;
+            float: right;
         }
 
             .pdf_table .rotate > div > span {

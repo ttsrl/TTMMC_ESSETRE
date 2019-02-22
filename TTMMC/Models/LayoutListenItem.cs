@@ -66,6 +66,11 @@ namespace TTMMC_ESSETRE.Models
                     {
                         var type = _machine.GetDataItemType(dataIt);
                         var val = _machine.Read(dataIt.Address, type) ?? "";
+                        if (type != typeof(string) && (val.Contains(",") || val.Contains(".")))
+                        {
+                            var decimalVal = double.Parse(val);
+                            val = (Rounded) ? Math.Round(decimalVal, RoundedPrecision).ToString() : decimalVal.ToString();
+                        }
                         newIt.Add(par.Value.IndexOf(dataIt).ToString(), val);
                     }
                     var json = JsonConvert.SerializeObject(newIt);
