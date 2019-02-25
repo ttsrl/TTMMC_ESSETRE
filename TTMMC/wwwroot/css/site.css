@@ -577,10 +577,10 @@ form a:hover{
         background-image: url("../images/recIcon.png");
         background-size: 24px 24px;
     }
-    .led.green, .led.Finished {
+    .led.green, .led.Finished, .led.Stopped {
         background-position: 0;
     }
-    .led.red, .led.Stopped {
+    .led.red {
         background-position: -24px;
     }
     .led.orange, .led.Waiting {

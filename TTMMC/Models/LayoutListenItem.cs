@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using TTMMC_ESSETRE.ConfigurationModels;
@@ -53,8 +54,12 @@ namespace TTMMC_ESSETRE.Models
                     ll.Status = Status.Recording;
                 }
                 
-                var refRead = _machine.GetReferenceKeyRead();
-                _referenceKeyLogOld = await _machine.ReadAsync(refRead.Value[0].Address, _machine.GetDataItemType(refRead.Value[0]));
+                var refNRead = _machine.GetReferenceKeyRead() ?? null;
+                if (refNRead == null)
+                    return;
+
+                var rRead = (KeyValuePair<string, List<DataItem>>)refNRead;
+                _referenceKeyLogOld = await _machine.ReadAsync(rRead.Value[0].Address, _machine.GetDataItemType(rRead.Value[0]));
 
                 //log sets
                 var writes = _machine.GetParametersWrite();
@@ -100,8 +105,8 @@ namespace TTMMC_ESSETRE.Models
                 var fields = new List<LayoutRecordField>();
                 var acts = _machine.GetParametersRead();
 
-                var refRead = _machine.GetReferenceKeyRead();
-                var refWrite = _machine.GetReferenceKeyWrite();
+                var refRead = (KeyValuePair<string, List<DataItem>>)_machine.GetReferenceKeyRead();
+                var refNWrite = _machine.GetReferenceKeyWrite() ?? null;
                 foreach (var act in acts)
                 {
                     if (act.Key.Substring(0, 1) != "[" && act.Key.Substring(act.Key.Length - 1, 1) != "]") // se non è una proprietà nascosta
@@ -111,10 +116,25 @@ namespace TTMMC_ESSETRE.Models
                         {
                             var type = _machine.GetDataItemType(dataIt);
                             var val = _machine.Read(dataIt.Address, type) ?? "";
-                            if (type != typeof(string) && (val.Contains(",") || val.Contains(".")))
+                            if (type != typeof(string))
                             {
-                                var decimalVal = double.Parse(val);
-                                val = (Rounded) ? Math.Round(decimalVal, RoundedPrecision).ToString() : decimalVal.ToString();
+                                if (type == typeof(int) || type == typeof(uint) || type == typeof(long) || type == typeof(ulong))
+                                {
+                                    if (dataIt.Scaling > 0)
+                                    {
+                                        double floatVal = double.Parse(val);
+                                        for (var i = 0; i < dataIt.Scaling; i++)
+                                        {
+                                            floatVal = floatVal / 10.0;
+                                        }
+                                        val = floatVal.ToString();
+                                    }
+                                }
+                                if ((val.Contains(",") || val.Contains(".")))
+                                {
+                                    var decimalVal = double.Parse(val);
+                                    val = (Rounded) ? Math.Round(decimalVal, RoundedPrecision).ToString() : decimalVal.ToString();
+                                }
                             }
                             newIt.Add(act.Value.IndexOf(dataIt).ToString(), val);
                         }
@@ -129,15 +149,20 @@ namespace TTMMC_ESSETRE.Models
                 };
 
                 var referenceKeyRead = await _machine.ReadAsync(refRead.Value[0].Address, _machine.GetDataItemType(refRead.Value[0]));
-                var referenceKeyFinisched = await _machine.ReadAsync(refWrite.Value[0].Address, _machine.GetDataItemType(refWrite.Value[0]));
-
+                
                 //if is finished
-                if (referenceKeyRead == referenceKeyFinisched)
+                if (refNWrite != null)
                 {
-                    _layout.Status = Status.Finished;
-                    _isBusy = false;
-                    _machine.Recording = false;
-                    _timer?.Change(Timeout.Infinite, 0);
+                    var item = ((KeyValuePair<string, List<DataItem>>)refNWrite);
+                    var referenceKeyFinisched = await _machine.ReadAsync(item.Value[0].Address, _machine.GetDataItemType(item.Value[0]));
+
+                    if (referenceKeyRead == referenceKeyFinisched)
+                    {
+                        _layout.Status = Status.Finished;
+                        _isBusy = false;
+                        _machine.Recording = false;
+                        _timer?.Change(Timeout.Infinite, 0);
+                    }
                 }
                 _layout.LayoutActRecords.Add(record);
                 await _dB.SaveChangesAsync();
@@ -147,9 +172,10 @@ namespace TTMMC_ESSETRE.Models
 
         private async Task<bool> isChangedReferenceKey()
         {
-            var di = _machine.GetReferenceKeyRead().Value[0];
+            var di = ((KeyValuePair<string, List<DataItem>>)_machine.GetReferenceKeyRead()).Value[0];
             var actV = await _machine.ReadAsync(di.Address, _machine.GetDataItemType(di));
-            if(actV != _referenceKeyLogOld)
+            var parseV = int.Parse(actV);
+            if (parseV > 0)
             {
                 _referenceKeyLogOld = actV;
                 return true;

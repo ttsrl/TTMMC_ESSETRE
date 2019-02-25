@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using TTMMC_ESSETRE.Models;
 using TTMMC_ESSETRE.Models.ViewModels;
@@ -27,7 +28,7 @@ namespace TTMMC_ESSETRE.Controllers
             return View(m);
         }
 
-        public IActionResult Details(int id)
+        public async Task<IActionResult> Details(int id)
         {
             if(id != 0)
             {

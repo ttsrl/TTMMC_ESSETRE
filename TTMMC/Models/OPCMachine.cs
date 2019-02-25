@@ -46,7 +46,7 @@ namespace TTMMC_ESSETRE.Models
             uaClient.ServerConnectionLost += _uaClient_ServerConnectionLost;
         }
 
-        public KeyValuePair<string, List<DataItem>> GetReferenceKeyRead()
+        public KeyValuePair<string, List<DataItem>>? GetReferenceKeyRead()
         {
             foreach (var d in datasAddressToRead)
             {
@@ -54,10 +54,10 @@ namespace TTMMC_ESSETRE.Models
                 if (isRef)
                     return d;
             }
-            return new KeyValuePair<string, List<DataItem>>();
+            return null;
         }
 
-        public KeyValuePair<string, List<DataItem>> GetReferenceKeyWrite()
+        public KeyValuePair<string, List<DataItem>>? GetReferenceKeyWrite()
         {
             foreach (var d in datasAddressToWrite)
             {
@@ -65,7 +65,7 @@ namespace TTMMC_ESSETRE.Models
                 if (isRef)
                     return d;
             }
-            return new KeyValuePair<string, List<DataItem>>();
+            return null;
         }
 
         private void _uaClient_ServerConnectionLost(object sender, EventArgs e)

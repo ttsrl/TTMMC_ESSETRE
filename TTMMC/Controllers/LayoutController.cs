@@ -88,10 +88,14 @@ namespace TTMMC_ESSETRE.Controllers
                 var layout = await _dB.Layouts.Where(l => l.Status == Status.Waiting).FirstOrDefaultAsync(l => l.Id == id);
                 if(layout is Layout)
                 {
-                    if(!_lListener.Contains(layout))
+                    var otherRec = await _dB.Layouts.Where(l => l.Status == Status.Recording).FirstOrDefaultAsync();
+                    if(otherRec is Layout)
+                        await _lListener.Remove(otherRec);
+
+                    if (!_lListener.Contains(layout))
                         _lListener.Add(layout);
                     var ll = _lListener.GetLayoutListenItem(layout);
-                    ll.TimerTick = 2;
+                    ll.TimerTick = 30;
                     ll.Rounded = true;
                     ll.RoundedPrecision = 2;
                     await ll.Start();

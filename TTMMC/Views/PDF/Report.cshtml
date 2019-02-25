@@ -5,14 +5,15 @@
     Layout = "_Layout.cshtml";
 
     var groupped = _utils.GrouppedByCount<LayoutRecord>(Model.Layout.LayoutActRecords, 41, 30);
+    var countG = 0;
 }
 <div class="pdfPage" style="margin:35px;">
     @(await Html.PartialAsync("Header"))
     <div style="vertical-align:middle; overflow:auto;">
-        <h2 style="float:left;">Report Lavorazione </h2>
+        <h2 style="float:left;">Report Lavorazione  - @Model.Layout.LayoutNumber</h2>
     </div>
     <div>
-        <h3>Record macchina</h3>
+        <h3>Record macchina @Model.Layout.MachineName</h3>
         @foreach (var g in groupped)
         {
             <table class="pdf_table" border="0">
@@ -50,6 +51,10 @@
                     </tr>
                 }
             </table>
+            countG++;
+            <div style="text-align:right;margin-top:10px; font-size:9px;">
+                <label>Page:  @countG.ToString()/@groupped.Count.ToString()</label>
+            </div>
             <div asp-if="@(groupped.IndexOf(g) < groupped.Count - 1)" class="page-breaker" ></div>
         }
     </div>

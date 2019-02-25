@@ -25,8 +25,10 @@ namespace TTMMC_ESSETRE.ConfigurationModels
     public class DataItem
     {
         private string _dataType = "";
+        private int _scaling = 0;
         public string Description { get; set; }
         public string Address { get; set; }
         public string DataType { get => _dataType.ToLower(); set => _dataType = value?.ToLower(); }
+        public int Scaling { get => _scaling; set => _scaling = value; }
     }
 }

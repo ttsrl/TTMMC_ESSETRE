@@ -41,7 +41,27 @@ namespace TTMMC_ESSETRE.Controllers.Api
                             var val = "";
                             try
                             {
-                                val = _utils.ValueToString(type, machine.Read(k.Address, type) ?? "");
+                                val = machine.Read(k.Address, type);
+                                if (type != typeof(string))
+                                {
+                                    if (type == typeof(int) || type == typeof(uint) || type == typeof(long) || type == typeof(ulong))
+                                    {
+                                        if (k.Scaling > 0)
+                                        {
+                                            double floatVal = double.Parse(val);
+                                            for (var i = 0; i < k.Scaling; i++)
+                                            {
+                                                floatVal = floatVal / 10.0;
+                                            }
+                                            val = floatVal.ToString();
+                                        }
+                                    }
+                                    if ((val.Contains(",") || val.Contains(".")))
+                                    {
+                                        var decimalVal = double.Parse(val);
+                                        val = Math.Round(decimalVal, 2).ToString();
+                                    }
+                                }
                             }
                             catch { }
                             elmL.Add(c.ToString(), val);
