@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
+using TTMMC_ESSETRE.ConfigurationModels;
 using TTMMC_ESSETRE.Models;
 using TTMMC_ESSETRE.Models.DBModels;
 using TTMMC_ESSETRE.Models.ViewModels;
@@ -18,13 +19,15 @@ namespace TTMMC_ESSETRE.Controllers
         private readonly owlDBContext _owlDb;
         private readonly TTMMCContext _dB;
         private readonly LayoutListener _lListener;
+        private readonly Utilities _utils;
 
-        public LayoutController(MachinesService machines, owlDBContext owlDb, TTMMCContext dB, LayoutListener lListener)
+        public LayoutController([FromServices] Utilities utilities, [FromServices] MachinesService machines, owlDBContext owlDb, TTMMCContext dB, [FromServices] LayoutListener lListener)
         {
-            _machines = machines ?? throw new ArgumentNullException(nameof(machines));
+            _machines = machines;
             _owlDb = owlDb ?? throw new ArgumentNullException(nameof(owlDb));
             _dB = dB ?? throw new ArgumentNullException(nameof(dB));
-            _lListener = lListener ?? throw new ArgumentNullException(nameof(lListener));
+            _utils = utilities ?? throw new ArgumentNullException(nameof(utilities));
+            _lListener = lListener;
         }
 
         public async Task<IActionResult> Index()
@@ -72,12 +75,107 @@ namespace TTMMC_ESSETRE.Controllers
             //reload layouts
             layouts = await _dB.Layouts.Include(l => l.LayoutActRecords).ThenInclude(lr => lr.Fields).OrderByDescending(l => l.StartTimestamp).ToListAsync();
             var machines = _machines.GetMachines().ToList();
+            var recipes = await _dB.Recipes.ToListAsync();
             var m = new IndexLayoutModel
             {
                 Layouts = layouts,
-                Machines = machines
+                Machines = machines,
+                Recipes = recipes
             };
             return View(m);
+        }
+
+        [HttpPost]
+        [AutoValidateAntiforgeryToken]
+        public async Task<IActionResult> SendLayout(int id, Dictionary<string, string> writeFields, int recipe, string writeModality)
+        {
+            if (id != 0 && !string.IsNullOrEmpty(writeModality))
+            {
+                var layout = await _dB.Layouts.Where(l => l.Id == id).FirstOrDefaultAsync();
+                var machine = _machines.GetMachineById(layout.Machine);
+                if (layout is Layout && machine is IMachine)
+                {
+                    if(writeModality == "manual")
+                    {
+                        foreach (var f in writeFields)
+                        {
+                            var isJson = _utils.IsValidJson<Dictionary<string, string>>(f.Value);
+                            var values = (isJson) ? JsonConvert.DeserializeObject<Dictionary<string, string>>(f.Value) : new Dictionary<string, string>();
+                            if (!isJson)
+                                values.Add("0", f.Value);
+
+                            var addresses = machine.GetParameterWrite(f.Key);
+                            if (addresses != null && addresses.Count > 0 && values != null && values.Count > 0)
+                            {
+                                var index = 0;
+                                foreach (var address in addresses)
+                                {
+                                    var val = values[index.ToString()] ?? "0";
+                                    var type = machine.GetDataItemType(address) ?? typeof(int);
+                                    object vC = 0;
+                                    if (!string.IsNullOrEmpty(val) && type != typeof(string))
+                                    {
+                                        val = val.Replace(",", ".");
+                                        double varD = double.Parse(val);
+                                        for (var i = 0; i < address.Scaling; i++)
+                                        {
+                                            varD = varD * 10.0;
+                                        }
+                                        vC = Convert.ChangeType(varD, type);
+                                    }
+                                    machine.Write(address.Address, vC);
+                                    index++;
+                                }
+                                return RedirectToAction("Start", new { id });
+                            }
+                        }
+                    }
+                    else if (writeModality == "recipe")
+                    {
+                        var rec = await _dB.Recipes
+                            .Where(r => r.Id == recipe)
+                            .Include(r => r.RepiceSettings)
+                                .ThenInclude(rs => rs.Fields)
+                            .FirstOrDefaultAsync();
+                        if(rec is Recipe)
+                        {
+                            foreach (var f in rec.RepiceSettings.Fields)
+                            {
+                                var values = JsonConvert.DeserializeObject<Dictionary<string, string>>(f.Value);
+                                var addresses = machine.GetParameterWrite(f.Key);
+                                if(addresses != null && addresses.Count > 0 && values != null && values.Count > 0)
+                                {
+                                    var index = 0;
+                                    foreach (var address in addresses)
+                                    {
+                                        var val = values[index.ToString()] ?? "0";
+                                        var type = machine.GetDataItemType(address) ?? typeof(int);
+                                        object vC = 0;
+                                        if (!string.IsNullOrEmpty(val) && type != typeof(string))
+                                        {
+                                            val = val.Replace(",", ".");
+                                            double varD = double.Parse(val);
+                                            for (var i = 0; i < address.Scaling; i++)
+                                            {
+                                                varD = varD * 10.0;
+                                            }
+                                            vC = Convert.ChangeType(varD, type);
+                                        }
+                                        machine.Write(address.Address, vC);
+                                        index++;
+                                    }
+                                }
+                            }
+                            return RedirectToAction("Start", new { id });
+                        }
+                    }
+                    else
+                    {
+                        return RedirectToAction("Start", new { id });
+                    }
+                }
+            }
+            return RedirectToAction("Index", "Error", new { id = 7 });
         }
 
         [HttpGet]

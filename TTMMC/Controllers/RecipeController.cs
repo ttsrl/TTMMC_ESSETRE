@@ -4,6 +4,8 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using TTMMC_ESSETRE.ConfigurationModels;
 using TTMMC_ESSETRE.Models;
 using TTMMC_ESSETRE.Models.DBModels;
 using TTMMC_ESSETRE.Models.ViewModels;
@@ -16,9 +18,9 @@ namespace TTMMC_ESSETRE.Controllers
         private readonly MachinesService _machines;
         private readonly TTMMCContext _dB;
 
-        public RecipeController(MachinesService machines, TTMMCContext dB)
+        public RecipeController([FromServices] MachinesService machines, TTMMCContext dB)
         {
-            _machines = machines ?? throw new ArgumentNullException(nameof(machines));
+            _machines = machines;
             _dB = dB ?? throw new ArgumentNullException(nameof(dB));
         }
 
@@ -53,10 +55,12 @@ namespace TTMMC_ESSETRE.Controllers
                 var setts = new List<LayoutRecordField>();
                 foreach (var f in fields)
                 {
+                    var it = new Dictionary<string, string>();
+                    it.Add("0", f.Value);
                     var rf = new LayoutRecordField
                     {
                         Key = f.Key,
-                        Value = f.Value
+                        Value = JsonConvert.SerializeObject(it)
                     };
                     setts.Add(rf);
                 }

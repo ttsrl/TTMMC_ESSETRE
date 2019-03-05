@@ -22,6 +22,7 @@
         </tr>
         @foreach (var l in Model.Layouts)
         {
+            var machine = Model.Machines.Where(m => m.Id == l.Machine).FirstOrDefault();
             <tr id="@l.LayoutNumber" style="font-size: 12px;">
                 <td style="font-weight:bold; vertical-align: middle; padding-left:20px;">@l.LayoutNumber</td>
                 <td style="text-align:center; vertical-align: middle;">
@@ -37,7 +38,7 @@
                 </td>
                 <td class="buttons" style="vertical-align: middle; text-align: right; padding-right:20px;">
                     <a asp-if="@(l.Status == Status.Finished || l.Status == Status.Stopped)" asp-action="Report" asp-controller="Layout" asp-route-id="@l.Id" class="reportButton" target="_blank" style="@((l.Status == Status.Finished || l.Status == Status.Stopped) ? "" : "display:none;")">REPORT</a>
-                    <a asp-if="@(l.Status == Status.Waiting)" asp-action="Start" asp-controller="Layout" asp-route-id="@l.Id" class="confirmDialog startButton" data-msg="Confermi di voler avviare la disposizione N. @l.LayoutNumber ?" data-title="Conferma Avvio" title="Avvia la lavorazione">AVVIA</a>
+                    <a asp-if="@(l.Status == Status.Waiting && machine != null && machine.GetStatus() == MachineStatus.Online)" asp-action="SendLayout" asp-controller="Layout" asp-route-id="@l.Id" onclick="return openWriteModalityDialog(this);" class="startButton" title="Avvia la lavorazione">AVVIA</a>
                     <a asp-if="@(l.Status == Status.Recording)" asp-action="Stop" asp-controller="Layout" asp-route-id="@l.Id" class="confirmDialog stopButton" data-msg="Confermi di voler interrompere la disposizione N. @l.LayoutNumber ?" data-title="Conferma Arresto" title="Ferma la lavorazione">FERMA</a>
                 </td>
             </tr>
@@ -48,17 +49,81 @@
     </table>
 </div>
 
+<div style="display:none;">
+    <form asp-antiforgery="true" id="dialogWriteModality" autocomplete="off">
+        <label>Desideri inviare dei parametri in macchina?</label>
+        <br />
+        <label for="writeNull" style="width: 65px;margin-left: 30px;">Nessuno</label>
+        <input type="radio" value="nothing" id="writeNull" name="writeModality" checked="checked" style="top: 7px;position: relative;" />
+        <br />
+        <label for="writeRecipe" style="width: 65px;margin-left: 30px;">Ricetta</label>
+        <input type="radio" value="recipe" id="writeRecipe" name="writeModality" style="top: 7px;position: relative;" />
+        <br />
+        <label for="writeManual" style="width: 65px;margin-left: 30px;">Manuale</label>
+        <input type="radio" value="manual" id="writeManual" name="writeModality" style="top: 7px;position: relative;" />
+    </form>
+</div>
+
+<div style="display:none">
+    <form asp-antiforgery="true" autocomplete="off" id="dialogWriteManual">
+        <input type="hidden" value="manual" name="writeModality" />
+        @foreach (var f in Model.Machines[0].GetParametersWrite())
+        {
+            var val = f.Value[0];
+            double step = 1.0;
+            for (int i = 0; i < val.Scaling; i++)
+            {
+                step = step / 10.0;
+            }
+            <label style="width:205px;">@f.Key.ToNotMappedAttribute().ToWhiteSpaceInsert()</label>
+            <input type="number" step="@step.ToString().Replace(",", ".")" value="0" min="0" name="writeFields[@f.Key]" title="@val.Description" style="width:180px;" class="field" />
+            <br />
+        }
+    </form>
+</div>
+
+<div style="display:none">
+    <form asp-antiforgery="true" autocomplete="off" id="dialogWriteRecipe">
+        <input type="hidden" value="recipe" name="writeModality" />
+        <label for="selRecipe" style="width: 70px;margin-left: 20px;">Ricetta:</label>
+        <select id="selRecipe" name="recipe">
+            <option value="">--</option>
+            @foreach (var r in Model.Recipes)
+            {
+                <option value="@r.Id">@(r.Name)</option>
+            }
+        </select>
+    </form>
+</div>
+
 @section Scripts{
+    @await Html.PartialAsync("_ValidationScriptsPartial")
     <script class="inject-json" data-name="layouts" type="application/json">
         @Html.Raw(JsonConvert.SerializeObject(Model.Layouts))
     </script>
     <script type="text/javascript">
+
+        var validationMan = $('#dialogWriteManual').validate();
+        var validationRec = $('#dialogWriteRecipe').validate();
+        validationRec.settings.rules = { 'recipe': { required: true } };
+        validationRec.settings.messages = { 'recipe': { required: "" } };
 
         var timer;
         var TimerVal = 2000;
         $(document).ready(function () {
             recBlink();
             timer = setInterval(updateLogs, TimerVal);
+
+            $(".field").each(function () {
+                $(this).rules("add", {
+                    required: true,
+                    notEqual: "0",
+                    messages: {
+                        required: "",
+                        notEqual: ""
+                    }
+                });
+            });
         });
 
         function updateLogs() {
@@ -117,6 +182,94 @@
                 });
             }
         }
+
+        function openWriteModalityDialog(it) {
+            $("#writeNull").prop("checked", true);         
+            var href = $(it).attr("href");
+            $("#dialogWriteModality").attr("action", href);
+            $("#dialogWriteModality").dialog("open");
+            return false;
+        }
+
+        $("#dialogWriteModality").dialog({
+            autoOpen: false,
+            title: "Invia Disposizione",
+            resizable: false,
+            draggable: false,
+            height: "auto",
+            width: 400,
+            modal: true,
+            create: function (event) {
+                $(event.target).parent().css({ 'position': 'fixed' });
+            },
+            buttons: {
+                "Conferma": function () {
+                    var valS = $("input[name='writeModality']:checked").val();
+                    if (valS == "manual") {
+                        $('#dialogWriteManual').trigger("reset");
+                        $('#dialogWriteManual input, #dialogWriteManual select, #dialogWriteManual label').removeClass("error");
+                        window.validationMan.resetForm();
+                        $("#dialogWriteManual").attr("action", $(this).attr("action"));
+                        $("#dialogWriteManual").dialog("open");
+                    } else if (valS == "recipe") {
+                        $('#dialogWriteRecipe').trigger("reset");
+                        $('#dialogWriteRecipe input, #dialogWriteRecipe select, #dialogWriteRecipe label').removeClass("error");
+                        window.validationRec.resetForm();
+                        $("#dialogWriteRecipe").attr("action", $(this).attr("action"));
+                        $("#dialogWriteRecipe").dialog("open");
+                    } else {
+                        $(this).submit();
+                    }
+                    $(this).dialog("close");
+                },
+                "Annulla": function () {
+                    $(this).dialog("close");
+                }
+            }
+        });
+
+
+        $("#dialogWriteManual").dialog({
+            autoOpen: false,
+            title: "Inserisci impostazioni manuali",
+            resizable: false,
+            draggable: false,
+            height: "auto",
+            width: 430,
+            modal: true,
+            create: function (event) {
+                $(event.target).parent().css({ 'position': 'fixed' });
+            },
+            buttons: {
+                "Conferma": function () {
+                    $("#dialogWriteManual").submit();
+                },
+                "Annulla": function () {
+                    $(this).dialog("close");
+                }
+            }
+        });
+
+        $("#dialogWriteRecipe").dialog({
+            autoOpen: false,
+            title: "Seleziona una ricetta",
+            resizable: false,
+            draggable: false,
+            height: "auto",
+            width: 430,
+            modal: true,
+            create: function (event) {
+                $(event.target).parent().css({ 'position': 'fixed' });
+            },
+            buttons: {
+                "Conferma": function () {
+                    $("#dialogWriteRecipe").submit();
+                },
+                "Annulla": function () {
+                    $(this).dialog("close");
+                }
+            }
+        });
 
     </script>
 }

@@ -11,6 +11,7 @@ namespace TTMMC_ESSETRE.Models.ViewModels
     {
         public List<Layout> Layouts { get; set; }
         public List<IMachine> Machines { get; set; }
+        public List<Recipe> Recipes { get; set; }
     }
 
 }

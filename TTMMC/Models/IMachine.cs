@@ -26,6 +26,8 @@ namespace TTMMC_ESSETRE.Models
         Task<string> ReadAsync(string key, Type type);
         T Read<T>(string key);
         string Read(string key, Type type);
+        void Write<T>(string key, T item);
+        Task WriteAsync<T>(string key, T item);
         Type GetDataItemType(DataItem data);
         Dictionary<string, List<DataItem>> GetParametersRead();
         Dictionary<string, List<DataItem>> GetParametersWrite();

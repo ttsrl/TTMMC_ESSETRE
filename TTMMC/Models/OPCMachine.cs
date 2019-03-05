@@ -215,9 +215,9 @@ namespace TTMMC_ESSETRE.Models
             uaClient.Write<T>(key, item);
         }
 
-        public async void WriteAsync<T>(string key, T item)
+        public async Task WriteAsync<T>(string key, T item)
         {
-            await uaClient.WriteAsync<T>(key, item);
+           await uaClient.WriteAsync<T>(key, item);
         }
 
         public Type GetDataItemType(DataItem data)

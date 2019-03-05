@@ -32,6 +32,10 @@ namespace TTMMC_ESSETRE.Controllers
             {
                 txt = "Errore imprevisto. Impossibile creare il report per questa disposizione";
             }
+            else if (id == 7)
+            {
+                txt = "Errore imprevisto. Impossibile inviare i dati in macchina";
+            }
             return View(new ResultsModel { Text = txt });
         }
     }
