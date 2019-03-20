@@ -23,7 +23,8 @@ namespace TTMMC
         {
             //database
             services.AddDbContext<TTMMCContext>(options => options.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
-            services.AddDbContext<owlDBContext>();
+            services.AddDbContext<owlDBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("OWLConnection")));
+
             //servizi
             services.AddSingleton<Utilities>();
             services.AddSingleton<MachinesService>();

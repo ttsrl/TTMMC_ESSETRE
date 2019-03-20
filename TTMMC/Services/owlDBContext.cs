@@ -5,26 +5,17 @@ namespace TTMMC_ESSETRE.Services
 {
     public partial class owlDBContext : DbContext
     {
-        public owlDBContext()
-        {
-        }
+        public static DbContextOptions<owlDBContext> Options;
 
-        public owlDBContext(DbContextOptions<owlDBContext> options): base(options)
+        public owlDBContext(DbContextOptions<owlDBContext> options) : base(options)
         {
+            Options = options;
         }
 
         public virtual DbSet<Decofast35Datiesterni> Decofast35Datiesterni { get; set; }
         public virtual DbSet<Decofast35Getvalue> Decofast35Getvalue { get; set; }
         public virtual DbSet<Decofast35Lavorazionemacchina> Decofast35Lavorazionemacchina { get; set; }
         public virtual DbSet<Decofast35Ricetta> Decofast35Ricetta { get; set; }
-
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            if (!optionsBuilder.IsConfigured)
-            {
-                optionsBuilder.UseSqlServer("Data Source=10.198.156.253;Initial Catalog=owlDB;Persist Security Info=True;User ID=sa;Password=azsx.2012;");
-            }
-        }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

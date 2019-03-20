@@ -193,7 +193,7 @@ namespace TTMMC_ESSETRE.Controllers
                     if (!_lListener.Contains(layout))
                         _lListener.Add(layout);
                     var ll = _lListener.GetLayoutListenItem(layout);
-                    ll.TimerTick = 30;
+                    ll.TimerTick = 15;
                     ll.Rounded = true;
                     ll.RoundedPrecision = 2;
                     await ll.Start();
