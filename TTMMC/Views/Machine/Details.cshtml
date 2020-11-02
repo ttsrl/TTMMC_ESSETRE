@@ -26,9 +26,13 @@
         var uploadEnable = true;
         var reqCount = 0;
         var mediaRef = 0;
+        var timeoutLimitRquest = 6000;
+        var minRefreshTime = 500;
+        var messageSend = false;
+
         $(document).ready(function () {
             loadingDialogShow();
-            ReadRealtimeDatas();
+            StartReadRealtimeDatas();
         });
 
         $(window).on('beforeunload', function () {
@@ -42,7 +46,7 @@
                 if (data.result) {
                     infoDialog("Ping", "Ping eseguito in " + data.time + " ms");
                 } else {
-                    alertDialog("Ping", "Inidirizzo non raggiungibile o intervento timeout");
+                    alertDialog("Ping", "Indirizzo non raggiungibile o intervento timeout");
                 }
             }).fail(function () {
                 alertDialog("Errore", "Errore Imprevisto, richiesta ping fallita. Contattare L'assistenza.");
@@ -51,6 +55,11 @@
                 loadingDialogHide();
             });
             return false;
+        }
+
+        function StartReadRealtimeDatas() {
+            window.uploadEnable = true;
+            ReadRealtimeDatas();
         }
 
         function StopReadRealtimeDatas() {

@@ -1,12 +1,7 @@
-﻿using Hylasoft.Opc.Ua;
-using Microsoft.AspNetCore.Mvc;
-using TTMMC_ESSETRE.Models;
+﻿using Microsoft.AspNetCore.Mvc;
 using TTMMC_ESSETRE.Services;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace TTMMC_ESSETRE.Controllers.Api
 {
     [Produces("application/json")]
@@ -25,12 +20,7 @@ namespace TTMMC_ESSETRE.Controllers.Api
             var r = new List<object>();
             foreach (var m in _machinesService.GetMachines())
             {
-                var status = m.GetStatus();
-                r.Add(new { key = m.ReferenceName, value = status });
-                if (status == MachineStatus.Offline)
-                {
-                    m.Connect();
-                }
+                r.Add(new { key = m.ReferenceName, value = m.Status });
             }
             return Ok(r);
         }

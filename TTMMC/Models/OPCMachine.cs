@@ -5,8 +5,6 @@ using System.Threading.Tasks;
 using TTMMC_ESSETRE.Services;
 using TTMMC_ESSETRE.ConfigurationModels;
 using Hylasoft.Opc.Common;
-using Microsoft.AspNetCore.Mvc;
-using System.Linq;
 
 namespace TTMMC_ESSETRE.Models
 {
@@ -14,11 +12,13 @@ namespace TTMMC_ESSETRE.Models
     {
         private bool recording = false;
         private UaClient uaClient;
-        private bool firstConnection = false;
         private Dictionary<string, List<DataItem>> datasAddressToRead = new Dictionary<string, List<DataItem>>();
         private Dictionary<string, List<DataItem>> datasAddressToWrite = new Dictionary<string, List<DataItem>>();
         private string imgLink;
-        
+        private bool isInReconnection = false;
+        private Uri uri;
+        private UaClientOptions options;
+
         public string Description { get; }
         public int Id { get; }
         public string Address { get; }
@@ -26,6 +26,7 @@ namespace TTMMC_ESSETRE.Models
         public string ReferenceName { get; }
         public MachineType Type { get; }
         public ConnectionProtocol ConnectionProtocol { get; }
+        public MachineStatus Status { get => GetStatus(); }
         public bool HaveImage { get; }
         public bool Recording { get => recording; set => recording = value; }
 
@@ -42,8 +43,8 @@ namespace TTMMC_ESSETRE.Models
             imgLink = (!string.IsNullOrEmpty(machine.Image)) ? machine.Image : null;
             datasAddressToRead = machine.DatasAddressToRead ?? new Dictionary<string, List<DataItem>>();
             datasAddressToWrite = machine.DatasAddressToWrite ?? new Dictionary<string, List<DataItem>>();
-            uaClient = new UaClient(new Uri("opc.tcp://" + Address + ":" + Port));
-            uaClient.ServerConnectionLost += _uaClient_ServerConnectionLost;
+            uri = new Uri("opc.tcp://" + Address + ":" + Port /*+ "/Objects"*/);
+            options = new UaClientOptions { DefaultMonitorInterval = 50 };
         }
 
         public KeyValuePair<string, List<DataItem>>? GetReferenceKeyRead()
@@ -68,48 +69,66 @@ namespace TTMMC_ESSETRE.Models
             return null;
         }
 
-        private void _uaClient_ServerConnectionLost(object sender, EventArgs e)
-        {
-            try
-            {
-                if (uaClient.Status == Hylasoft.Opc.Common.OpcStatus.Connected)
-                    return;
-                uaClient.ReConnect();
-            }catch{ }
-        }
-
         public void Connect()
         {
             try
             {
-                if (uaClient.Status == Hylasoft.Opc.Common.OpcStatus.Connected)
-                    return;
-                if (!firstConnection)
+                if (uaClient != null)
                 {
+                    if (uaClient.Status == OpcStatus.Connected)
+                        return;
+                    uaClient.Dispose();
+                    uaClient = null;
+                }
+                uaClient = new UaClient(uri, options);
+                uaClient.Connect();
+            }
+            catch { }
+        }
+
+        private Task<OpcStatus> DoWorkAsync()
+        {
+            TaskCompletionSource<OpcStatus> tcs = new TaskCompletionSource<OpcStatus>();
+            var task = Task.Run(() =>
+            {
+                try
+                {
+                    if (uaClient != null)
+                    {
+                        if (uaClient.Status == OpcStatus.Connected)
+                            return;
+                        uaClient.Dispose();
+                        uaClient = null;
+                    }
+                    uaClient = new UaClient(uri, options);
                     uaClient.Connect();
-                    firstConnection = true;
                 }
-                else
-                {
-                    uaClient.RecreateSession();
-                }
+                catch { }
+                tcs.SetResult(uaClient.Status);
+            }).ContinueWith(t =>
+            {
+                isInReconnection = false;
+            });
+            return tcs.Task;
+        }
+
+        public async void ConnectAsync()
+        {
+            if (!isInReconnection)
+            {
+                isInReconnection = true;
+                await DoWorkAsync();
             }
-            catch {
-                
-            }
-            
         }
 
         public MachineStatus GetStatus()
         {
-            if(uaClient.Status == Hylasoft.Opc.Common.OpcStatus.Connected)
-            {
-                return MachineStatus.Online;
-            }
-            else
-            {
+            if(uaClient == null)
                 return MachineStatus.Offline;
-            }
+            if (uaClient.Status == OpcStatus.Connected)
+                return MachineStatus.Online;
+            else
+                return MachineStatus.Offline;
         }
 
         public string GetImageUrl()
@@ -126,7 +145,17 @@ namespace TTMMC_ESSETRE.Models
 
         public async Task<string> ReadAsync(string key, Type type)
         {
-            if (type == typeof(int))
+            if (type == typeof(short))
+            {
+                var val = await uaClient.ReadAsync<short>(key);
+                return val.Value.ToString();
+            }
+            else if (type == typeof(ushort))
+            {
+                var val = await uaClient.ReadAsync<ushort>(key);
+                return val.Value.ToString();
+            }
+            else if (type == typeof(int))
             {
                 var val = await uaClient.ReadAsync<int>(key);
                 return val.Value.ToString();
@@ -172,7 +201,17 @@ namespace TTMMC_ESSETRE.Models
 
         public string Read(string key, Type type)
         {
-            if(type == typeof(int))
+            if (type == typeof(short))
+            {
+                var val = uaClient.Read<short>(key).Value;
+                return val.ToString();
+            }
+            else if (type == typeof(ushort))
+            {
+                var val = uaClient.Read<ushort>(key).Value;
+                return val.ToString();
+            }
+            else if (type == typeof(int))
             {
                 var val = uaClient.Read<int>(key).Value;
                 return val.ToString();
@@ -222,7 +261,15 @@ namespace TTMMC_ESSETRE.Models
 
         public Type GetDataItemType(DataItem data)
         {
-            if(data.DataType == "int")
+            if(data.DataType == "short")
+            {
+                return typeof(short);
+            }
+            else if (data.DataType == "ushort")
+            {
+                return typeof(ushort);
+            }
+            else if(data.DataType == "int")
             {
                 return typeof(int);
             }

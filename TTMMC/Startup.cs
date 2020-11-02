@@ -5,7 +5,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using TTMMC_ESSETRE.Services;
 using Rotativa.AspNetCore;
-using TTMMC_ESSETRE.Models;
 
 namespace TTMMC
 {
@@ -26,6 +25,7 @@ namespace TTMMC
             services.AddDbContext<owlDBContext>(options => options.UseSqlServer(Configuration.GetConnectionString("OWLConnection")));
 
             //servizi
+            //services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddSingleton<Utilities>();
             services.AddSingleton<MachinesService>();
             services.AddSingleton<LayoutListener>();

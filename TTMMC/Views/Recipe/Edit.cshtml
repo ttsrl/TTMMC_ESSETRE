@@ -14,8 +14,9 @@
         @foreach (var f in ff)
         {
             var desc = Model.Machine.GetParameterWrite(f.Key)[0];
+            var val = JsonConvert.DeserializeObject<Dictionary<string, string>>(f.Value);
             <label class="title" style="width:205px;">@f.Key.ToWhiteSpaceInsert()</label>
-            <input class="field" type="number" step="0.1" value="@f.Value" min="0" name="fields[@f.Key]" title="@desc.Description" style="width:180px;" />
+            <input class="field" type="number" step="0.1" value="@val["0"]" min="0" name="fields[@f.Key]" title="@desc.Description" style="width:180px;" />
             <br />
         }
         <br />

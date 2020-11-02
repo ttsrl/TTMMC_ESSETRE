@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using System;
@@ -13,6 +14,7 @@ using TTMMC_ESSETRE.Services;
 
 namespace TTMMC_ESSETRE.Models
 {
+
     public class LayoutListenItem
     {
         private Layout _layout;
@@ -22,6 +24,7 @@ namespace TTMMC_ESSETRE.Models
         private readonly IMachine _machine;
         private bool _roundedValue = false;
         private int _roundedPrecision = 2;
+        private int attualXTimes = 1;
         private Timer _timer;
         private readonly TTMMCContext _dB;
 
@@ -36,11 +39,14 @@ namespace TTMMC_ESSETRE.Models
 
         private string _referenceKeyLogOld = "";
 
-        public LayoutListenItem(Layout layout, IMachine machine)
+        private readonly IHostingEnvironment _environment;
+
+        public LayoutListenItem(Layout layout, IMachine machine, IHostingEnvironment iHostingEnvironment)
         {
             _machine = machine;
             _layout = layout;
             _dB = TTMMCContext.Instance;
+            _environment = iHostingEnvironment;
         }
 
         public async Task Start()
@@ -53,13 +59,14 @@ namespace TTMMC_ESSETRE.Models
                 {
                     ll.Status = Status.Recording;
                 }
-                
+
                 var refNRead = _machine.GetReferenceKeyRead() ?? null;
                 if (refNRead == null)
                     return;
 
                 var rRead = (KeyValuePair<string, List<DataItem>>)refNRead;
                 _referenceKeyLogOld = await _machine.ReadAsync(rRead.Value[0].Address, _machine.GetDataItemType(rRead.Value[0]));
+
 
                 //log sets
                 var writes = _machine.GetParametersWrite();
@@ -78,7 +85,7 @@ namespace TTMMC_ESSETRE.Models
                         }
                         newIt.Add(par.Value.IndexOf(dataIt).ToString(), val);
                     }
-                    var json = JsonConvert.SerializeObject(newIt);
+                    var json = (newIt.Count > 1) ? JsonConvert.SerializeObject(newIt) : ((newIt.Count == 1) ? newIt.ElementAt(0).Value : "");
                     fields.Add(new LayoutRecordField { Key = par.Key, Value = json });
                 }
 
@@ -104,9 +111,6 @@ namespace TTMMC_ESSETRE.Models
             {
                 var fields = new List<LayoutRecordField>();
                 var acts = _machine.GetParametersRead();
-
-                var refRead = (KeyValuePair<string, List<DataItem>>)_machine.GetReferenceKeyRead();
-                var refNWrite = _machine.GetReferenceKeyWrite() ?? null;
                 foreach (var act in acts)
                 {
                     if (act.Key.Substring(0, 1) != "[" && act.Key.Substring(act.Key.Length - 1, 1) != "]") // se non è una proprietà nascosta
@@ -118,7 +122,7 @@ namespace TTMMC_ESSETRE.Models
                             var val = _machine.Read(dataIt.Address, type) ?? "";
                             if (type != typeof(string))
                             {
-                                if (type == typeof(int) || type == typeof(uint) || type == typeof(long) || type == typeof(ulong))
+                                if (type == typeof(short) || type == typeof(ushort) || type == typeof(int) || type == typeof(uint) || type == typeof(long) || type == typeof(ulong))
                                 {
                                     if (dataIt.Scaling > 0)
                                     {
@@ -138,47 +142,46 @@ namespace TTMMC_ESSETRE.Models
                             }
                             newIt.Add(act.Value.IndexOf(dataIt).ToString(), val);
                         }
-                        var json = JsonConvert.SerializeObject(newIt) ?? "";
+                        var json = (newIt.Count > 1) ? JsonConvert.SerializeObject(newIt) : ((newIt.Count == 1) ? newIt.ElementAt(0).Value : "0");
                         fields.Add(new LayoutRecordField { Key = act.Key, Value = json });
                     }
                 }
                 var record = new LayoutRecord
                 {
-                    Fields = fields,
-                    Timestamp = DateTime.Now
+                    Fields = fields
                 };
-
-                var referenceKeyRead = await _machine.ReadAsync(refRead.Value[0].Address, _machine.GetDataItemType(refRead.Value[0]));
-                
-                //if is finished
-                if (refNWrite != null)
-                {
-                    var item = ((KeyValuePair<string, List<DataItem>>)refNWrite);
-                    var referenceKeyFinisched = await _machine.ReadAsync(item.Value[0].Address, _machine.GetDataItemType(item.Value[0]));
-
-                    if (referenceKeyRead == referenceKeyFinisched)
-                    {
-                        _layout.Status = Status.Finished;
-                        _isBusy = false;
-                        _machine.Recording = false;
-                        _timer?.Change(Timeout.Infinite, 0);
-                    }
-                }
                 _layout.LayoutActRecords.Add(record);
                 await _dB.SaveChangesAsync();
                 workCount += 1;
             }
+
         }
 
         private async Task<bool> isChangedReferenceKey()
         {
+            //prendo la reference key e prendo il primo valore della ref
             var di = ((KeyValuePair<string, List<DataItem>>)_machine.GetReferenceKeyRead()).Value[0];
-            var actV = await _machine.ReadAsync(di.Address, _machine.GetDataItemType(di));
-            var parseV = int.Parse(actV);
-            if (parseV > 0)
+            var diType = _machine.GetDataItemType(di) ?? typeof(int);
+            var actV = await _machine.ReadAsync(di.Address, diType);
+
+            if (diType == typeof(string))
             {
-                _referenceKeyLogOld = actV;
-                return true;
+                if (actV != _referenceKeyLogOld)
+                {
+                    _referenceKeyLogOld = actV;
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                var doubleActV = double.Parse(actV);
+                if (doubleActV > 0.0)
+                    return true;
+                
             }
             return false;
         }

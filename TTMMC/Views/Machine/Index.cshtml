@@ -8,7 +8,7 @@
     @foreach (var m in Model.Machines)
     {
         <a asp-action="Details" asp-controller="Machine" asp-route-id="@m.Id" class="machine" id="@(m.ReferenceName)">
-            <img class="machine_icon @(m.GetStatus().ToString())" src="~/images/pic.png" />
+            <img class="machine_icon @(m.Status.ToString())" src="~/images/pic.png" />
             <span asp-if="@m.Recording" class="recordIcon"></span>
             <div class="machine_details">
                 <label class="machine_title">@m.Description</label>
@@ -16,7 +16,7 @@
                 <label class="machine_det_title">Name:</label><label class="machine_data">@m.ReferenceName</label>
                 <label class="machine_det_title">Ip:</label><label class="machine_data">@m.Address</label>
                 <label class="machine_det_title">Port:</label><label class="machine_data">@m.Port</label>
-                <label class="machine_det_title">Status: </label><label id="@(m.ReferenceName)_statusLbl" class="machine_data machine_statusLbl" style="color: @(m.GetStatus() == MachineStatus.Online ? "green" : "red")">@(m.GetStatus().ToString())</label>
+                <label class="machine_det_title">Status: </label><label id="@(m.ReferenceName)_statusLbl" class="machine_data machine_statusLbl" style="color: @(m.Status == MachineStatus.Online ? "green" : "red")">@(m.Status.ToString())</label>
             </div>
         </a>
     }
@@ -27,7 +27,7 @@
         var checkStatusTimer;
 
         $(document).ready(function () {
-            checkStatusTimer = setInterval(GetMachinesStatus, 2000);
+            checkStatusTimer = setInterval(GetMachinesStatus, 3000);
             recBlink();
         });
 
@@ -58,11 +58,13 @@
             var intOnline = @((int)(MachineStatus.Online));
             var intOffline = @((int)(MachineStatus.Offline));
             if (status == intOnline) {
+                console.log("online");
                 $("#" + key + "_statusLbl").text("@(MachineStatus.Online.ToString())")
                 $("#" + key + "_statusLbl").css("color", "green");
                 $("#" + key + " .machine_icon").addClass("Online");
                 $("#" + key + " .machine_icon").removeClass("Offline");
             } else if (status == intOffline) {
+                console.log("offline");
                 $("#" + key + "_statusLbl").text("@(MachineStatus.Offline.ToString())")
                 $("#" + key + "_statusLbl").css("color", "red");
                 $("#" + key + " .machine_icon").addClass("Offline");

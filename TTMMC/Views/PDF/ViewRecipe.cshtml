@@ -17,12 +17,16 @@
         <br />
         @foreach (var f in Model.Recipe.RepiceSettings.Fields)
         {
+            var val = JsonConvert.DeserializeObject<Dictionary<string, string>>(f.Value);
             <label class="moduleTitle" style="width: 180px;">@(f.Key.ToWhiteSpaceInsert()):</label>
-            <label class="moduleValue">@f.Value</label>
+            <label class="moduleValue">@val["0"]</label>
             <br />
         }
         <label class="moduleTitle" style="width: 180px;">Note:</label>
         <label class="moduleValue">@(Model.Recipe.Notes ?? "Nessuna nota")</label>
         <br />
+        <br />
+        <br />
+        <a href="#">CHIUDI</a>
     </div>
 </div>

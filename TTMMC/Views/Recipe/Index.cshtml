@@ -24,7 +24,7 @@
                 <td>@r.Timestamp.ToString("dd/MM/yyyy HH:mm")</td>
                 <td>@(r.Notes ?? "Nessuna nota")</td>
                 <td>
-                    <a asp-action="View" asp-controller="Recipe" asp-route-id="@r.Id" target="_blank">Visualizza</a>
+                    <a asp-action="View" asp-controller="Recipe" asp-route-id="@r.Id">Visualizza</a>
                     &nbsp;-&nbsp;
                     <a asp-action="Edit" asp-controller="Recipe" asp-route-id="@r.Id">Modifica</a>
                     &nbsp;-&nbsp;

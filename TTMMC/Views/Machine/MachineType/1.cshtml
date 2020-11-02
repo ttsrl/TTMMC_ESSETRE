@@ -3,7 +3,7 @@
 <br />
 <h3>Dati in Realtime</h3>
 <br />
-<table class="table">
+<table class="table" style="font-size: 13px;">
     <tr>
         <td style="width:300px; font-weight:bold;">Parametro</td>
         <td style="width:400px; font-weight:bold;">Descrizione</td>
@@ -11,7 +11,7 @@
     </tr>
     @foreach (var it in Model.Machine.GetParametersRead())
     {
-        <tr style="font-size: 13px;">
+        <tr>
             <td style="padding-left:20px; vertical-align: middle;"><b>@it.Key.ToNotMappedAttribute().ToWhiteSpaceInsert()</b></td>
             <td style="vertical-align: middle;">
                 @foreach (var d in it.Value)
@@ -32,31 +32,32 @@
 
     function ReadRealtimeDatas() {
         var start_time = new Date().getTime();
-        $.getJSON("/Api/RealtimeMachineDatasRead", { id: @Model.Machine.Id }).done(function (data) {
-            if (data.status == 1) {
-                $.each(data.parameters, function (k, it) {
-                    var strAgg = "";
-                    for (var key in it) {
-                        var val = it[key];
-                        strAgg += val + "<br />";
-                    }
-                    strAgg = strAgg.substring(0, strAgg.length - 2);
-                    $("#p_" + k).html(strAgg);
-                    $("#p_" + k).css("color", "#206800");
-                });
-            } else {
-                $(".parameters_").html("Offline");
-                $(".parameters_").css("color", "red");
-            }
+        var req = $.getJSON("/Api/RealtimeMachineDatasRead", { id: @Model.Machine.Id })
+        .done(function (data) {
+            $.each(data.parameters, function (k, it) {
+                var strAgg = "";
+                for (var key in it) {
+                    var val = it[key];
+                    strAgg += val + "<br />";
+                }
+                strAgg = strAgg.substring(0, strAgg.length - 2);
+                $("#p_" + k).html(strAgg);
+                $("#p_" + k).css("color", "#206800");
+            });
+            window.messageSend = false;
         }).fail(function () {
-            StopReadRealtimeDatas();
+            //StopReadRealtimeDatas();
             if (window.unload) return;
             $(".parameters_").html("Offline");
             $(".parameters_").css("color", "red");
-            alertDialog("Errore", "Errore Imprevisto, richiesta fallita o non corretta. Contattare L'assistenza.");
+            if (!window.messageSend) {
+                alertDialog("Errore", "Errore durante la richiesta dei dati. La macchina potrebbe essere offline o avere problemi di comunicazione. Contattare L'assistenza.");
+                window.messageSend = true;
+            } 
         }).always(function () {
             if (!loadingHidePing) loadingDialogHide();
-            var request_time = new Date().getTime() - start_time;
+            var date = new Date();
+            var request_time = date.getTime() - start_time;
             window.reqCount += 1;
             window.mediaRef += request_time;
             var mediaReq = parseInt(mediaRef / reqCount);
@@ -64,9 +65,14 @@
             $("#timerUp").html(mediaReq + "ms");
             //upload
             if (window.uploadEnable) {
-                ReadRealtimeDatas()
+                if (request_time > minRefreshTime) {
+                    ReadRealtimeDatas();
+                } else {
+                    setTimeout(function () { ReadRealtimeDatas(); }, minRefreshTime - request_time);
+                }
             }
         });
+        setTimeout(function(){ req.abort(); }, timeoutLimitRquest);
     }
 
 </script>

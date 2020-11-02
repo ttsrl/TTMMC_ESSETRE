@@ -1,13 +1,9 @@
-﻿using Hylasoft.Opc.Ua;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Configuration;
-using Newtonsoft.Json;
+﻿using Microsoft.AspNetCore.Mvc;
 using TTMMC_ESSETRE.Models;
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using TTMMC_ESSETRE.ConfigurationModels;
+using System.Threading;
 
 namespace TTMMC_ESSETRE.Services
 {
@@ -34,10 +30,19 @@ namespace TTMMC_ESSETRE.Services
         private List<IMachine> machines = new List<IMachine>();
         public int Count { get => machines.Count(); }
         private readonly Utilities _utils;
-        
+
+        private static bool started = false;
+        public static bool Started { get => started; }
+
+        private System.Timers.Timer autoReconnectionTimer;
+
         public MachinesService([FromServices] Utilities utils)
         {
             _utils = utils;
+            autoReconnectionTimer = new System.Timers.Timer(4000);
+            autoReconnectionTimer.AutoReset = true;
+            autoReconnectionTimer.Elapsed += AutoReconnectionTimer_Elapsed;
+            autoReconnectionTimer.Start();
 
             var configMachines = _utils.GetConfigurationElementsList<Machine>("Machines");
             if(configMachines.Count > 0)
@@ -49,10 +54,25 @@ namespace TTMMC_ESSETRE.Services
                     if(m.Protocol == ConnectionProtocol.OPCUA)
                     {
                         var client = new OPCMachine(m);
-                        client.Connect();
+                        client.ConnectAsync();
                         machines.Add(client);
                     }
                 }
+            }
+        }
+
+        private void AutoReconnectionTimer_Elapsed(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            var thred = new Thread(autoReconnect);
+            thred.Start();
+        }
+
+        private void autoReconnect()
+        {
+            foreach (var m in machines)
+            {
+                if (m.Status == MachineStatus.Offline)
+                    m.ConnectAsync();
             }
         }
 
@@ -87,14 +107,6 @@ namespace TTMMC_ESSETRE.Services
             }
             return null;
         }
-
-        //public string MachineStatusJson
-        //{
-        //    get
-        //    {
-        //        return JsonConvert.SerializeObject(Enum.GetValues(typeof(OPCMachine.MachineStatus)), new Newtonsoft.Json.Converters.StringEnumConverter());
-        //    }
-        //}
 
     }
 }

@@ -34,6 +34,7 @@ namespace TTMMC_ESSETRE.Controllers
         {
             var disposizioni = await _owlDb.Decofast35Datiesterni.ToListAsync();
             var layouts = await _dB.Layouts.ToListAsync();
+            int added = 0;
             foreach (var d in disposizioni)
             {
                 bool exist = false;
@@ -68,12 +69,14 @@ namespace TTMMC_ESSETRE.Controllers
                         Status = Status.Waiting
                     };
                     _dB.Layouts.Add(newl);
+                    added += 1;
                 }
             }
             await _dB.SaveChangesAsync();
 
             //reload layouts
-            layouts = await _dB.Layouts.Include(l => l.LayoutActRecords).ThenInclude(lr => lr.Fields).OrderByDescending(l => l.StartTimestamp).ToListAsync();
+            if (added > 0)
+                layouts = await _dB.Layouts.Include(l => l.LayoutActRecords).ThenInclude(lr => lr.Fields).OrderByDescending(l => l.StartTimestamp).ToListAsync();
             var machines = _machines.GetMachines().ToList();
             var recipes = await _dB.Recipes.ToListAsync();
             var m = new IndexLayoutModel

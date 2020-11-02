@@ -1,12 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using TTMMC_ESSETRE.Services;
-using Newtonsoft.Json;
 using TTMMC_ESSETRE.Models;
 using TTMMC_ESSETRE.Utils;
+using System.Diagnostics;
 
 namespace TTMMC_ESSETRE.Controllers.Api
 {
@@ -26,10 +25,10 @@ namespace TTMMC_ESSETRE.Controllers.Api
         public async Task<IActionResult> Get(int id)
         {
             var machine = _machineService.GetMachineById(id);
-            if(machine is IMachine)
+            if (machine is IMachine)
             {
                 var out_ = new Dictionary<string, Dictionary<string, string>>();
-                if (machine.GetStatus() == MachineStatus.Online)
+                if (machine.Status == MachineStatus.Online)
                 {
                     foreach (var elm in machine.GetParametersRead())
                     {
@@ -37,14 +36,14 @@ namespace TTMMC_ESSETRE.Controllers.Api
                         var c = 0;
                         foreach (var k in elm.Value)
                         {
-                            var type = machine.GetDataItemType(k);
                             var val = "";
                             try
                             {
+                                var type = machine.GetDataItemType(k);
                                 val = machine.Read(k.Address, type);
                                 if (type != typeof(string))
                                 {
-                                    if (type == typeof(int) || type == typeof(uint) || type == typeof(long) || type == typeof(ulong))
+                                    if (type == typeof(short) || type == typeof(ushort) || type == typeof(int) || type == typeof(uint) || type == typeof(long) || type == typeof(ulong))
                                     {
                                         if (k.Scaling > 0)
                                         {
@@ -69,12 +68,9 @@ namespace TTMMC_ESSETRE.Controllers.Api
                         }
                         out_.Add(elm.Key.ToNotMappedAttribute(), elmL);
                     }
+                    return Ok(new { parameters = out_ });
                 }
-                else
-                {
-                    machine.Connect();
-                }
-                return Ok(new { status = (int)machine.GetStatus(), parameters = out_ });
+                return NotFound(new { });
             }
             return NotFound(new { });
         }

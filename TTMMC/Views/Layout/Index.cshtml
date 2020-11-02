@@ -4,9 +4,14 @@
 }
 <h2>Lavorazioni</h2>
 <div class="content_page margin_bottom">
-    <div style="margin-bottom: 15px; text-align: right;">
-        <label for="searchBar" style="width: 60px;">Cerca:</label>
-        <input type="text" id="txtSearch" value="" style="margin: 0 !important; width: 200px;" placeholder="Numero, Data, Articolo" onkeyup="filterSearch(event)" autocomplete="off" />
+    <div style="margin-bottom: 20px;">
+        <div style="display: inline-block; font-size: 20px;">
+            <a asp-controller="Layout" asp-action="Index" style="font-size: 15px;">Ricarica</a>
+        </div>
+        <div style="display: inline-block; float:right; text-align: right;">
+            <label for="searchBar" style="width: 60px;">Cerca:</label>
+            <input type="text" id="txtSearch" value="" style="margin: 0 !important; width: 200px;" placeholder="Numero, Articolo" onkeyup="filterSearch(event)" autocomplete="off" autofocus />
+        </div>
     </div>
     <table class="table">
         <tr>
@@ -23,7 +28,7 @@
         @foreach (var l in Model.Layouts)
         {
             var machine = Model.Machines.Where(m => m.Id == l.Machine).FirstOrDefault();
-            <tr id="@l.LayoutNumber" style="font-size: 12px;">
+            <tr id="@l.LayoutNumber" class="@l.LayoutNumber" style="font-size: 12px;">
                 <td style="font-weight:bold; vertical-align: middle; padding-left:20px;">@l.LayoutNumber</td>
                 <td style="text-align:center; vertical-align: middle;">
                     <span id="l_@l.LayoutNumber" class="led @Enum.GetName(typeof(Status), l.Status)" title="@l.Status" style="top: 2px;position: relative;"></span>
@@ -37,8 +42,8 @@
                     <span id="c_@l.LayoutNumber">@((l.LayoutActRecords)?.Count.ToString() ?? "0")</span>
                 </td>
                 <td class="buttons" style="vertical-align: middle; text-align: right; padding-right:20px;">
-                    <a asp-if="@(l.Status == Status.Finished || l.Status == Status.Stopped)" asp-action="Report" asp-controller="Layout" asp-route-id="@l.Id" class="reportButton" target="_blank" style="@((l.Status == Status.Finished || l.Status == Status.Stopped) ? "" : "display:none;")">REPORT</a>
-                    <a asp-if="@(l.Status == Status.Waiting && machine != null && machine.GetStatus() == MachineStatus.Online)" asp-action="SendLayout" asp-controller="Layout" asp-route-id="@l.Id" onclick="return openWriteModalityDialog(this);" class="startButton" title="Avvia la lavorazione">AVVIA</a>
+                    <a asp-if="@(l.Status == Status.Finished || l.Status == Status.Stopped)" asp-action="Report" asp-controller="Layout" asp-route-id="@l.Id" class="reportButton" style="@((l.Status == Status.Finished || l.Status == Status.Stopped) ? "" : "display:none;")">REPORT</a>
+                    <a asp-if="@(l.Status == Status.Waiting && machine != null && machine.Status == MachineStatus.Online && machine.Recording == false)" asp-action="SendLayout" asp-controller="Layout" asp-route-id="@l.Id" onclick="return openWriteModalityDialog(this);" class="startButton" title="Avvia la lavorazione">AVVIA</a>
                     <a asp-if="@(l.Status == Status.Recording)" asp-action="Stop" asp-controller="Layout" asp-route-id="@l.Id" class="confirmDialog stopButton" data-msg="Confermi di voler interrompere la disposizione N. @l.LayoutNumber ?" data-title="Conferma Arresto" title="Ferma la lavorazione">FERMA</a>
                 </td>
             </tr>
@@ -156,26 +161,26 @@
 
         function filterSearch(e) {
             var val = e.currentTarget.value;
-            var words = val.split(' ');
+            var rep = val.replace(/[A-Za-z]/g, "");
+            $("#txtSearch").val(rep);
+            var words = rep.split(' ');
             for (var i = 0; i < words.length; i++) {
                 var word = words[i].toLowerCase();
                 $(layouts).each(function (index, item) {
-                    var bc = item.LayoutNumber.toString();
-                    var data = new Date(item.StartTimestamp.toString());
-                    data = data.format("dd/mm/yyyy");
+                    var bc = item.LayoutNumber.toString().toLowerCase();
                     var art = item.ItemCode.toString();
                     if (i == 0) {
-                        if ((bc.indexOf(word) >= 0) || (data.indexOf(word) >= 0) || (art.indexOf(word) >= 0)) {
-                            $("#" + bc).css("display", "");
+                        if ((bc.indexOf(word) >= 0) || (art.indexOf(word) >= 0)) {
+                            $("." + bc).css("display", "");
                         } else {
-                            $("#" + bc).css("display", "none");
+                            $("." + bc).css("display", "none");
                         }
                     } else {
-                        if ($("#" + bc).css("display") != "none") {
-                            if ((bc.indexOf(word) >= 0) || (data.indexOf(word) >= 0) || (art.indexOf(word) >= 0)) {
-                                $("#" + bc).css("display", "");
+                        if ($("." + bc).css("display") != "none") {
+                            if ((bc.indexOf(word) >= 0) || (art.indexOf(word) >= 0)) {
+                                $("." + bc).css("display", "");
                             } else {
-                                $("#" + bc).css("display", "none");
+                                $("." + bc).css("display", "none");
                             }
                         }
                     }

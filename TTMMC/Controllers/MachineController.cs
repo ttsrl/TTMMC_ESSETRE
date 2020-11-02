@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using TTMMC_ESSETRE.Models;
@@ -20,12 +19,12 @@ namespace TTMMC_ESSETRE.Controllers
         public IActionResult Index()
         {
             return RedirectToAction("Details", new { id = 1 });
-            var machines = _machines.GetMachines().ToList();
-            var m = new IndexMachineModel
-            {
-                Machines = machines
-            };
-            return View(m);
+            //var machines = _machines.GetMachines().ToList();
+            //var m = new IndexMachineModel
+            //{
+            //    Machines = machines
+            //};
+            //return View(m);
         }
 
         public async Task<IActionResult> Details(int id)

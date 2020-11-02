@@ -14,13 +14,14 @@ namespace TTMMC_ESSETRE.Models
         string ReferenceName { get; }
         string Address { get; }
         string Port { get; }
-        MachineType Type { get; }
-        ConnectionProtocol ConnectionProtocol { get; }
         bool HaveImage { get; }
         bool Recording { get; set; }
+        MachineStatus Status { get; }
+        MachineType Type { get; }
+        ConnectionProtocol ConnectionProtocol { get; }
 
         void Connect();
-        MachineStatus GetStatus();
+        void ConnectAsync();
         string GetImageUrl();
         Task<T> ReadAsync<T>(string key);
         Task<string> ReadAsync(string key, Type type);
